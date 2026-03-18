@@ -27,7 +27,7 @@ let estado = {
 };
 
 // ============================================
-// DADOS DOS PRAZOS (SEUS PRAZOS ORIGINAIS)
+// DADOS DOS PRAZOS (37 PRAZOS)
 // ============================================
 
 const prazos = [
@@ -321,7 +321,7 @@ const prazos = [
 ];
 
 // ============================================
-// DADOS DO CC50
+// DADOS DO CC50 (90 AULAS)
 // ============================================
 
 const cc50Modulos = [
@@ -493,7 +493,7 @@ const cc50Modulos = [
 ];
 
 // ============================================
-// PLANOS DE AULA (SEUS PLANOS ORIGINAIS)
+// PLANOS DE AULA (70 AULAS)
 // ============================================
 
 const planosAula = {
@@ -600,6 +600,7 @@ let notas = [];
 
 function inicializarSistema() {
     try {
+        console.log('🔥 Inicializando sistema...');
         carregarDados();
         inicializarData();
         inicializarNavegacao();
@@ -617,6 +618,8 @@ function inicializarSistema() {
 
 function carregarDados() {
     try {
+        console.log('📦 Carregando dados...');
+        
         const notasSalvas = localStorage.getItem('agenda_notas');
         if (notasSalvas) {
             notas = JSON.parse(notasSalvas);
@@ -658,332 +661,37 @@ function carregarDados() {
         if (bonusSalvo) {
             estado.cc50Bonus = parseInt(bonusSalvo);
         }
+        
+        console.log('✅ Dados carregados!');
     } catch (erro) {
         console.error('Erro ao carregar dados:', erro);
         mostrarToast('Erro ao carregar dados salvos', 'error');
     }
 }
 
-function inicializarCC50() {
-    renderizarCC50();
-    atualizarProgressoCC50();
+function inicializarData() {
+    atualizarDataHora();
+    setInterval(atualizarDataHora, 60000);
 }
 
-function renderizarCC50() {
-    const container = document.getElementById('cc50-modulos');
-    if (!container) return;
-    
-    container.innerHTML = '';
-    
-    cc50Modulos.forEach((modulo, indexModulo) => {
-        const moduloDiv = document.createElement('div');
-        moduloDiv.className = 'cc50-modulo';
-        
-        // Calcula progresso do módulo
-        let totalAulas = modulo.aulas.length;
-        let concluidas = 0;
-        modulo.aulas.forEach((aula, indexAula) => {
-            const aulaId = `cc50-${indexModulo}-${indexAula}`;
-            if (estado.cc50Progresso[aulaId]?.status === 'completa') concluidas++;
-        });
-        const progressoModulo = Math.round((concluidas / totalAulas) * 100);
-        
-        moduloDiv.innerHTML = `
-            <div class="modulo-header" data-modulo="${indexModulo}">
-                <h3>${modulo.nome}</h3>
-                <span class="modulo-progresso">${concluidas}/${totalAulas} (${progressoModulo}%)</span>
-            </div>
-            <div class="modulo-aulas" id="modulo-${indexModulo}-aulas"></div>
-        `;
-        
-        container.appendChild(moduloDiv);
-        
-        const aulasContainer = document.getElementById(`modulo-${indexModulo}-aulas`);
-        
-        modulo.aulas.forEach((aula, indexAula) => {
-            const aulaId = `cc50-${indexModulo}-${indexAula}`;
-            const status = estado.cc50Progresso[aulaId]?.status || 'nao_iniciada';
-            
-            const aulaDiv = document.createElement('div');
-            aulaDiv.className = 'aula-item';
-            aulaDiv.dataset.modulo = indexModulo;
-            aulaDiv.dataset.aula = indexAula;
-            
-            let statusIcon = '';
-            if (status === 'nao_iniciada') statusIcon = '';
-            else if (status === 'assistida') statusIcon = '<i class="fas fa-play"></i>';
-            else if (status === 'exercicios') statusIcon = '<i class="fas fa-code"></i>';
-            else if (status === 'completa') statusIcon = '<i class="fas fa-check"></i>';
-            
-            aulaDiv.innerHTML = `
-                <div class="aula-status ${status}">
-                    ${statusIcon}
-                </div>
-                <div class="aula-info">
-                    <h4>${aula}</h4>
-                    <p>${getStatusTexto(status)}</p>
-                </div>
-            `;
-            
-            aulaDiv.addEventListener('click', () => abrirAulaCC50(indexModulo, indexAula));
-            
-            aulasContainer.appendChild(aulaDiv);
-        });
-        
-        // Evento para expandir/colapsar módulo
-        const header = moduloDiv.querySelector('.modulo-header');
-        header.addEventListener('click', () => {
-            aulasContainer.classList.toggle('expandido');
-        });
-    });
-}
-
-function getStatusTexto(status) {
-    const textos = {
-        'nao_iniciada': 'Não iniciada',
-        'assistida': 'Aula assistida',
-        'exercicios': 'Exercícios em andamento',
-        'completa': 'Concluída'
-    };
-    return textos[status] || status;
-}
-
-function abrirAulaCC50(moduloIndex, aulaIndex) {
-    const aulaId = `cc50-${moduloIndex}-${aulaIndex}`;
-    const aula = cc50Modulos[moduloIndex].aulas[aulaIndex];
-    const progresso = estado.cc50Progresso[aulaId] || { status: 'nao_iniciada', anotacoes: '' };
-    
-    estado.cc50AulaAtual = { moduloIndex, aulaIndex, aulaId };
-    
-    document.getElementById('modal-aula-titulo').querySelector('span').textContent = aula;
-    document.getElementById('modal-aula-descricao').textContent = `Módulo: ${cc50Modulos[moduloIndex].nome}`;
-    document.getElementById('aula-status').value = progresso.status;
-    document.getElementById('aula-anotacoes').value = progresso.anotacoes || '';
-    
-    document.getElementById('modal-aula-cc50').classList.add('active');
-}
-
-function salvarAulaCC50() {
-    if (!estado.cc50AulaAtual) return;
-    
-    const { moduloIndex, aulaIndex, aulaId } = estado.cc50AulaAtual;
-    const status = document.getElementById('aula-status').value;
-    const anotacoes = document.getElementById('aula-anotacoes').value;
-    
-    estado.cc50Progresso[aulaId] = {
-        status,
-        anotacoes
-    };
-    
-    localStorage.setItem('agenda_cc50', JSON.stringify(estado.cc50Progresso));
-    
-    fecharModalAulaCC50();
-    renderizarCC50();
-    atualizarProgressoCC50();
-    
-    mostrarToast('Progresso do CC50 salvo!', 'success');
-}
-
-function fecharModalAulaCC50() {
-    document.getElementById('modal-aula-cc50').classList.remove('active');
-    estado.cc50AulaAtual = null;
-}
-
-function atualizarProgressoCC50() {
-    let totalAulas = 0;
-    let concluidas = 0;
-    
-    cc50Modulos.forEach((modulo, i) => {
-        modulo.aulas.forEach((aula, j) => {
-            totalAulas++;
-            const aulaId = `cc50-${i}-${j}`;
-            if (estado.cc50Progresso[aulaId]?.status === 'completa') concluidas++;
-        });
-    });
-    
-    const percentual = Math.round((concluidas / totalAulas) * 100);
-    
-    // Atualiza elementos na interface
-    document.getElementById('cc50-percentual').textContent = percentual + '%';
-    document.getElementById('cc50-aulas-concluidas').textContent = concluidas;
-    document.getElementById('cc50-progresso-header').textContent = percentual + '%';
-    
-    // Atualiza gráfico circular
-    const grau = (percentual / 100) * 360;
-    document.querySelector('.progresso-circular').style.background = 
-        `conic-gradient(#ec4899 ${grau}deg, #333 ${grau}deg)`;
-    
-    // Calcula horas estudadas (estimativa)
-    const horasEstudadas = concluidas * 0.75; // média de 45min por aula
-    document.getElementById('cc50-horas-estudadas').textContent = Math.round(horasEstudadas);
-    
-    // Atualiza bônus
-    document.getElementById('cc50-horas-bonus').textContent = estado.cc50Bonus;
-    
-    // Calcula previsão de conclusão
-    const semanasRestantes = Math.ceil((totalAulas - concluidas) / 7); // 7 aulas por semana
-    const dataPrevista = new Date();
-    dataPrevista.setDate(dataPrevista.getDate() + (semanasRestantes * 7));
-    
-    const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-    document.getElementById('cc50-previsao').textContent = meses[dataPrevista.getMonth()] + '/' + dataPrevista.getFullYear();
-}
-
-// ============================================
-// FUNÇÕES DE CRONOGRAMA DIÁRIO
-// ============================================
-
-function renderizarCronogramaDia() {
-    const container = document.getElementById('cronograma-dia');
-    if (!container) return;
-    
-    container.innerHTML = '<h3><i class="fas fa-clock"></i> Seu cronograma de hoje</h3>';
-    
-    const hoje = new Date();
-    const diaSemana = hoje.getDay();
-    const isSegunda = diaSemana === 1;
-    
-    const cronograma = [
-        { horario: '09:30 - 10:30', atividade: '📖 Pré-aula', descricao: getMateriaManha(diaSemana), tipo: 'preaula', duracao: '1h' },
-        { horario: '10:30 - 11:30', atividade: '📝 Trabalhos', descricao: 'Adiantar prazos', tipo: 'trabalho', duracao: '1h' },
-        { horario: '11:30 - 12:00', atividade: '🎓 CC50', descricao: 'Estudo diário', tipo: 'cc50', duracao: '30min' }
-    ];
-    
-    if (isSegunda) {
-        cronograma.push(
-            { horario: '14:00 - 18:00', atividade: '🔥 CC50 INTENSIVO', descricao: 'Aproveitar tarde livre', tipo: 'cc50', duracao: '4h' }
-        );
-    }
-    
-    cronograma.forEach(item => {
-        const div = document.createElement('div');
-        div.className = `cronograma-item ${item.tipo}`;
-        div.innerHTML = `
-            <div class="cronograma-horario">${item.horario}</div>
-            <div class="cronograma-atividade">
-                <h4>${item.atividade}</h4>
-                <p>${item.descricao}</p>
-            </div>
-            <div class="cronograma-duracao">${item.duracao}</div>
-        `;
-        container.appendChild(div);
-    });
-}
-
-function renderizarDestaqueCC50() {
-    const container = document.getElementById('cc50-destaque-hoje');
-    if (!container) return;
-    
-    const hoje = new Date();
-    const diaSemana = hoje.getDay();
-    const isSegunda = diaSemana === 1;
-    
-    let horasHoje = isSegunda ? 4.5 : 0.5;
-    
-    // Calcula progresso do CC50
-    let totalAulas = 0;
-    let concluidas = 0;
-    cc50Modulos.forEach((modulo, i) => {
-        modulo.aulas.forEach((aula, j) => {
-            totalAulas++;
-            const aulaId = `cc50-${i}-${j}`;
-            if (estado.cc50Progresso[aulaId]?.status === 'completa') concluidas++;
-        });
-    });
-    const percentual = Math.round((concluidas / totalAulas) * 100);
-    
-    container.innerHTML = `
-        <div class="cc50-destaque">
-            <h3><i class="fas fa-laptop-code"></i> CC50 - Introdução à Ciência da Computação</h3>
-            <div class="cc50-progresso-hoje">
-                <div class="progresso-mini" style="background: conic-gradient(#ec4899 ${(percentual/100)*360}deg, #333 ${(percentual/100)*360}deg)">
-                    ${percentual}%
-                </div>
-                <div>
-                    <p><strong>Hoje:</strong> ${horasHoje}h de CC50</p>
-                    <p><strong>Progresso:</strong> ${concluidas}/${totalAulas} aulas</p>
-                    <p><strong>Bônus acumulado:</strong> +${estado.cc50Bonus}h</p>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-function getMateriaManha(diaSemana) {
-    const mapa = {
-        1: 'Fundamentos',
-        2: 'Engenharia de Software',
-        3: 'Introdução à Computação',
-        4: 'Lógica de Programação',
-        5: 'Banco de Dados'
-    };
-    return mapa[diaSemana] || 'Descanso';
-}
-
-// ============================================
-// FUNÇÕES DE BÔNUS
-// ============================================
-
-function adicionarBonusCC50(diasGanhos) {
-    estado.cc50Bonus += diasGanhos;
-    localStorage.setItem('agenda_cc50_bonus', estado.cc50Bonus.toString());
-    
-    mostrarToast(`🎉 Ganhou ${diasGanhos}h extras para o CC50!`, 'success');
-    atualizarProgressoCC50();
-    renderizarDestaqueCC50();
-}
-
-// ============================================
-// FUNÇÕES DE CONCLUSÃO (MODIFICADA PARA BÔNUS)
-// ============================================
-
-function confirmarConclusao() {
+function atualizarDataHora() {
     try {
-        const radios = document.querySelectorAll('input[name="dias-gastos"]');
-        let diasGastos = 1;
+        const agora = new Date();
         
-        for (const radio of radios) {
-            if (radio.checked) {
-                diasGastos = parseInt(radio.value);
-                break;
-            }
+        const elementoData = document.getElementById('data-hoje');
+        if (elementoData) {
+            const opcoes = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            elementoData.querySelector('span').textContent = agora.toLocaleDateString('pt-BR', opcoes);
         }
-        
-        const anotacoes = document.getElementById('anotacoes-conclusao').value;
-        const diasPrevistos = estado.atividadeConcluindo.diasPrevistos || 1;
-        const diasGanhos = Math.max(0, diasPrevistos - diasGastos);
-        
-        const index = prazos.findIndex(p => p.id === estado.atividadeConcluindo.id);
-        if (index !== -1) {
-            prazos[index].concluido = true;
-            prazos[index].dataConclusao = new Date().toISOString().split('T')[0];
-            prazos[index].diasGastos = diasGastos;
-            prazos[index].anotacoes = anotacoes;
-            localStorage.setItem('agenda_prazos', JSON.stringify(prazos));
-        }
-        
-        fecharModal();
-        
-        if (diasGanhos > 0) {
-            adicionarBonusCC50(diasGanhos);
-        } else {
-            mostrarToast('Atividade concluída!', 'success');
-        }
-        
-        atualizarInterface();
-        
     } catch (erro) {
-        console.error('Erro ao confirmar conclusão:', erro);
-        mostrarToast('Erro ao concluir', 'error');
+        console.error('Erro ao atualizar data:', erro);
     }
 }
-
-// ============================================
-// FUNÇÕES DE INTERFACE (CORRIGIDAS COM EVENTOS)
-// ============================================
 
 function inicializarNavegacao() {
     try {
+        console.log('🧭 Inicializando navegação...');
+        
         const botoesNav = {
             'nav-hoje': 'hoje',
             'nav-notas': 'notas',
@@ -1004,9 +712,13 @@ function inicializarNavegacao() {
                     document.querySelectorAll('.tab-pane').forEach(t => t.classList.remove('active'));
                     const tabElement = document.getElementById(`tab-${tab}`);
                     if (tabElement) tabElement.classList.add('active');
+                    
+                    console.log(`📌 Aba alterada para: ${tab}`);
                 });
             }
         });
+        
+        console.log('✅ Navegação inicializada!');
     } catch (erro) {
         console.error('Erro na navegação:', erro);
     }
@@ -1014,6 +726,8 @@ function inicializarNavegacao() {
 
 function inicializarEventListeners() {
     try {
+        console.log('🎯 Inicializando eventos...');
+        
         // Login
         const btnLogin = document.getElementById('btn-login');
         if (btnLogin) btnLogin.addEventListener('click', fazerLogin);
@@ -1099,41 +813,20 @@ function inicializarEventListeners() {
         const btnFecharAula = document.getElementById('btn-fechar-aula');
         if (btnFecharAula) btnFecharAula.addEventListener('click', fecharModalAulaCC50);
         
-        // Enter no login
-        document.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const loginContainer = document.getElementById('login-container');
-                if (loginContainer && loginContainer.style.display !== 'none') {
-                    fazerLogin();
-                }
-            }
-        });
-        
+        console.log('✅ Eventos inicializados!');
     } catch (erro) {
         console.error('Erro ao inicializar eventos:', erro);
     }
 }
 
-function atualizarInterface() {
-    try {
-        renderizarPrazosUrgentes();
-        renderizarGradeDia();
-        renderizarSugestoes();
-        renderizarChecklist();
-        renderizarPrazos('todos');
-        renderizarCalendario();
-        renderizarProgresso();
-        renderizarNotas();
-        renderizarCronogramaDia();
-        renderizarDestaqueCC50();
-        atualizarEstatisticasNotas();
-    } catch (erro) {
-        console.error('Erro ao atualizar interface:', erro);
-    }
-}
+// ============================================
+// FUNÇÕES DE LOGIN/LOGOUT
+// ============================================
 
 function fazerLogin() {
     try {
+        console.log('🔐 Tentando fazer login...');
+        
         const usuario = document.getElementById('login-usuario').value;
         const senha = document.getElementById('login-senha').value;
         
@@ -1143,6 +836,7 @@ function fazerLogin() {
             inicializarSistema();
         } else {
             document.getElementById('login-erro').style.display = 'block';
+            console.log('❌ Login falhou');
         }
     } catch (erro) {
         console.error('Erro no login:', erro);
@@ -1160,11 +854,37 @@ function fazerLogout() {
         
         zerarTimer();
         
-        document.getElementById('login-usuario').value = '';
-        document.getElementById('login-senha').value = '';
+        document.getElementById('login-usuario').value = 'Carla';
+        document.getElementById('login-senha').value = 'Cacau';
         document.getElementById('login-erro').style.display = 'none';
     } catch (erro) {
         console.error('Erro no logout:', erro);
+    }
+}
+
+// ============================================
+// FUNÇÕES DE INTERFACE
+// ============================================
+
+function atualizarInterface() {
+    try {
+        console.log('🔄 Atualizando interface...');
+        
+        renderizarPrazosUrgentes();
+        renderizarGradeDia();
+        renderizarSugestoes();
+        renderizarChecklist();
+        renderizarPrazos('todos');
+        renderizarCalendario();
+        renderizarProgresso();
+        renderizarNotas();
+        renderizarCronogramaDia();
+        renderizarDestaqueCC50();
+        atualizarEstatisticasNotas();
+        
+        console.log('✅ Interface atualizada!');
+    } catch (erro) {
+        console.error('Erro ao atualizar interface:', erro);
     }
 }
 
@@ -1261,12 +981,12 @@ function renderizarGradeDia() {
                 <h4>CC50 - Introdução à Ciência da Computação</h4>
                 <p><strong>Estudo Diário</strong> - 11:30 - 12:00</p>
             </div>
-            <button class="btn-concluir" id="btn-abrir-cc50"><i class="fas fa-play"></i></button>
+            <button class="btn-concluir" id="btn-abrir-cc50-hoje"><i class="fas fa-play"></i></button>
         `;
         
-        const btnAbrir = cc50Div.querySelector('#btn-abrir-cc50');
+        const btnAbrir = cc50Div.querySelector('#btn-abrir-cc50-hoje');
         btnAbrir.addEventListener('click', () => {
-            document.querySelector('.nav-btn[data-tab="cc50"]').click();
+            document.getElementById('nav-cc50').click();
         });
         
         periodoCC50.appendChild(cc50Div);
@@ -1274,6 +994,17 @@ function renderizarGradeDia() {
     } catch (erro) {
         console.error('Erro ao renderizar grade:', erro);
     }
+}
+
+function getMateriaManha(diaSemana) {
+    const mapa = {
+        1: 'fundamentos',
+        2: 'es',
+        3: 'ic',
+        4: 'lp',
+        5: 'bd'
+    };
+    return mapa[diaSemana] || null;
 }
 
 function getMateriaTarde(diaSemana) {
@@ -1297,7 +1028,7 @@ function criarAtividadeElemento(materia, titulo, descricao) {
         bd: 'Banco Dados',
         bootcamp: 'Bootcamp',
         fundamentos: 'Fundamentos',
-        extras: 'Cursos Extras'
+        cc50: 'CC50'
     };
     
     div.innerHTML = `
@@ -1633,6 +1364,10 @@ function proximoMes() {
     renderizarCalendario();
 }
 
+// ============================================
+// FUNÇÕES DE NOTAS
+// ============================================
+
 function renderizarNotas() {
     try {
         const container = document.getElementById('notas-container');
@@ -1663,7 +1398,7 @@ function renderizarNotas() {
         normais.forEach(nota => criarElementoNota(nota, container));
         
         if (notasFiltradas.length === 0) {
-            container.innerHTML = '<p class="text-muted">Nenhuma nota</p>';
+            container.innerHTML = '<p class="text-muted">Nenhuma nota ainda. Clique em "Nova Nota" para começar.</p>';
         }
         
     } catch (erro) {
@@ -1819,30 +1554,303 @@ function fecharModalNota() {
     document.getElementById('modal-nota').classList.remove('active');
 }
 
-function abrirModalConclusao(atividadeId) {
+// ============================================
+// FUNÇÕES DE CRONOGRAMA E CC50
+// ============================================
+
+function renderizarCronogramaDia() {
     try {
-        let atividade = prazos.find(p => p.id === atividadeId);
+        const container = document.getElementById('cronograma-dia');
+        if (!container) return;
         
-        if (!atividade) {
-            atividade = {
-                id: atividadeId,
-                nome: `Estudo de ${getNomeMateria(atividadeId)}`,
-                diasPrevistos: 1
-            };
+        container.innerHTML = '<h3><i class="fas fa-clock"></i> Seu cronograma de hoje</h3>';
+        
+        const hoje = new Date();
+        const diaSemana = hoje.getDay();
+        const isSegunda = diaSemana === 1;
+        
+        const cronograma = [
+            { horario: '09:30 - 10:30', atividade: '📖 Pré-aula', descricao: getNomeMateria(getMateriaManha(diaSemana)) || 'Descanso', tipo: 'preaula', duracao: '1h' },
+            { horario: '10:30 - 11:30', atividade: '📝 Trabalhos', descricao: 'Adiantar prazos da faculdade', tipo: 'trabalho', duracao: '1h' },
+            { horario: '11:30 - 12:00', atividade: '🎓 CC50', descricao: 'Estudo diário', tipo: 'cc50', duracao: '30min' }
+        ];
+        
+        if (isSegunda) {
+            cronograma.push(
+                { horario: '14:00 - 18:00', atividade: '🔥 CC50 INTENSIVO', descricao: 'Aproveitar tarde livre', tipo: 'cc50', duracao: '4h' }
+            );
         }
         
-        estado.atividadeConcluindo = atividade;
-        document.getElementById('modal-atividade-nome').textContent = atividade.nome;
-        document.getElementById('modal-concluir').classList.add('active');
-        
+        cronograma.forEach(item => {
+            if (item.descricao === 'null' || item.descricao === 'undefined') return;
+            
+            const div = document.createElement('div');
+            div.className = `cronograma-item ${item.tipo}`;
+            div.innerHTML = `
+                <div class="cronograma-horario">${item.horario}</div>
+                <div class="cronograma-atividade">
+                    <h4>${item.atividade}</h4>
+                    <p>${item.descricao}</p>
+                </div>
+                <div class="cronograma-duracao">${item.duracao}</div>
+            `;
+            container.appendChild(div);
+        });
     } catch (erro) {
-        console.error('Erro ao abrir modal:', erro);
+        console.error('Erro ao renderizar cronograma:', erro);
     }
 }
 
-function fecharModal() {
-    document.getElementById('modal-concluir').classList.remove('active');
+function renderizarDestaqueCC50() {
+    try {
+        const container = document.getElementById('cc50-destaque-hoje');
+        if (!container) return;
+        
+        const hoje = new Date();
+        const diaSemana = hoje.getDay();
+        const isSegunda = diaSemana === 1;
+        
+        let horasHoje = isSegunda ? 4.5 : 0.5;
+        
+        // Calcula progresso do CC50
+        let totalAulas = 0;
+        let concluidas = 0;
+        cc50Modulos.forEach((modulo, i) => {
+            modulo.aulas.forEach((aula, j) => {
+                totalAulas++;
+                const aulaId = `cc50-${i}-${j}`;
+                if (estado.cc50Progresso[aulaId]?.status === 'completa') concluidas++;
+            });
+        });
+        const percentual = Math.round((concluidas / totalAulas) * 100);
+        
+        container.innerHTML = `
+            <div class="cc50-destaque">
+                <h3><i class="fas fa-laptop-code"></i> CC50 - Introdução à Ciência da Computação</h3>
+                <div class="cc50-progresso-hoje">
+                    <div class="progresso-mini" style="background: conic-gradient(#ec4899 ${(percentual/100)*360}deg, #333 ${(percentual/100)*360}deg)">
+                        ${percentual}%
+                    </div>
+                    <div>
+                        <p><strong>Hoje:</strong> ${horasHoje}h de CC50</p>
+                        <p><strong>Progresso:</strong> ${concluidas}/${totalAulas} aulas</p>
+                        <p><strong>Bônus acumulado:</strong> +${estado.cc50Bonus}h</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    } catch (erro) {
+        console.error('Erro ao renderizar destaque CC50:', erro);
+    }
 }
+
+function inicializarCC50() {
+    renderizarCC50();
+    atualizarProgressoCC50();
+}
+
+function renderizarCC50() {
+    try {
+        const container = document.getElementById('cc50-modulos');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        cc50Modulos.forEach((modulo, indexModulo) => {
+            const moduloDiv = document.createElement('div');
+            moduloDiv.className = 'cc50-modulo';
+            
+            // Calcula progresso do módulo
+            let totalAulas = modulo.aulas.length;
+            let concluidas = 0;
+            modulo.aulas.forEach((aula, indexAula) => {
+                const aulaId = `cc50-${indexModulo}-${indexAula}`;
+                if (estado.cc50Progresso[aulaId]?.status === 'completa') concluidas++;
+            });
+            const progressoModulo = Math.round((concluidas / totalAulas) * 100);
+            
+            moduloDiv.innerHTML = `
+                <div class="modulo-header" data-modulo="${indexModulo}">
+                    <h3>${modulo.nome}</h3>
+                    <span class="modulo-progresso">${concluidas}/${totalAulas} (${progressoModulo}%)</span>
+                </div>
+                <div class="modulo-aulas" id="modulo-${indexModulo}-aulas"></div>
+            `;
+            
+            container.appendChild(moduloDiv);
+            
+            const aulasContainer = document.getElementById(`modulo-${indexModulo}-aulas`);
+            
+            modulo.aulas.forEach((aula, indexAula) => {
+                const aulaId = `cc50-${indexModulo}-${indexAula}`;
+                const status = estado.cc50Progresso[aulaId]?.status || 'nao_iniciada';
+                
+                const aulaDiv = document.createElement('div');
+                aulaDiv.className = 'aula-item';
+                aulaDiv.dataset.modulo = indexModulo;
+                aulaDiv.dataset.aula = indexAula;
+                
+                let statusIcon = '';
+                if (status === 'nao_iniciada') statusIcon = '';
+                else if (status === 'assistida') statusIcon = '<i class="fas fa-play"></i>';
+                else if (status === 'exercicios') statusIcon = '<i class="fas fa-code"></i>';
+                else if (status === 'completa') statusIcon = '<i class="fas fa-check"></i>';
+                
+                aulaDiv.innerHTML = `
+                    <div class="aula-status ${status}">
+                        ${statusIcon}
+                    </div>
+                    <div class="aula-info">
+                        <h4>${aula}</h4>
+                        <p>${getStatusTexto(status)}</p>
+                    </div>
+                `;
+                
+                aulaDiv.addEventListener('click', () => abrirAulaCC50(indexModulo, indexAula));
+                
+                aulasContainer.appendChild(aulaDiv);
+            });
+            
+            // Evento para expandir/colapsar módulo
+            const header = moduloDiv.querySelector('.modulo-header');
+            header.addEventListener('click', () => {
+                aulasContainer.classList.toggle('expandido');
+            });
+        });
+    } catch (erro) {
+        console.error('Erro ao renderizar CC50:', erro);
+    }
+}
+
+function getStatusTexto(status) {
+    const textos = {
+        'nao_iniciada': 'Não iniciada',
+        'assistida': 'Aula assistida',
+        'exercicios': 'Exercícios em andamento',
+        'completa': 'Concluída'
+    };
+    return textos[status] || status;
+}
+
+function abrirAulaCC50(moduloIndex, aulaIndex) {
+    try {
+        const aulaId = `cc50-${moduloIndex}-${aulaIndex}`;
+        const aula = cc50Modulos[moduloIndex].aulas[aulaIndex];
+        const progresso = estado.cc50Progresso[aulaId] || { status: 'nao_iniciada', anotacoes: '' };
+        
+        estado.cc50AulaAtual = { moduloIndex, aulaIndex, aulaId };
+        
+        document.getElementById('modal-aula-titulo').querySelector('span').textContent = aula;
+        document.getElementById('modal-aula-descricao').textContent = `Módulo: ${cc50Modulos[moduloIndex].nome}`;
+        document.getElementById('aula-status').value = progresso.status;
+        document.getElementById('aula-anotacoes').value = progresso.anotacoes || '';
+        
+        document.getElementById('modal-aula-cc50').classList.add('active');
+    } catch (erro) {
+        console.error('Erro ao abrir aula CC50:', erro);
+    }
+}
+
+function salvarAulaCC50() {
+    try {
+        if (!estado.cc50AulaAtual) return;
+        
+        const { moduloIndex, aulaIndex, aulaId } = estado.cc50AulaAtual;
+        const status = document.getElementById('aula-status').value;
+        const anotacoes = document.getElementById('aula-anotacoes').value;
+        
+        estado.cc50Progresso[aulaId] = {
+            status,
+            anotacoes
+        };
+        
+        localStorage.setItem('agenda_cc50', JSON.stringify(estado.cc50Progresso));
+        
+        fecharModalAulaCC50();
+        renderizarCC50();
+        atualizarProgressoCC50();
+        
+        mostrarToast('Progresso do CC50 salvo!', 'success');
+    } catch (erro) {
+        console.error('Erro ao salvar aula CC50:', erro);
+    }
+}
+
+function fecharModalAulaCC50() {
+    document.getElementById('modal-aula-cc50').classList.remove('active');
+    estado.cc50AulaAtual = null;
+}
+
+function atualizarProgressoCC50() {
+    try {
+        let totalAulas = 0;
+        let concluidas = 0;
+        
+        cc50Modulos.forEach((modulo, i) => {
+            modulo.aulas.forEach((aula, j) => {
+                totalAulas++;
+                const aulaId = `cc50-${i}-${j}`;
+                if (estado.cc50Progresso[aulaId]?.status === 'completa') concluidas++;
+            });
+        });
+        
+        const percentual = Math.round((concluidas / totalAulas) * 100);
+        
+        // Atualiza elementos na interface
+        const percentualEl = document.getElementById('cc50-percentual');
+        if (percentualEl) percentualEl.textContent = percentual + '%';
+        
+        const aulasConcluidasEl = document.getElementById('cc50-aulas-concluidas');
+        if (aulasConcluidasEl) aulasConcluidasEl.textContent = concluidas;
+        
+        const headerEl = document.getElementById('cc50-progresso-header');
+        if (headerEl) headerEl.textContent = percentual + '%';
+        
+        // Atualiza gráfico circular
+        const grau = (percentual / 100) * 360;
+        const circularEl = document.querySelector('.progresso-circular');
+        if (circularEl) {
+            circularEl.style.background = `conic-gradient(#ec4899 ${grau}deg, #333 ${grau}deg)`;
+        }
+        
+        // Calcula horas estudadas (estimativa)
+        const horasEstudadas = Math.round(concluidas * 0.75); // média de 45min por aula
+        const horasEl = document.getElementById('cc50-horas-estudadas');
+        if (horasEl) horasEl.textContent = horasEstudadas;
+        
+        // Atualiza bônus
+        const bonusEl = document.getElementById('cc50-horas-bonus');
+        if (bonusEl) bonusEl.textContent = estado.cc50Bonus;
+        
+        // Calcula previsão de conclusão
+        const semanasRestantes = Math.ceil((totalAulas - concluidas) / 7); // 7 aulas por semana
+        const dataPrevista = new Date();
+        dataPrevista.setDate(dataPrevista.getDate() + (semanasRestantes * 7));
+        
+        const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+        const previsaoEl = document.getElementById('cc50-previsao');
+        if (previsaoEl) previsaoEl.textContent = meses[dataPrevista.getMonth()] + '/' + dataPrevista.getFullYear();
+    } catch (erro) {
+        console.error('Erro ao atualizar progresso CC50:', erro);
+    }
+}
+
+// ============================================
+// FUNÇÕES DE BÔNUS
+// ============================================
+
+function adicionarBonusCC50(diasGanhos) {
+    estado.cc50Bonus += diasGanhos;
+    localStorage.setItem('agenda_cc50_bonus', estado.cc50Bonus.toString());
+    
+    mostrarToast(`🎉 Ganhou ${diasGanhos}h extras para o CC50!`, 'success');
+    atualizarProgressoCC50();
+    renderizarDestaqueCC50();
+}
+
+// ============================================
+// FUNÇÕES DE PLANOS
+// ============================================
 
 function mostrarPlanoAula(materia) {
     try {
@@ -1883,6 +1891,10 @@ function mostrarPlanoAula(materia) {
         console.error('Erro ao mostrar plano:', erro);
     }
 }
+
+// ============================================
+// FUNÇÕES DE PROGRESSO
+// ============================================
 
 function renderizarProgresso() {
     try {
@@ -1985,24 +1997,79 @@ function desenharGraficoBarras() {
     }
 }
 
-function getNomeMateria(materia) {
-    const nomes = {
-        es: 'Engenharia de Software',
-        ic: 'Introdução à Computação',
-        lp: 'Lógica de Programação',
-        bd: 'Banco de Dados I',
-        bootcamp: 'Bootcamp I',
-        fundamentos: 'Fundamentos',
-        extras: 'Cursos Extras',
-        cc50: 'CC50'
-    };
-    return nomes[materia] || materia;
+// ============================================
+// FUNÇÕES DE CONCLUSÃO
+// ============================================
+
+function abrirModalConclusao(atividadeId) {
+    try {
+        let atividade = prazos.find(p => p.id === atividadeId);
+        
+        if (!atividade) {
+            atividade = {
+                id: atividadeId,
+                nome: `Estudo de ${getNomeMateria(atividadeId)}`,
+                diasPrevistos: 1
+            };
+        }
+        
+        estado.atividadeConcluindo = atividade;
+        document.getElementById('modal-atividade-nome').textContent = atividade.nome;
+        document.getElementById('modal-concluir').classList.add('active');
+        
+    } catch (erro) {
+        console.error('Erro ao abrir modal:', erro);
+    }
 }
 
-function formatarData(dataStr) {
-    const data = new Date(dataStr + 'T12:00:00');
-    return data.toLocaleDateString('pt-BR');
+function fecharModal() {
+    document.getElementById('modal-concluir').classList.remove('active');
 }
+
+function confirmarConclusao() {
+    try {
+        const radios = document.querySelectorAll('input[name="dias-gastos"]');
+        let diasGastos = 1;
+        
+        for (const radio of radios) {
+            if (radio.checked) {
+                diasGastos = parseInt(radio.value);
+                break;
+            }
+        }
+        
+        const anotacoes = document.getElementById('anotacoes-conclusao').value;
+        const diasPrevistos = estado.atividadeConcluindo.diasPrevistos || 1;
+        const diasGanhos = Math.max(0, diasPrevistos - diasGastos);
+        
+        const index = prazos.findIndex(p => p.id === estado.atividadeConcluindo.id);
+        if (index !== -1) {
+            prazos[index].concluido = true;
+            prazos[index].dataConclusao = new Date().toISOString().split('T')[0];
+            prazos[index].diasGastos = diasGastos;
+            prazos[index].anotacoes = anotacoes;
+            localStorage.setItem('agenda_prazos', JSON.stringify(prazos));
+        }
+        
+        fecharModal();
+        
+        if (diasGanhos > 0) {
+            adicionarBonusCC50(diasGanhos);
+        } else {
+            mostrarToast('Atividade concluída!', 'success');
+        }
+        
+        atualizarInterface();
+        
+    } catch (erro) {
+        console.error('Erro ao confirmar conclusão:', erro);
+        mostrarToast('Erro ao concluir', 'error');
+    }
+}
+
+// ============================================
+// FUNÇÕES DE TIMER
+// ============================================
 
 function iniciarTimer() {
     try {
@@ -2052,6 +2119,40 @@ function zerarTimer() {
     if (displayEl) displayEl.textContent = '0h00';
 }
 
+// ============================================
+// FUNÇÕES AUXILIARES
+// ============================================
+
+function getNomeMateria(materia) {
+    const nomes = {
+        es: 'Engenharia de Software',
+        ic: 'Introdução à Computação',
+        lp: 'Lógica de Programação',
+        bd: 'Banco de Dados I',
+        bootcamp: 'Bootcamp I',
+        fundamentos: 'Fundamentos',
+        cc50: 'CC50',
+        trabalhos: 'Trabalhos da Faculdade'
+    };
+    return nomes[materia] || materia;
+}
+
+function formatarData(dataStr) {
+    const data = new Date(dataStr + 'T12:00:00');
+    return data.toLocaleDateString('pt-BR');
+}
+
+function verificarVersao() {
+    try {
+        const versaoSalva = localStorage.getItem('agenda_versao');
+        if (versaoSalva !== VERSAO) {
+            localStorage.setItem('agenda_versao', VERSAO);
+        }
+    } catch (erro) {
+        console.error('Erro ao verificar versão:', erro);
+    }
+}
+
 function mostrarToast(mensagem, tipo = 'info') {
     try {
         const container = document.getElementById('toast-container');
@@ -2075,16 +2176,40 @@ function mostrarToast(mensagem, tipo = 'info') {
     }
 }
 
-function verificarVersao() {
-    try {
-        const versaoSalva = localStorage.getItem('agenda_versao');
-        if (versaoSalva !== VERSAO) {
-            localStorage.setItem('agenda_versao', VERSAO);
-        }
-    } catch (erro) {
-        console.error('Erro ao verificar versão:', erro);
+// ============================================
+// CONFIGURAÇÃO DO ENTER NO LOGIN
+// ============================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('📄 DOM carregado!');
+    
+    // Formulário de login
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('🔑 Formulário submetido');
+            fazerLogin();
+        });
     }
-}
+    
+    // Enter nos campos
+    const campos = ['login-usuario', 'login-senha'];
+    campos.forEach(id => {
+        const campo = document.getElementById(id);
+        if (campo) {
+            campo.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    console.log('⏎ Enter pressionado');
+                    fazerLogin();
+                }
+            });
+        }
+    });
+    
+    console.log('✅ Enter configurado!');
+});
 
 // ============================================
 // EXPOR FUNÇÕES GLOBAIS
@@ -2115,36 +2240,4 @@ window.buscarNotas = buscarNotas;
 window.salvarAulaCC50 = salvarAulaCC50;
 window.fecharModalAulaCC50 = fecharModalAulaCC50;
 
-
-document.addEventListener('DOMContentLoaded', function() {
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Impede o reload da página
-            console.log('Formulário submetido!'); // Debug
-            fazerLogin(); // Agora a função já está no window
-        });
-    }
-    
-    // Opcional: Enter nos campos também
-    const loginUsuario = document.getElementById('login-usuario');
-    const loginSenha = document.getElementById('login-senha');
-    
-    if (loginUsuario) {
-        loginUsuario.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                fazerLogin();
-            }
-        });
-    }
-    
-    if (loginSenha) {
-        loginSenha.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                fazerLogin();
-            }
-        });
-    }
-});
+console.log('🚀 Script carregado com sucesso!');
