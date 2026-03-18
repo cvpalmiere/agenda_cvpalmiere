@@ -2000,6 +2000,63 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ============================================
+// FALLBACK SEGURO PARA O LOGIN (NUNCA QUEBRA)
+// ============================================
+(function() {
+    // Função de login simplificada e robusta
+    function loginSeguro() {
+        var usuario = document.getElementById('login-usuario')?.value;
+        var senha = document.getElementById('login-senha')?.value;
+        if (usuario === 'Carla' && senha === 'Cacau') {
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('app-container').style.display = 'block';
+            // Se a função de inicialização existir, chama
+            if (typeof inicializarSistema === 'function') {
+                inicializarSistema();
+            }
+        } else {
+            document.getElementById('login-erro').style.display = 'block';
+        }
+    }
+
+    // Tenta anexar os eventos assim que o DOM estiver pronto
+    function anexarEventosLogin() {
+        var btn = document.getElementById('btn-login');
+        if (btn) btn.addEventListener('click', loginSeguro);
+
+        var form = document.getElementById('login-form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                loginSeguro();
+            });
+        }
+
+        // Enter nos campos
+        ['login-usuario', 'login-senha'].forEach(function(id) {
+            var campo = document.getElementById(id);
+            if (campo) {
+                campo.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        loginSeguro();
+                    }
+                });
+            }
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', anexarEventosLogin);
+    } else {
+        anexarEventosLogin();
+    }
+
+    // Expõe globalmente (sobrescreve se já existir, mas é seguro)
+    window.fazerLogin = loginSeguro;
+})();
+
+// ============================================
 // EXPOR FUNÇÕES GLOBAIS
 // ============================================
 
