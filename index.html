@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agenda Palmiere - CC50</title>
+    <title>Agenda Palmiere - Planejamento Inteligente</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -17,7 +17,7 @@
             </div>
             <p class="login-subtitle">Sistema Inteligente de Estudos</p>
             
-            <form id="login-form" onsubmit="return false;">
+            <form id="login-form">
                 <div class="input-group">
                     <i class="fas fa-user"></i>
                     <input type="text" id="login-usuario" placeholder="Usuário" value="Carla">
@@ -52,29 +52,34 @@
                     <i class="fas fa-calendar-alt"></i>
                     <h1>Agenda Palmiere</h1>
                 </div>
+                
+                <!-- BOTÃO SAIR VISÍVEL -->
+                <button class="btn-logout" id="btn-sair-header">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
             </div>
 
-            <!-- BOTÕES DE NAVEGAÇÃO -->
+            <!-- BOTÕES DE NAVEGAÇÃO (ROLAGEM) -->
             <div class="nav-buttons-container">
-                <button class="nav-btn active" id="nav-hoje" data-tab="hoje">
+                <button class="nav-btn active" data-target="hoje">
                     <i class="fas fa-calendar-day"></i> Hoje
                 </button>
-                <button class="nav-btn" id="nav-notas" data-tab="notas">
+                <button class="nav-btn" data-target="notas">
                     <i class="fas fa-sticky-note"></i> Notas
                 </button>
-                <button class="nav-btn" id="nav-prazos" data-tab="prazos">
+                <button class="nav-btn" data-target="prazos">
                     <i class="fas fa-clock"></i> Prazos
                 </button>
-                <button class="nav-btn" id="nav-calendario" data-tab="calendario">
+                <button class="nav-btn" data-target="calendario">
                     <i class="fas fa-calendar-alt"></i> Calendário
                 </button>
-                <button class="nav-btn" id="nav-planos" data-tab="planos">
+                <button class="nav-btn" data-target="planos">
                     <i class="fas fa-book-open"></i> Planos
                 </button>
-                <button class="nav-btn" id="nav-progresso" data-tab="progresso">
+                <button class="nav-btn" data-target="progresso">
                     <i class="fas fa-chart-line"></i> Progresso
                 </button>
-                <button class="nav-btn" id="nav-cc50" data-tab="cc50">
+                <button class="nav-btn" data-target="cc50">
                     <i class="fas fa-laptop-code"></i> CC50
                 </button>
             </div>
@@ -94,17 +99,13 @@
                     <i class="fas fa-bell"></i>
                     <span class="notification-badge" id="notificacao-badge">0</span>
                 </div>
-
-                <button class="btn-logout" id="btn-sair">
-                    <i class="fas fa-sign-out-alt"></i> Sair
-                </button>
             </div>
         </header>
 
         <!-- CONTEÚDO PRINCIPAL -->
         <main class="agenda-main">
             <!-- ABA HOJE -->
-            <div class="tab-pane active" id="tab-hoje">
+            <section class="tab-pane active" id="hoje">
                 <div class="dashboard-today">
                     <div class="today-header">
                         <h1>Olá, Carla! 👋</h1>
@@ -114,138 +115,83 @@
                         </div>
                     </div>
 
-                    <!-- DESTAQUE CC50 -->
-                    <div class="cc50-destaque" id="cc50-destaque-hoje">
+                    <!-- DESTAQUE PROVAS PRÓXIMAS -->
+                    <div class="proximas-provas" id="proximas-provas">
                         <!-- Gerado via JS -->
                     </div>
 
-                    <!-- PRAZOS URGENTES -->
-                    <div class="urgent-grid" id="urgentes-container"></div>
-
-                    <!-- TIMER -->
-                    <div class="timer-card">
-                        <div class="timer-header">
-                            <i class="fas fa-hourglass-half"></i>
-                            <h3>Meta de hoje: <span id="timer-display">0h00</span> / 2h30</h3>
-                        </div>
-                        <div class="timer-progress-container">
-                            <div class="timer-progress-bar" id="timer-progresso" style="width: 0%"></div>
-                        </div>
-                        <div class="timer-buttons">
-                            <button class="timer-btn" id="btn-timer-iniciar"><i class="fas fa-play"></i> Iniciar</button>
-                            <button class="timer-btn" id="btn-timer-pausar"><i class="fas fa-pause"></i> Pausar</button>
-                            <button class="timer-btn" id="btn-timer-zerar"><i class="fas fa-stop"></i> Zerar</button>
-                        </div>
-                    </div>
-
-                    <!-- CRONOGRAMA DO DIA -->
-                    <div class="cronograma-dia" id="cronograma-dia">
-                        <h3><i class="fas fa-clock"></i> Seu cronograma de hoje</h3>
+                    <!-- CRONOGRAMA DETALHADO DO DIA -->
+                    <div class="cronograma-detalhado" id="cronograma-detalhado">
+                        <h2><i class="fas fa-clock"></i> Seu plano de hoje</h2>
                         <!-- Gerado via JS -->
                     </div>
 
-                    <!-- CHECKLIST -->
+                    <!-- CHECKLIST INTELIGENTE -->
                     <div class="checklist-container">
                         <div class="checklist-header">
                             <h2><i class="fas fa-check-circle"></i> Checklist de Hoje</h2>
                             <span class="checklist-progress" id="checklist-progress">0/0 concluídas</span>
                         </div>
                         <div class="checklist-grid" id="checklist-container"></div>
-                        <button class="btn-checklist" id="btn-checklist-resetar">
-                            <i class="fas fa-redo-alt"></i> Resetar Checklist
-                        </button>
                     </div>
 
-                    <!-- GRADE DE ESTUDOS -->
-                    <h2 class="section-title"><i class="fas fa-sun"></i> O que estudar hoje</h2>
-                    <div class="study-grid">
-                        <div class="study-card manha">
-                            <div class="card-header">
-                                <i class="fas fa-cloud-sun"></i>
-                                <h3>Manhã (Pré-aula)</h3>
-                                <span class="period-time">09:30 - 10:30</span>
-                            </div>
-                            <div class="card-content" id="periodo-manha"></div>
-                        </div>
-
-                        <div class="study-card tarde">
-                            <div class="card-header">
-                                <i class="fas fa-sun"></i>
-                                <h3>Tarde (Aula)</h3>
-                                <span class="period-time">14:00 - 18:00</span>
-                            </div>
-                            <div class="card-content" id="periodo-tarde"></div>
-                        </div>
-
-                        <div class="study-card cc50-card">
-                            <div class="card-header">
-                                <i class="fas fa-laptop-code"></i>
-                                <h3>CC50</h3>
-                                <span class="period-time">11:30 - 12:00</span>
-                            </div>
-                            <div class="card-content" id="periodo-cc50"></div>
-                        </div>
+                    <!-- SUGESTÕES INTELIGENTES -->
+                    <div class="sugestoes-inteligentes" id="sugestoes-inteligentes">
+                        <h2><i class="fas fa-lightbulb"></i> Sugestões para hoje</h2>
+                        <div class="suggestions-grid" id="sugestoes-container"></div>
                     </div>
 
-                    <!-- SUGESTÕES -->
-                    <h2 class="section-title"><i class="fas fa-lightbulb"></i> Sugestões para hoje</h2>
-                    <div class="suggestions-grid" id="sugestoes-container"></div>
+                    <!-- PRÉVIA DO CC50 -->
+                    <div class="cc50-previa" id="cc50-previa">
+                        <!-- Gerado via JS -->
+                    </div>
                 </div>
-            </div>
+            </section>
 
             <!-- ABA NOTAS -->
-            <div class="tab-pane" id="tab-notas">
+            <section class="tab-pane" id="notas">
                 <div class="notas-container">
+                    <h2><i class="fas fa-sticky-note"></i> Caderno Digital</h2>
                     <div class="notas-header">
-                        <h2><i class="fas fa-sticky-note"></i> Caderno Digital</h2>
                         <div class="notas-busca">
                             <i class="fas fa-search"></i>
                             <input type="text" id="notas-busca" placeholder="Buscar notas...">
                         </div>
                     </div>
                     
-                    <div class="notas-organizacao">
-                        <div class="materias-tabs">
-                            <button class="materia-tab active" data-materia="es">🔧 ES</button>
-                            <button class="materia-tab" data-materia="ic">💻 IC</button>
-                            <button class="materia-tab" data-materia="lp">🐍 LP</button>
-                            <button class="materia-tab" data-materia="bd">🗄️ BD</button>
-                            <button class="materia-tab" data-materia="bootcamp">🚀 Bootcamp</button>
-                            <button class="materia-tab" data-materia="fundamentos">📐 Fundamentos</button>
-                            <button class="materia-tab" data-materia="cc50">🎓 CC50</button>
-                        </div>
-                        
-                        <div class="notas-fixadas" id="notas-fixadas-container">
-                            <h3><i class="fas fa-thumbtack"></i> Fixadas</h3>
-                            <div class="fixadas-grid" id="fixadas-grid"></div>
-                        </div>
-                        
-                        <div class="notas-estatisticas" id="notas-estatisticas">
-                            <span>📊 Total: <span id="total-notas">0</span></span>
-                        </div>
+                    <div class="materias-tabs">
+                        <button class="materia-tab active" data-materia="es">🔧 ES</button>
+                        <button class="materia-tab" data-materia="ic">💻 IC</button>
+                        <button class="materia-tab" data-materia="lp">🐍 LP</button>
+                        <button class="materia-tab" data-materia="bd">🗄️ BD</button>
+                        <button class="materia-tab" data-materia="bootcamp">🚀 Bootcamp</button>
+                        <button class="materia-tab" data-materia="fundamentos">📐 Fundamentos</button>
+                        <button class="materia-tab" data-materia="cc50">🎓 CC50</button>
+                    </div>
+                    
+                    <div class="notas-fixadas" id="notas-fixadas">
+                        <h3>📌 Fixadas</h3>
+                        <div class="fixadas-grid" id="fixadas-grid"></div>
                     </div>
 
-                    <div class="notas-editor-container" id="notas-container">
-                        <p class="text-muted">Nenhuma nota ainda. Clique em "Nova Nota" para começar.</p>
-                    </div>
+                    <div class="notas-editor-container" id="notas-container"></div>
                     
                     <button class="btn-primary" id="btn-nova-nota">
                         <i class="fas fa-plus"></i> Nova Nota
                     </button>
                 </div>
-            </div>
+            </section>
 
             <!-- ABA PRAZOS -->
-            <div class="tab-pane" id="tab-prazos">
+            <section class="tab-pane" id="prazos">
                 <div class="prazos-container">
-                    <div class="prazos-header">
-                        <h2><i class="fas fa-clock"></i> Todos os Prazos</h2>
-                        <div class="prazos-filtros">
-                            <button class="filtro-btn active" data-filtro="todos">Todos</button>
-                            <button class="filtro-btn" data-filtro="prova">📝 Provas</button>
-                            <button class="filtro-btn" data-filtro="trabalho">👥 Trabalhos</button>
-                            <button class="filtro-btn" data-filtro="entrega">📦 Entregas</button>
-                        </div>
+                    <h2><i class="fas fa-clock"></i> Todos os Prazos</h2>
+                    
+                    <div class="prazos-filtros">
+                        <button class="filtro-btn active" data-filtro="todos">Todos</button>
+                        <button class="filtro-btn" data-filtro="prova">📝 Provas</button>
+                        <button class="filtro-btn" data-filtro="trabalho">👥 Trabalhos</button>
+                        <button class="filtro-btn" data-filtro="entrega">📦 Entregas</button>
                     </div>
 
                     <div class="prazos-stats">
@@ -263,16 +209,14 @@
                         </div>
                     </div>
 
-                    <div class="prazos-lista" id="prazos-container">
-                        <!-- Gerado via JS -->
-                    </div>
+                    <div class="prazos-lista" id="prazos-container"></div>
                 </div>
-            </div>
+            </section>
 
             <!-- ABA CALENDÁRIO -->
-            <div class="tab-pane" id="tab-calendario">
+            <section class="tab-pane" id="calendario">
                 <div class="calendario-container">
-                    <h2><i class="fas fa-calendar-alt"></i> Calendário de Prazos</h2>
+                    <h2><i class="fas fa-calendar-alt"></i> Calendário</h2>
                     
                     <div class="calendario-header">
                         <button class="btn-mes" id="mes-anterior"><i class="fas fa-chevron-left"></i></button>
@@ -280,9 +224,7 @@
                         <button class="btn-mes" id="proximo-mes"><i class="fas fa-chevron-right"></i></button>
                     </div>
                     
-                    <div class="calendario-grid" id="calendario-grid">
-                        <!-- Gerado via JS -->
-                    </div>
+                    <div class="calendario-grid" id="calendario-grid"></div>
                     
                     <div class="calendario-legenda">
                         <span><span class="legenda-cor" style="background: #ef4444"></span> Prova</span>
@@ -292,43 +234,37 @@
                         <span><span class="legenda-cor" style="background: #ec4899"></span> CC50</span>
                     </div>
                 </div>
-            </div>
+            </section>
 
             <!-- ABA PLANOS -->
-            <div class="tab-pane" id="tab-planos">
+            <section class="tab-pane" id="planos">
                 <div class="planos-container">
                     <h2><i class="fas fa-book-open"></i> Planos de Aula</h2>
                     
                     <div class="planos-materias">
                         <div class="plano-card" data-materia="es">
-                            <div class="plano-icon es-icon">🔧</div>
+                            <div class="plano-icon">🔧</div>
                             <h3>Engenharia de Software</h3>
-                            <p>Terças 14h</p>
                         </div>
                         <div class="plano-card" data-materia="ic">
-                            <div class="plano-icon ic-icon">💻</div>
+                            <div class="plano-icon">💻</div>
                             <h3>Introdução à Computação</h3>
-                            <p>Quartas 14h</p>
                         </div>
                         <div class="plano-card" data-materia="lp">
-                            <div class="plano-icon lp-icon">🐍</div>
+                            <div class="plano-icon">🐍</div>
                             <h3>Lógica de Programação</h3>
-                            <p>Quintas 14h</p>
                         </div>
                         <div class="plano-card" data-materia="bd">
-                            <div class="plano-icon bd-icon">🗄️</div>
+                            <div class="plano-icon">🗄️</div>
                             <h3>Banco de Dados I</h3>
-                            <p>Sextas 14h</p>
                         </div>
                         <div class="plano-card" data-materia="bootcamp">
-                            <div class="plano-icon bootcamp-icon">🚀</div>
+                            <div class="plano-icon">🚀</div>
                             <h3>Bootcamp I</h3>
-                            <p>Quintas 8h</p>
                         </div>
                         <div class="plano-card" data-materia="fundamentos">
-                            <div class="plano-icon fundamentos-icon">📐</div>
+                            <div class="plano-icon">📐</div>
                             <h3>Fundamentos</h3>
-                            <p>Segundas</p>
                         </div>
                     </div>
                     
@@ -337,28 +273,31 @@
                         <div class="plano-tabela" id="plano-tabela"></div>
                     </div>
                 </div>
-            </div>
+            </section>
 
             <!-- ABA PROGRESSO -->
-            <div class="tab-pane" id="tab-progresso">
+            <section class="tab-pane" id="progresso">
                 <div class="progresso-container">
                     <h2><i class="fas fa-chart-line"></i> Seu Progresso</h2>
                     
-                    <div class="cards-resumo" id="cards-progresso">
-                        <!-- Gerado via JS -->
-                    </div>
+                    <div class="cards-resumo" id="cards-progresso"></div>
                     
                     <div class="grafico-container">
                         <h3>Horas de Estudo por Matéria</h3>
                         <canvas id="grafico-barras" width="400" height="300"></canvas>
                     </div>
+
+                    <div class="conquistas-container" id="conquistas">
+                        <h3>🏆 Conquistas</h3>
+                        <div class="conquistas-grid" id="conquistas-grid"></div>
+                    </div>
                 </div>
-            </div>
+            </section>
 
             <!-- ABA CC50 -->
-            <div class="tab-pane" id="tab-cc50">
+            <section class="tab-pane" id="cc50">
                 <div class="cc50-container">
-                    <h2><i class="fas fa-laptop-code"></i> CC50: Introdução à Ciência da Computação</h2>
+                    <h2><i class="fas fa-laptop-code"></i> CC50</h2>
                     
                     <div class="cc50-header">
                         <div class="cc50-progresso-grande">
@@ -367,51 +306,42 @@
                             </div>
                             <div class="cc50-stats">
                                 <p><span id="cc50-aulas-concluidas">0</span>/90 aulas</p>
-                                <p><span id="cc50-horas-estudadas">0</span> horas estudadas</p>
+                                <p><span id="cc50-horas-estudadas">0</span> horas</p>
                                 <p>🎯 Previsão: <span id="cc50-previsao">Junho/2026</span></p>
                             </div>
                         </div>
                         
-                        <div class="cc50-bonus-container" id="cc50-bonus-container">
-                            <h4><i class="fas fa-gift"></i> Bônus Acumulado</h4>
-                            <p>Você ganhou <span id="cc50-horas-bonus">0</span> horas extras por concluir prazos antes do prazo!</p>
-                            <div class="bonus-bar">
-                                <div class="bonus-progresso" id="bonus-progresso" style="width: 0%"></div>
-                            </div>
+                        <div class="cc50-bonus-container">
+                            <h4><i class="fas fa-gift"></i> Bônus</h4>
+                            <p>+<span id="cc50-horas-bonus">0</span> horas extras</p>
                         </div>
                     </div>
                     
-                    <div class="cc50-modulos" id="cc50-modulos">
-                        <!-- Gerado via JS -->
-                    </div>
+                    <div class="cc50-modulos" id="cc50-modulos"></div>
                 </div>
-            </div>
+            </section>
         </main>
     </div>
 
-    <!-- MODAL DE CONCLUSÃO -->
+    <!-- MODAIS -->
     <div class="modal" id="modal-concluir">
         <div class="modal-conteudo">
             <h3><i class="fas fa-check-circle"></i> Concluir Atividade</h3>
             <p id="modal-atividade-nome"></p>
             
             <div class="modal-form">
-                <label>Quantos dias de estudo você gastou?</label>
+                <label>Dias gastos:</label>
                 <div class="opcoes-dias">
-                    <label><input type="radio" name="dias-gastos" value="1"> 1 dia</label>
-                    <label><input type="radio" name="dias-gastos" value="2"> 2 dias</label>
-                    <label><input type="radio" name="dias-gastos" value="3" checked> 3 dias</label>
-                    <label><input type="radio" name="dias-gastos" value="5"> 5 dias</label>
-                    <label><input type="radio" name="dias-gastos" value="7"> 7 dias</label>
-                    <label><input type="radio" name="dias-gastos" value="10"> 10 dias</label>
+                    <label><input type="radio" name="dias-gastos" value="1"> 1</label>
+                    <label><input type="radio" name="dias-gastos" value="2"> 2</label>
+                    <label><input type="radio" name="dias-gastos" value="3" checked> 3</label>
+                    <label><input type="radio" name="dias-gastos" value="5"> 5</label>
+                    <label><input type="radio" name="dias-gastos" value="7"> 7</label>
+                    <label><input type="radio" name="dias-gastos" value="10"> 10</label>
                 </div>
                 
-                <label>Anotações (opcional):</label>
-                <textarea id="anotacoes-conclusao" rows="3" placeholder="O que aprendeu?"></textarea>
-                
-                <div class="bonus-aviso" id="bonus-aviso">
-                    <i class="fas fa-star"></i> Se concluir antes do prazo, ganha horas extras para o CC50!
-                </div>
+                <label>Anotações:</label>
+                <textarea id="anotacoes-conclusao" rows="3"></textarea>
             </div>
             
             <div class="modal-acoes">
@@ -421,33 +351,26 @@
         </div>
     </div>
 
-    <!-- MODAL DE NOVA NOTA -->
     <div class="modal" id="modal-nota">
         <div class="modal-conteudo">
             <h3><i class="fas fa-plus-circle"></i> Nova Nota</h3>
             
             <div class="modal-form">
-                <label>Matéria:</label>
                 <select id="nota-materia">
-                    <option value="es">Engenharia de Software</option>
-                    <option value="ic">Introdução à Computação</option>
-                    <option value="lp">Lógica de Programação</option>
-                    <option value="bd">Banco de Dados I</option>
-                    <option value="bootcamp">Bootcamp I</option>
+                    <option value="es">ES</option>
+                    <option value="ic">IC</option>
+                    <option value="lp">LP</option>
+                    <option value="bd">BD</option>
+                    <option value="bootcamp">Bootcamp</option>
                     <option value="fundamentos">Fundamentos</option>
                     <option value="cc50">CC50</option>
                 </select>
                 
-                <label>Título:</label>
-                <input type="text" id="nota-titulo" placeholder="Título da nota">
+                <input type="text" id="nota-titulo" placeholder="Título">
+                <textarea id="nota-conteudo" rows="6" placeholder="Conteúdo"></textarea>
+                <input type="text" id="nota-tags" placeholder="Tags">
                 
-                <label>Conteúdo:</label>
-                <textarea id="nota-conteudo" rows="6" placeholder="Escreva sua nota..."></textarea>
-                
-                <label>Tags (separadas por vírgula):</label>
-                <input type="text" id="nota-tags" placeholder="Ex: importante, revisão, código">
-                
-                <label><input type="checkbox" id="nota-fixada"> Fixar esta nota</label>
+                <label><input type="checkbox" id="nota-fixada"> Fixar</label>
             </div>
             
             <div class="modal-acoes">
@@ -457,45 +380,28 @@
         </div>
     </div>
 
-    <!-- MODAL DE EVENTOS -->
-    <div class="modal" id="modal-evento">
-        <div class="modal-conteudo">
-            <h3 id="modal-evento-titulo"><i class="fas fa-calendar-day"></i> <span></span></h3>
-            <div id="modal-evento-lista" class="eventos-lista"></div>
-            <div class="modal-acoes">
-                <button class="btn-primary" id="btn-fechar-evento">Fechar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL AULA CC50 -->
     <div class="modal" id="modal-aula-cc50">
         <div class="modal-conteudo">
-            <h3 id="modal-aula-titulo"><i class="fas fa-laptop-code"></i> <span></span></h3>
+            <h3 id="modal-aula-titulo"><span></span></h3>
             
             <div class="modal-form">
-                <p id="modal-aula-descricao"></p>
-                
-                <label>Status da aula:</label>
                 <select id="aula-status">
                     <option value="nao_iniciada">Não iniciada</option>
                     <option value="assistida">Assistida</option>
-                    <option value="exercicios">Exercícios concluídos</option>
+                    <option value="exercicios">Exercícios</option>
                     <option value="completa">Completa</option>
                 </select>
                 
-                <label>Anotações:</label>
-                <textarea id="aula-anotacoes" rows="4" placeholder="Suas anotações..."></textarea>
+                <textarea id="aula-anotacoes" rows="4" placeholder="Anotações"></textarea>
             </div>
             
             <div class="modal-acoes">
                 <button class="btn-secundario" id="btn-fechar-aula">Fechar</button>
-                <button class="btn-primary" id="btn-salvar-aula">Salvar Progresso</button>
+                <button class="btn-primary" id="btn-salvar-aula">Salvar</button>
             </div>
         </div>
     </div>
 
-    <!-- TOAST -->
     <div class="toast-container" id="toast-container"></div>
 
     <script src="script.js"></script>
