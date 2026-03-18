@@ -1,19 +1,18 @@
 // ============================================
-// AGENDA PALMIERE - PLANEJAMENTO INTELIGENTE
-// VERSÃO COMPLETA CORRIGIDA
+// AGENDA PALMIERE - CC50 EDITION
+// VERSÃO COMPLETA CORRIGIDA (SEM NOTAS)
 // ============================================
 
 // ============================================
 // CONFIGURAÇÕES INICIAIS
 // ============================================
 
-const VERSAO = '4.0.0';
-const HORAS_POR_DIA = 2.5;
+const VERSAO = '3.0.0';
+const HORAS_POR_DIA = 2.5; // 2h30
 
 // Estado global
 let estado = {
     usuario: 'Carla',
-    materiaAtual: 'es',
     timerAtivo: false,
     timerTempo: 0,
     timerInterval: null,
@@ -23,8 +22,7 @@ let estado = {
     checklistItens: [],
     cc50Progresso: {},
     cc50Bonus: 0,
-    cc50AulaAtual: null,
-    conquistas: []
+    cc50AulaAtual: null
 };
 
 // ============================================
@@ -470,7 +468,7 @@ const cc50Modulos = [
             'Aula 9 - Flask',
             'Anotações da Aula',
             'Instruções para os Exercícios',
-            'Exercício 1: Birthdays',
+            'Exercício 1: Birthdays (Aniversários)',
             'Exercício 2: C$50 Finanças'
         ]
     },
@@ -484,7 +482,7 @@ const cc50Modulos = [
         ]
     },
     {
-        nome: 'Encerramento',
+        nome: 'Encerramento do Curso',
         aulas: [
             'Projeto Final',
             'Avaliação Final',
@@ -590,147 +588,6 @@ const planosAula = {
 };
 
 // ============================================
-// CONTEÚDO ESPECÍFICO PARA PRÉ-AULA
-// ============================================
-
-const conteudoPreAula = {
-    // Fundamentos
-    '2026-03-23': { materia: 'fundamentos', conteudo: 'Revisar Unidades 1 e 2 - Conceitos básicos', paginas: '15-30', exercicios: '1 a 5' },
-    '2026-03-30': { materia: 'fundamentos', conteudo: 'Revisar exercícios e preparar dúvidas', paginas: '31-45', exercicios: '6 a 10' },
-    '2026-04-06': { materia: 'fundamentos', conteudo: 'Revisão geral para prova - Todos os conceitos', paginas: '1-60', exercicios: 'Todos' },
-    '2026-04-13': { materia: 'fundamentos', conteudo: '✅ PROVA - Dia de prova', paginas: '', exercicios: '' },
-    '2026-04-20': { materia: 'fundamentos', conteudo: 'Descanso pós-prova', paginas: '', exercicios: '' },
-    '2026-04-27': { materia: 'fundamentos', conteudo: 'Ler Unidade 3 - Material complementar', paginas: '61-75', exercicios: '11 a 15' },
-    '2026-05-04': { materia: 'fundamentos', conteudo: 'Estudar Unidades 3 e 4 - Foco em exemplos', paginas: '76-95', exercicios: '16 a 20' },
-    '2026-05-11': { materia: 'fundamentos', conteudo: 'Revisão semanal', paginas: '', exercicios: '' },
-    '2026-05-18': { materia: 'fundamentos', conteudo: 'Revisão para Avaliação Online', paginas: '45-95', exercicios: '10-20' },
-    '2026-05-25': { materia: 'fundamentos', conteudo: 'Preparação final', paginas: '', exercicios: '' },
-    '2026-06-01': { materia: 'fundamentos', conteudo: '✅ AVALIAÇÃO ONLINE', paginas: '', exercicios: '' },
-    
-    // Engenharia de Software
-    '2026-03-24': { materia: 'es', conteudo: 'Ler capítulo sobre Identificação de Requisitos', paginas: '20-35', topicos: 'Tipos de requisitos, Documentação' },
-    '2026-03-31': { materia: 'es', conteudo: 'Estudar Engenharia de Requisitos - Casos de uso', paginas: '36-50', topicos: 'Casos de estudo' },
-    '2026-04-07': { materia: 'es', conteudo: 'Projeto de Sistema - Arquitetura', paginas: '51-70', topicos: 'Conceitual x Técnico' },
-    '2026-04-14': { materia: 'es', conteudo: '✅ SEMINÁRIO 01 - Revisar slides', paginas: '', topicos: 'Apresentação' },
-    '2026-04-21': { materia: 'es', conteudo: '✅ PROVA 1 - Revisão geral', paginas: '1-70', topicos: 'Todos' },
-    '2026-04-28': { materia: 'es', conteudo: 'Gerenciamento de Projetos - PMBOK', paginas: '71-85', topicos: 'Escopo, cronograma' },
-    '2026-05-05': { materia: 'es', conteudo: 'Implementação - Padrões', paginas: '86-100', topicos: 'Boas práticas' },
-    '2026-05-12': { materia: 'es', conteudo: 'Testes - Técnicas', paginas: '101-115', topicos: 'Erro x Falha' },
-    '2026-05-19': { materia: 'es', conteudo: 'Testes - Critérios', paginas: '116-130', topicos: 'Caixa branca e preta' },
-    '2026-05-26': { materia: 'es', conteudo: 'Implantação - Ambientes', paginas: '131-145', topicos: 'Homologação, produção' },
-    '2026-06-02': { materia: 'es', conteudo: 'Manutenção - Tipos', paginas: '146-160', topicos: 'Corretiva, evolutiva' },
-    '2026-06-09': { materia: 'es', conteudo: '✅ SEMINÁRIO 02 - Apresentação PPS', paginas: '', topicos: 'Finalizar' },
-    '2026-06-16': { materia: 'es', conteudo: '✅ PROVA 2 - Revisão', paginas: '71-160', topicos: 'Todos' },
-    
-    // Introdução à Computação
-    '2026-03-25': { materia: 'ic', conteudo: 'Arquitetura de Hardware - CPU', paginas: '10-25', topicos: 'Registradores, memória' },
-    '2026-04-01': { materia: 'ic', conteudo: 'Hardware - Periféricos', paginas: '26-40', topicos: 'Entrada, saída' },
-    '2026-04-08': { materia: 'ic', conteudo: 'Informação - Dado x Conhecimento', paginas: '41-55', topicos: 'Sistemas de informação' },
-    '2026-04-15': { materia: 'ic', conteudo: '✅ PROVA 1 - Revisão', paginas: '1-55', topicos: 'Todos' },
-    '2026-04-22': { materia: 'ic', conteudo: 'Redes - Topologias', paginas: '56-70', topicos: 'LAN, WAN' },
-    '2026-04-29': { materia: 'ic', conteudo: 'Redes - Dispositivos', paginas: '71-85', topicos: 'Roteadores, switches' },
-    '2026-05-06': { materia: 'ic', conteudo: 'Segurança - Ameaças', paginas: '86-100', topicos: 'Malware, phishing' },
-    '2026-05-13': { materia: 'ic', conteudo: 'Segurança - Mecanismos', paginas: '101-115', topicos: 'Criptografia' },
-    '2026-05-20': { materia: 'ic', conteudo: 'Governança - Conceitos', paginas: '116-130', topicos: 'Histórico' },
-    '2026-05-27': { materia: 'ic', conteudo: 'Governança - Frameworks', paginas: '131-145', topicos: 'COBIT, ITIL' },
-    '2026-06-03': { materia: 'ic', conteudo: '✅ SEMINÁRIO - Apresentação', paginas: '', topicos: 'Tendências' },
-    '2026-06-10': { materia: 'ic', conteudo: '✅ PROVA 2 - Revisão', paginas: '56-145', topicos: 'Todos' },
-    '2026-06-17': { materia: 'ic', conteudo: '✅ ACE - Entrega', paginas: '', topicos: '' },
-    
-    // Lógica de Programação
-    '2026-03-26': { materia: 'lp', conteudo: 'Elementos básicos - Variáveis', paginas: '15-30', exercicios: '1-5' },
-    '2026-04-02': { materia: 'lp', conteudo: 'Condicionais - if/else', paginas: '31-45', exercicios: '6-10' },
-    '2026-04-09': { materia: 'lp', conteudo: '✅ PROVA 1 - Revisão', paginas: '1-45', exercicios: 'Todos' },
-    '2026-04-16': { materia: 'lp', conteudo: 'Vetores - Arrays', paginas: '46-60', exercicios: '11-15' },
-    '2026-04-23': { materia: 'lp', conteudo: 'Vetores - Exercícios', paginas: '', exercicios: '16-20' },
-    '2026-04-30': { materia: 'lp', conteudo: 'Matrizes - Representação', paginas: '61-75', exercicios: '21-25' },
-    '2026-05-07': { materia: 'lp', conteudo: 'Matrizes - Exercícios', paginas: '', exercicios: '26-30' },
-    '2026-05-14': { materia: 'lp', conteudo: 'Funções - Escopo', paginas: '76-90', exercicios: '31-35' },
-    '2026-05-21': { materia: 'lp', conteudo: '✅ PROVA 2 - Revisão', paginas: '46-90', exercicios: 'Todos' },
-    '2026-05-28': { materia: 'lp', conteudo: 'Funções - Parâmetros', paginas: '91-105', exercicios: '36-40' },
-    '2026-06-11': { materia: 'lp', conteudo: 'Funções - Avançado', paginas: '106-120', exercicios: '41-45' },
-    '2026-06-18': { materia: 'lp', conteudo: 'Revisão geral', paginas: '1-120', exercicios: 'Selecionados' },
-    '2026-06-25': { materia: 'lp', conteudo: '✅ PROVA 3 + LISTA', paginas: '', exercicios: 'Todos' },
-    
-    // Banco de Dados
-    '2026-03-27': { materia: 'bd', conteudo: 'Modelagem ER - Entidades', paginas: '10-25', exercicios: '1-5' },
-    '2026-04-03': { materia: 'bd', conteudo: 'Modelagem ER - Cardinalidades', paginas: '26-40', exercicios: '6-10' },
-    '2026-04-10': { materia: 'bd', conteudo: 'Modelagem - Generalização', paginas: '41-55', exercicios: '11-15' },
-    '2026-04-17': { materia: 'bd', conteudo: 'Revisão para prova', paginas: '1-55', exercicios: 'Todos' },
-    '2026-04-24': { materia: 'bd', conteudo: '✅ PROVA 1', paginas: '', exercicios: '' },
-    '2026-05-08': { materia: 'bd', conteudo: 'SQL - DDL', paginas: '56-70', exercicios: '16-20' },
-    '2026-05-15': { materia: 'bd', conteudo: 'SQL - DML', paginas: '71-85', exercicios: '21-25' },
-    '2026-05-22': { materia: 'bd', conteudo: 'SQL - UPDATE/DELETE', paginas: '86-100', exercicios: '26-30' },
-    '2026-05-29': { materia: 'bd', conteudo: 'SQL - ORDER BY', paginas: '101-115', exercicios: '31-35' },
-    '2026-06-05': { materia: 'bd', conteudo: 'Multidimensional', paginas: '116-130', exercicios: '36-40' },
-    '2026-06-12': { materia: 'bd', conteudo: 'Revisão SQL', paginas: '56-130', exercicios: 'Selecionados' },
-    '2026-06-19': { materia: 'bd', conteudo: 'Revisão final', paginas: '1-130', exercicios: 'Todos' },
-    '2026-06-26': { materia: 'bd', conteudo: '✅ PROVA 2', paginas: '', exercicios: '' }
-};
-
-// ============================================
-// TRABALHOS DIÁRIOS ESPECÍFICOS
-// ============================================
-
-const trabalhosDiarios = {
-    '2026-03-18': { id: 'ic-ace', descricao: 'ACE IC - Pesquisar tema, criar esboço', paginas: 'Definir introdução' },
-    '2026-03-19': { id: 'fund-sist1', descricao: 'Sistematização 01 - Ler material, fazer rascunho', paginas: 'Unidades 1-2' },
-    '2026-03-20': { id: 'es-seminario1', descricao: 'Seminário 01 ES - Dividir tópicos', topicos: 'Métodos ágeis' },
-    '2026-03-23': { id: 'fund-exercicios1', descricao: 'Exercícios Fundamentos - Revisar e finalizar', exercicios: '1-5' },
-    '2026-03-24': { id: 'ic-ace', descricao: 'ACE IC - Desenvolver introdução', paginas: '2-3 páginas' },
-    '2026-03-25': { id: 'fund-sist1', descricao: 'Sistematização 01 - Escrever seção 1', topicos: 'Conceitos básicos' },
-    '2026-03-26': { id: 'es-seminario1', descricao: 'Seminário 01 ES - Pesquisar métodos ágeis', topicos: 'Scrum, Kanban' },
-    '2026-03-27': { id: 'fund-exercicios1', descricao: 'Exercícios Fundamentos - Revisão final', status: 'entregar' },
-    '2026-03-30': { id: 'fund-sist1', descricao: 'Sistematização 01 - Escrever seção 2', topicos: 'Aplicações' },
-    '2026-03-31': { id: 'ic-ace', descricao: 'ACE IC - Desenvolver metodologia', paginas: 'Descrever métodos' },
-    '2026-04-01': { id: 'es-seminario1', descricao: 'Seminário 01 ES - Criar slides', slides: '10-12' },
-    '2026-04-02': { id: 'fund-sist1', descricao: 'Sistematização 01 - Revisar e formatar', normas: 'ABNT' },
-    '2026-04-03': { id: 'es-seminario1', descricao: 'Seminário 01 ES - Ensaio da apresentação', tempo: '15min' },
-    '2026-04-04': { id: 'bootcamp-desafio1', descricao: 'Desafio Bootcamp - Avançar no código', modulo: 'Funcionalidades' },
-    '2026-04-07': { id: 'fund-sist1', descricao: 'Sistematização 01 - FINALIZAR', status: 'entregar' },
-    '2026-04-08': { id: 'bootcamp-desafio1', descricao: 'Desafio Bootcamp - Testar e corrigir', testes: 'Unitários' },
-    '2026-04-10': { id: 'es-seminario1', descricao: 'Seminário 01 ES - Últimos ajustes', detalhes: 'Revisar' },
-    '2026-04-11': { id: 'bootcamp-desafio1', descricao: 'Desafio Bootcamp - ENTREGAR', status: 'final' },
-    '2026-04-16': { id: 'ic-ace', descricao: 'ACE IC - Continuar desenvolvimento', secoes: 'Resultados' },
-    '2026-04-22': { id: 'ic-ace', descricao: 'ACE IC - Escrever resultados', dados: 'Análise' },
-    '2026-04-28': { id: 'ic-ace', descricao: 'ACE IC - Revisar', revisao: 'Ortografia' },
-    '2026-04-29': { id: 'bootcamp-desafio2', descricao: 'Desafio Bootcamp - Começar entrega', modulo: 'Intermediário' },
-    '2026-05-02': { id: 'fund-exercicios2', descricao: 'Exercícios Fundamentos - Começar', exercicios: '3 e 4' },
-    '2026-05-04': { id: 'bootcamp-desafio2', descricao: 'Desafio Bootcamp - Desenvolvimento', codigo: 'Funcionalidades' },
-    '2026-05-05': { id: 'ic-ace', descricao: 'ACE IC - Finalizar rascunho', paginas: '10-12' },
-    '2026-05-06': { id: 'bootcamp-desafio2', descricao: 'Desafio Bootcamp - Testes', qualidade: 'Revisar' },
-    '2026-05-07': { id: 'ic-seminario', descricao: 'Seminário IC - Pesquisar tendências', topicos: 'IA, Blockchain' },
-    '2026-05-08': { id: 'bootcamp-desafio2', descricao: 'Desafio Bootcamp - ENTREGAR', status: 'final' },
-    '2026-05-11': { id: 'ic-seminario', descricao: 'Seminário IC - Preparar slides', slides: '10-15' },
-    '2026-05-12': { id: 'fund-sist2', descricao: 'Sistematização 02 - Começar', introducao: 'Esboço' },
-    '2026-05-13': { id: 'ic-seminario', descricao: 'Seminário IC - Ensaio', apresentacao: 'Treinar' },
-    '2026-05-14': { id: 'fund-sist2', descricao: 'Sistematização 02 - Desenvolvimento', secoes: '1 e 2' },
-    '2026-05-15': { id: 'lp-lista', descricao: 'Lista LP - Começar', exercicios: '1-5' },
-    '2026-05-18': { id: 'fund-sist2', descricao: 'Sistematização 02 - Continuar', secoes: '3 e 4' },
-    '2026-05-19': { id: 'lp-lista', descricao: 'Lista LP - Exercícios', exercicios: '6-10' },
-    '2026-05-20': { id: 'fund-sist2', descricao: 'Sistematização 02 - Revisão', correcao: 'Formatar' },
-    '2026-05-22': { id: 'fund-sist2', descricao: 'Sistematização 02 - FINALIZAR', status: 'entregar' },
-    '2026-05-25': { id: 'bootcamp-desafio3', descricao: 'Desafio Bootcamp - Começar final', modulo: 'Entrega Final' },
-    '2026-05-26': { id: 'lp-lista', descricao: 'Lista LP - Avançar', exercicios: '11-15' },
-    '2026-05-27': { id: 'bootcamp-desafio3', descricao: 'Desafio Bootcamp - Desenvolvimento', funcionalidades: 'Completar' },
-    '2026-05-28': { id: 'ic-seminario', descricao: 'Seminário IC - APRESENTAR', status: 'final' },
-    '2026-05-29': { id: 'bootcamp-desafio3', descricao: 'Desafio Bootcamp - Testes', qualidade: 'Revisar' },
-    '2026-06-02': { id: 'bootcamp-desafio3', descricao: 'Desafio Bootcamp - Finalizar', ultimos: 'Ajustes' },
-    '2026-06-04': { id: 'bootcamp-desafio3', descricao: 'Desafio Bootcamp - Últimos ajustes', revisao: 'Final' },
-    '2026-06-05': { id: 'lp-lista', descricao: 'Lista LP - Finalizar', exercicios: '16-20' },
-    '2026-06-08': { id: 'bootcamp-desafio3', descricao: 'Desafio Bootcamp - ENTREGAR', status: 'final' },
-    '2026-06-11': { id: 'ic-ace', descricao: 'ACE IC - Revisão final', revisao: 'Completa' },
-    '2026-06-12': { id: 'lp-lista', descricao: 'Lista LP - ENTREGAR', status: 'final' },
-    '2026-06-15': { id: 'ic-ace', descricao: 'ACE IC - ENTREGAR', status: 'final' }
-};
-
-// ============================================
-// NOTAS
-// ============================================
-
-let notas = [];
-
-// ============================================
 // FUNÇÕES DE INICIALIZAÇÃO
 // ============================================
 
@@ -744,10 +601,8 @@ function inicializarSistema() {
         inicializarCC50();
         atualizarInterface();
         verificarVersao();
-        verificarProvasProximas();
-        atualizarNotificacoes();
         
-        mostrarToast('Bem-vinda, Carla! Seu planejamento está pronto!', 'success');
+        mostrarToast('Bem-vinda, Carla! 🎓 CC50 carregado!', 'success');
     } catch (erro) {
         console.error('Erro na inicialização:', erro);
         mostrarToast('Erro ao iniciar o sistema', 'error');
@@ -757,11 +612,6 @@ function inicializarSistema() {
 function carregarDados() {
     try {
         console.log('📦 Carregando dados...');
-        
-        const notasSalvas = localStorage.getItem('agenda_notas');
-        if (notasSalvas) {
-            notas = JSON.parse(notasSalvas);
-        }
         
         const prazosSalvos = localStorage.getItem('agenda_prazos');
         if (prazosSalvos) {
@@ -783,6 +633,7 @@ function carregarDados() {
         if (cc50Salvo) {
             estado.cc50Progresso = JSON.parse(cc50Salvo);
         } else {
+            // Inicializa CC50
             cc50Modulos.forEach((modulo, i) => {
                 modulo.aulas.forEach((aula, j) => {
                     const aulaId = `cc50-${i}-${j}`;
@@ -797,11 +648,6 @@ function carregarDados() {
         const bonusSalvo = localStorage.getItem('agenda_cc50_bonus');
         if (bonusSalvo) {
             estado.cc50Bonus = parseInt(bonusSalvo);
-        }
-        
-        const conquistasSalvas = localStorage.getItem('agenda_conquistas');
-        if (conquistasSalvas) {
-            estado.conquistas = JSON.parse(conquistasSalvas);
         }
         
         console.log('✅ Dados carregados!');
@@ -834,37 +680,29 @@ function inicializarNavegacao() {
     try {
         console.log('🧭 Inicializando navegação...');
         
-        // Rolagem suave para as seções
-        document.querySelectorAll('.nav-btn[data-target]').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                
-                const targetId = btn.dataset.target;
-                const targetElement = document.getElementById(targetId);
-                
-                if (targetElement) {
-                    // Atualizar classe active
+        const botoesNav = {
+            'nav-hoje': 'hoje',
+            'nav-prazos': 'prazos',
+            'nav-calendario': 'calendario',
+            'nav-planos': 'planos',
+            'nav-progresso': 'progresso',
+            'nav-cc50': 'cc50'
+        };
+
+        Object.entries(botoesNav).forEach(([id, tab]) => {
+            const btn = document.getElementById(id);
+            if (btn) {
+                btn.addEventListener('click', () => {
                     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     
-                    // Esconder todas as seções e mostrar a alvo
-                    document.querySelectorAll('.tab-pane').forEach(section => {
-                        section.classList.remove('active');
-                    });
-                    targetElement.classList.add('active');
+                    document.querySelectorAll('.tab-pane').forEach(t => t.classList.remove('active'));
+                    const tabElement = document.getElementById(`tab-${tab}`);
+                    if (tabElement) tabElement.classList.add('active');
                     
-                    // Rolagem suave
-                    const headerHeight = document.querySelector('.agenda-header').offsetHeight;
-                    const targetPosition = targetElement.offsetTop - headerHeight - 20;
-                    
-                    window.scrollTo({
-                        top: targetPosition,
-                        behavior: 'smooth'
-                    });
-                    
-                    console.log(`📌 Navegando para: ${targetId}`);
-                }
-            });
+                    console.log(`📌 Aba alterada para: ${tab}`);
+                });
+            }
         });
         
         console.log('✅ Navegação inicializada!');
@@ -881,31 +719,23 @@ function inicializarEventListeners() {
         const btnLogin = document.getElementById('btn-login');
         if (btnLogin) btnLogin.addEventListener('click', fazerLogin);
         
-        // Sair (header)
-        const btnSair = document.getElementById('btn-sair-header');
+        // Sair
+        const btnSair = document.getElementById('btn-sair');
         if (btnSair) btnSair.addEventListener('click', fazerLogout);
         
-        // Notificações
-        const notificacaoIcon = document.getElementById('notification-icon');
-        if (notificacaoIcon) {
-            notificacaoIcon.addEventListener('click', mostrarNotificacoes);
-        }
+        // Timer
+        const btnIniciar = document.getElementById('btn-timer-iniciar');
+        if (btnIniciar) btnIniciar.addEventListener('click', iniciarTimer);
         
-        // Notas
-        const btnNovaNota = document.getElementById('btn-nova-nota');
-        if (btnNovaNota) btnNovaNota.addEventListener('click', criarNovaNota);
+        const btnPausar = document.getElementById('btn-timer-pausar');
+        if (btnPausar) btnPausar.addEventListener('click', pausarTimer);
         
-        const buscaNotas = document.getElementById('notas-busca');
-        if (buscaNotas) buscaNotas.addEventListener('input', buscarNotas);
+        const btnZerar = document.getElementById('btn-timer-zerar');
+        if (btnZerar) btnZerar.addEventListener('click', zerarTimer);
         
-        document.querySelectorAll('.materia-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.materia-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                estado.materiaAtual = tab.dataset.materia;
-                renderizarNotas();
-            });
-        });
+        // Checklist
+        const btnResetar = document.getElementById('btn-checklist-resetar');
+        if (btnResetar) btnResetar.addEventListener('click', resetarChecklistDiario);
         
         // Prazos
         document.querySelectorAll('.filtro-btn').forEach(btn => {
@@ -938,18 +768,8 @@ function inicializarEventListeners() {
         const btnConfirmar = document.getElementById('btn-confirmar-conclusao');
         if (btnConfirmar) btnConfirmar.addEventListener('click', confirmarConclusao);
         
-        const btnCancelarNota = document.getElementById('btn-cancelar-nota');
-        if (btnCancelarNota) btnCancelarNota.addEventListener('click', fecharModalNota);
-        
-        const btnSalvarNota = document.getElementById('btn-salvar-nota');
-        if (btnSalvarNota) btnSalvarNota.addEventListener('click', salvarNota);
-        
-        // CC50
-        const btnSalvarAula = document.getElementById('btn-salvar-aula');
-        if (btnSalvarAula) btnSalvarAula.addEventListener('click', salvarAulaCC50);
-        
-        const btnFecharAula = document.getElementById('btn-fechar-aula');
-        if (btnFecharAula) btnFecharAula.addEventListener('click', fecharModalAulaCC50);
+        const btnFecharEvento = document.getElementById('btn-fechar-evento');
+        if (btnFecharEvento) btnFecharEvento.addEventListener('click', fecharModalEvento);
         
         console.log('✅ Eventos inicializados!');
     } catch (erro) {
@@ -983,8 +803,6 @@ function fazerLogin() {
 
 function fazerLogout() {
     try {
-        console.log('👋 Fazendo logout...');
-        
         document.getElementById('login-container').style.display = 'flex';
         document.getElementById('app-container').style.display = 'none';
         
@@ -997,33 +815,28 @@ function fazerLogout() {
         document.getElementById('login-usuario').value = 'Carla';
         document.getElementById('login-senha').value = 'Cacau';
         document.getElementById('login-erro').style.display = 'none';
-        
-        window.scrollTo(0, 0);
-        
-        mostrarToast('Até logo, Carla!', 'info');
     } catch (erro) {
         console.error('Erro no logout:', erro);
     }
 }
 
 // ============================================
-// FUNÇÕES DE INTERFACE PRINCIPAL
+// FUNÇÕES DE INTERFACE
 // ============================================
 
 function atualizarInterface() {
     try {
         console.log('🔄 Atualizando interface...');
         
-        renderizarCronogramaDetalhado();
-        renderizarChecklistInteligente();
+        renderizarPrazosUrgentes();
+        renderizarGradeDia();
         renderizarSugestoes();
+        renderizarChecklist();
         renderizarPrazos('todos');
         renderizarCalendario();
         renderizarProgresso();
-        renderizarNotas();
-        renderizarPreviaCC50();
-        verificarProvasProximas();
-        atualizarNotificacoes();
+        renderizarCronogramaDia();
+        renderizarDestaqueCC50();
         
         console.log('✅ Interface atualizada!');
     } catch (erro) {
@@ -1031,207 +844,250 @@ function atualizarInterface() {
     }
 }
 
-function renderizarCronogramaDetalhado() {
+function renderizarPrazosUrgentes() {
     try {
-        const container = document.getElementById('cronograma-detalhado');
+        const container = document.getElementById('urgentes-container');
         if (!container) return;
         
+        container.innerHTML = '';
+        
         const hoje = new Date();
-        const dataStr = hoje.toISOString().split('T')[0];
-        const diaSemana = hoje.getDay();
+        const prazosProximos = prazos
+            .filter(p => !p.concluido)
+            .map(p => {
+                const dataPrazo = new Date(p.data + 'T12:00:00');
+                const diasRestantes = Math.ceil((dataPrazo - hoje) / (1000 * 60 * 60 * 24));
+                return { ...p, diasRestantes };
+            })
+            .filter(p => p.diasRestantes <= 14 && p.diasRestantes > 0)
+            .sort((a, b) => a.diasRestantes - b.diasRestantes)
+            .slice(0, 3);
         
-        let html = '<h2><i class="fas fa-clock"></i> Seu plano de hoje</h2>';
-        
-        // Verificar se é fim de semana
-        if (diaSemana === 0 || diaSemana === 6) {
-            container.innerHTML = html + '<div class="atividade-detalhada"><p>🚫 Fim de semana - Descanse!</p></div>';
+        if (prazosProximos.length === 0) {
+            container.innerHTML = '<p class="text-muted">Nenhum prazo urgente</p>';
             return;
         }
         
-        // PRÉ-AULA
-        const preAula = conteudoPreAula[dataStr];
-        if (preAula) {
-            const nomeMateria = getNomeMateria(preAula.materia);
-            html += `
-                <div class="atividade-detalhada preaula">
-                    <div class="atividade-header">
-                        <span class="atividade-horario">09:30 - 10:30</span>
-                        <span class="atividade-tipo">PRÉ-AULA</span>
-                    </div>
-                    <div class="atividade-titulo">${nomeMateria}</div>
-                    <div class="atividade-descricao">${preAula.conteudo}</div>
-                    ${preAula.paginas ? `<div class="atividade-detalhe"><i class="fas fa-book"></i> Páginas: ${preAula.paginas}</div>` : ''}
-                    ${preAula.exercicios ? `<div class="atividade-detalhe"><i class="fas fa-pencil-alt"></i> Exercícios: ${preAula.exercicios}</div>` : ''}
-                    ${preAula.topicos ? `<div class="atividade-detalhe"><i class="fas fa-tags"></i> Tópicos: ${preAula.topicos}</div>` : ''}
+        prazosProximos.forEach(prazo => {
+            const card = document.createElement('div');
+            card.className = `urgent-card ${prazo.tipo}`;
+            
+            card.addEventListener('click', () => abrirModalConclusao(prazo.id));
+            
+            let icone = 'fa-calendar';
+            if (prazo.tipo === 'prova') icone = 'fa-file-alt';
+            else if (prazo.tipo === 'trabalho') icone = 'fa-users';
+            else if (prazo.tipo === 'entrega') icone = 'fa-upload';
+            
+            card.innerHTML = `
+                <div class="urgent-icon"><i class="fas ${icone}"></i></div>
+                <div class="urgent-info">
+                    <h4>${prazo.nome}</h4>
+                    <p>${getNomeMateria(prazo.materia)}</p>
+                    <div class="dias">${prazo.diasRestantes} dias</div>
                 </div>
             `;
-        } else {
-            const materiaManha = getMateriaManha(diaSemana);
-            if (materiaManha) {
-                html += `
-                    <div class="atividade-detalhada preaula">
-                        <div class="atividade-header">
-                            <span class="atividade-horario">09:30 - 10:30</span>
-                            <span class="atividade-tipo">PRÉ-AULA</span>
-                        </div>
-                        <div class="atividade-titulo">${getNomeMateria(materiaManha)}</div>
-                        <div class="atividade-descricao">Revisar conteúdo da aula de hoje</div>
-                    </div>
-                `;
-            }
-        }
-        
-        // TRABALHO
-        const trabalho = trabalhosDiarios[dataStr];
-        if (trabalho) {
-            const prazo = prazos.find(p => p.id === trabalho.id);
-            html += `
-                <div class="atividade-detalhada trabalho">
-                    <div class="atividade-header">
-                        <span class="atividade-horario">10:30 - 11:30</span>
-                        <span class="atividade-tipo">TRABALHO</span>
-                    </div>
-                    <div class="atividade-titulo">${prazo ? prazo.nome : 'Trabalho'}</div>
-                    <div class="atividade-descricao">${trabalho.descricao}</div>
-                    ${trabalho.paginas ? `<div class="atividade-detalhe"><i class="fas fa-file-alt"></i> ${trabalho.paginas}</div>` : ''}
-                    ${trabalho.exercicios ? `<div class="atividade-detalhe"><i class="fas fa-pencil-alt"></i> ${trabalho.exercicios}</div>` : ''}
-                    ${trabalho.topicos ? `<div class="atividade-detalhe"><i class="fas fa-tags"></i> ${trabalho.topicos}</div>` : ''}
-                </div>
-            `;
-        }
-        
-        // CC50
-        html += `
-            <div class="atividade-detalhada cc50">
-                <div class="atividade-header">
-                    <span class="atividade-horario">11:30 - 12:00</span>
-                    <span class="atividade-tipo">CC50</span>
-                </div>
-                <div class="atividade-titulo">Introdução à Ciência da Computação</div>
-                <div class="atividade-descricao">Continuar de onde parou no curso</div>
-                <div class="atividade-detalhe"><i class="fas fa-play-circle"></i> <button class="btn-link" onclick="document.getElementById('nav-cc50').click()">Ir para o CC50</button></div>
-            </div>
-        `;
-        
-        // AULA DA TARDE
-        const materiaTarde = getMateriaTarde(diaSemana);
-        if (materiaTarde) {
-            html += `
-                <div class="atividade-detalhada">
-                    <div class="atividade-header">
-                        <span class="atividade-horario">14:00 - 18:00</span>
-                        <span class="atividade-tipo">AULA</span>
-                    </div>
-                    <div class="atividade-titulo">${getNomeMateria(materiaTarde)}</div>
-                    <div class="atividade-descricao">Aula presencial - Não esquecer material</div>
-                </div>
-            `;
-        } else if (diaSemana === 1) { // Segunda
-            html += `
-                <div class="atividade-detalhada cc50">
-                    <div class="atividade-header">
-                        <span class="atividade-horario">14:00 - 18:00</span>
-                        <span class="atividade-tipo">CC50 INTENSIVO</span>
-                    </div>
-                    <div class="atividade-titulo">Aproveitar tarde livre</div>
-                    <div class="atividade-descricao">Avançar no CC50 - Meta de 4h de estudo</div>
-                </div>
-            `;
-        }
-        
-        container.innerHTML = html;
-        
+            
+            container.appendChild(card);
+        });
     } catch (erro) {
-        console.error('Erro ao renderizar cronograma:', erro);
+        console.error('Erro ao renderizar prazos urgentes:', erro);
     }
 }
 
-function renderizarChecklistInteligente() {
+function renderizarGradeDia() {
+    try {
+        const hoje = new Date();
+        const diaSemana = hoje.getDay();
+        
+        const periodoManha = document.getElementById('periodo-manha');
+        const periodoTarde = document.getElementById('periodo-tarde');
+        const periodoCC50 = document.getElementById('periodo-cc50');
+        
+        if (!periodoManha || !periodoTarde || !periodoCC50) return;
+        
+        periodoManha.innerHTML = '';
+        periodoTarde.innerHTML = '';
+        periodoCC50.innerHTML = '';
+        
+        if (diaSemana === 0 || diaSemana === 6) {
+            periodoManha.innerHTML = '<div class="off-day">🚫 Dia de descanso</div>';
+            periodoTarde.innerHTML = '<div class="off-day">🚫 Dia de descanso</div>';
+            periodoCC50.innerHTML = '<div class="off-day">🚫 Dia de descanso</div>';
+            return;
+        }
+        
+        // Manhã - Pré-aula
+        const materiaManha = getMateriaManha(diaSemana);
+        if (materiaManha) {
+            periodoManha.appendChild(criarAtividadeElemento(materiaManha, 'Pré-aula', '9:30 - 10:30'));
+        }
+        
+        // Tarde - Aula
+        const materiaTarde = getMateriaTarde(diaSemana);
+        if (materiaTarde) {
+            periodoTarde.appendChild(criarAtividadeElemento(materiaTarde, 'Aula Presencial', '14:00 - 18:00'));
+        }
+        
+        // CC50
+        const cc50Div = document.createElement('div');
+        cc50Div.className = 'atividade-item cc50';
+        cc50Div.innerHTML = `
+            <div class="atividade-info">
+                <h4>CC50 - Introdução à Ciência da Computação</h4>
+                <p><strong>Estudo Diário</strong> - 11:30 - 12:00</p>
+            </div>
+            <button class="btn-concluir" id="btn-abrir-cc50-hoje"><i class="fas fa-play"></i></button>
+        `;
+        
+        periodoCC50.appendChild(cc50Div);
+        
+    } catch (erro) {
+        console.error('Erro ao renderizar grade:', erro);
+    }
+}
+
+function getMateriaManha(diaSemana) {
+    const mapa = {
+        1: 'fundamentos',
+        2: 'es',
+        3: 'ic',
+        4: 'lp',
+        5: 'bd'
+    };
+    return mapa[diaSemana] || null;
+}
+
+function getMateriaTarde(diaSemana) {
+    const mapa = {
+        2: 'es',
+        3: 'ic',
+        4: 'lp',
+        5: 'bd'
+    };
+    return mapa[diaSemana] || null;
+}
+
+function criarAtividadeElemento(materia, titulo, descricao) {
+    const div = document.createElement('div');
+    div.className = `atividade-item ${materia}`;
+    
+    const nomes = {
+        es: 'Eng. Software',
+        ic: 'Intro. Computação',
+        lp: 'Lógica Prog.',
+        bd: 'Banco Dados',
+        bootcamp: 'Bootcamp',
+        fundamentos: 'Fundamentos',
+        cc50: 'CC50'
+    };
+    
+    div.innerHTML = `
+        <div class="atividade-info">
+            <h4>${nomes[materia] || materia}</h4>
+            <p><strong>${titulo}</strong> - ${descricao}</p>
+        </div>
+    `;
+    
+    return div;
+}
+
+function renderizarSugestoes() {
+    try {
+        const container = document.getElementById('sugestoes-container');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        const hoje = new Date();
+        const prazosPendentes = prazos
+            .filter(p => !p.concluido)
+            .sort((a, b) => new Date(a.data) - new Date(b.data))
+            .slice(0, 3);
+        
+        prazosPendentes.forEach(prazo => {
+            const div = document.createElement('div');
+            div.className = `suggestion-item ${prazo.materia}`;
+            
+            const diasAte = Math.ceil((new Date(prazo.data + 'T12:00:00') - hoje) / (1000 * 60 * 60 * 24));
+            
+            div.innerHTML = `
+                <div>
+                    <h4>${prazo.nome}</h4>
+                    <p>${getNomeMateria(prazo.materia)} • ${diasAte} dias</p>
+                </div>
+                <button class="btn-concluir" data-id="${prazo.id}">✓</button>
+            `;
+
+            const btnConcluir = div.querySelector('.btn-concluir');
+            btnConcluir.addEventListener('click', (e) => {
+                e.stopPropagation();
+                abrirModalConclusao(prazo.id);
+            });
+            
+            container.appendChild(div);
+        });
+    } catch (erro) {
+        console.error('Erro ao renderizar sugestões:', erro);
+    }
+}
+
+function renderizarChecklist() {
     try {
         const container = document.getElementById('checklist-container');
         if (!container) return;
         
+        container.innerHTML = '';
+        
         const hoje = new Date();
-        const dataStr = hoje.toISOString().split('T')[0];
         const diaSemana = hoje.getDay();
+        const dataStr = hoje.toISOString().split('T')[0];
         
         if (diaSemana === 0 || diaSemana === 6) {
-            container.innerHTML = '<p class="text-muted">Fim de semana - descanse! 🎉</p>';
+            container.innerHTML = '<p class="text-muted">Dia de descanso</p>';
             document.getElementById('checklist-progress').textContent = '0/0';
             return;
         }
         
-        const itens = [];
+        const itens = [
+            { id: `check-preaula-${dataStr}`, materia: getMateriaManha(diaSemana), titulo: 'Pré-aula (9:30-10:30)' },
+            { id: `check-trabalho-${dataStr}`, materia: 'trabalhos', titulo: 'Trabalhos (10:30-11:30)' },
+            { id: `check-cc50-${dataStr}`, materia: 'cc50', titulo: 'CC50 (11:30-12:00)' }
+        ].filter(item => item.materia);
         
-        // Item 1: Pré-aula
-        const preAula = conteudoPreAula[dataStr];
-        if (preAula) {
-            itens.push({
-                id: `check-preaula-${dataStr}`,
-                texto: `Pré-aula: ${getNomeMateria(preAula.materia)}`,
-                detalhe: preAula.conteudo.substring(0, 40) + '...'
-            });
-        } else {
-            const materiaManha = getMateriaManha(diaSemana);
-            if (materiaManha) {
-                itens.push({
-                    id: `check-preaula-${dataStr}`,
-                    texto: `Pré-aula: ${getNomeMateria(materiaManha)}`,
-                    detalhe: 'Revisar conteúdo da aula'
-                });
-            }
+        if (diaSemana === 1) { // Segunda
+            itens.push({ id: `check-cc50-tarde-${dataStr}`, materia: 'cc50', titulo: 'CC50 Intensivo (14:00-18:00)' });
         }
         
-        // Item 2: Trabalho
-        const trabalho = trabalhosDiarios[dataStr];
-        if (trabalho) {
-            const prazo = prazos.find(p => p.id === trabalho.id);
-            itens.push({
-                id: `check-trabalho-${dataStr}`,
-                texto: `Trabalho: ${prazo ? prazo.nome : 'Trabalho do dia'}`,
-                detalhe: trabalho.descricao
-            });
-        }
-        
-        // Item 3: CC50
-        itens.push({
-            id: `check-cc50-${dataStr}`,
-            texto: 'CC50: 30 minutos de estudo',
-            detalhe: 'Avançar no curso'
-        });
-        
-        // Item 4: Segunda intensiva
-        if (diaSemana === 1) {
-            itens.push({
-                id: `check-cc50-tarde-${dataStr}`,
-                texto: '🔥 CC50 Intensivo: 4 horas',
-                detalhe: 'Aproveitar tarde livre'
-            });
-        }
-        
-        // Calcular progresso
         const concluidos = itens.filter(item => estado.checklistItens.includes(item.id)).length;
         document.getElementById('checklist-progress').textContent = `${concluidos}/${itens.length}`;
-        
-        container.innerHTML = '';
         
         itens.forEach(item => {
             const div = document.createElement('div');
             div.className = `checklist-item ${estado.checklistItens.includes(item.id) ? 'concluido' : ''}`;
             
-            const checkbox = document.createElement('div');
-            checkbox.className = `checklist-checkbox ${estado.checklistItens.includes(item.id) ? 'checked' : ''}`;
+            const checkboxDiv = document.createElement('div');
+            checkboxDiv.className = `checklist-checkbox ${estado.checklistItens.includes(item.id) ? 'checked' : ''}`;
             if (estado.checklistItens.includes(item.id)) {
-                checkbox.innerHTML = '<i class="fas fa-check"></i>';
+                checkboxDiv.innerHTML = '<i class="fas fa-check"></i>';
             }
-            checkbox.addEventListener('click', () => toggleChecklistItem(item.id));
+
+            checkboxDiv.addEventListener('click', () => toggleChecklistItem(item.id));
             
-            const info = document.createElement('div');
-            info.className = 'checklist-info';
-            info.innerHTML = `<h4>${item.texto}</h4><p>${item.detalhe}</p>`;
+            div.appendChild(checkboxDiv);
             
-            div.appendChild(checkbox);
-            div.appendChild(info);
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'checklist-info';
+            infoDiv.innerHTML = `
+                <h4>${item.titulo}</h4>
+                <p>${item.materia === 'cc50' ? 'Curso CC50' : getNomeMateria(item.materia)}</p>
+            `;
+            div.appendChild(infoDiv);
+            
+            const spanMateria = document.createElement('span');
+            spanMateria.className = `checklist-materia ${item.materia}`;
+            spanMateria.textContent = item.materia === 'cc50' ? 'CC50' : item.materia;
+            div.appendChild(spanMateria);
             
             container.appendChild(div);
         });
@@ -1243,408 +1099,38 @@ function renderizarChecklistInteligente() {
 
 function toggleChecklistItem(itemId) {
     try {
+        if (!estado.checklistItens) {
+            estado.checklistItens = [];
+        }
+        
         const index = estado.checklistItens.indexOf(itemId);
         if (index === -1) {
             estado.checklistItens.push(itemId);
-            mostrarToast('✅ Tarefa concluída!', 'success');
+            mostrarToast('✅ Tarefa concluída', 'success');
         } else {
             estado.checklistItens.splice(index, 1);
             mostrarToast('Tarefa desmarcada', 'info');
         }
         
         localStorage.setItem('agenda_checklist', JSON.stringify(estado.checklistItens));
-        renderizarChecklistInteligente();
+        renderizarChecklist();
     } catch (erro) {
         console.error('Erro ao alternar checklist:', erro);
     }
 }
 
-function verificarProvasProximas() {
+function resetarChecklistDiario() {
     try {
-        const hoje = new Date();
-        const container = document.getElementById('proximas-provas');
-        if (!container) return;
-        
-        const provasProximas = prazos
-            .filter(p => p.tipo === 'prova' && !p.concluido)
-            .map(p => {
-                const dataProva = new Date(p.data + 'T12:00:00');
-                const diasRestantes = Math.ceil((dataProva - hoje) / (1000 * 60 * 60 * 24));
-                return { ...p, diasRestantes };
-            })
-            .filter(p => p.diasRestantes <= 14 && p.diasRestantes > 0)
-            .sort((a, b) => a.diasRestantes - b.diasRestantes);
-        
-        if (provasProximas.length === 0) {
-            container.innerHTML = '';
-            return;
+        if (confirm('Resetar checklist de hoje?')) {
+            estado.checklistItens = [];
+            localStorage.setItem('agenda_checklist', JSON.stringify(estado.checklistItens));
+            renderizarChecklist();
+            mostrarToast('Checklist resetado', 'info');
         }
-        
-        const prova = provasProximas[0];
-        
-        // Sugestão de estudo baseado no dia
-        let sugestao = '';
-        if (prova.diasRestantes === 14) {
-            sugestao = 'Hoje: Revisão geral do conteúdo';
-        } else if (prova.diasRestantes === 13) {
-            sugestao = 'Hoje: Exercícios básicos';
-        } else if (prova.diasRestantes === 12) {
-            sugestao = 'Hoje: Aprofundar tópicos difíceis';
-        } else if (prova.diasRestantes === 11) {
-            sugestao = 'Hoje: Resumos e mapas mentais';
-        } else if (prova.diasRestantes === 10) {
-            sugestao = 'Hoje: Primeiro simulado';
-        } else if (prova.diasRestantes === 9) {
-            sugestao = 'Hoje: Corrigir erros do simulado';
-        } else if (prova.diasRestantes === 8) {
-            sugestao = 'Hoje: Revisar pontos fracos';
-        } else if (prova.diasRestantes === 7) {
-            sugestao = 'Hoje: Exercícios avançados';
-        } else if (prova.diasRestantes === 6) {
-            sugestao = 'Hoje: Segundo simulado';
-        } else if (prova.diasRestantes === 5) {
-            sugestao = 'Hoje: Revisão de fórmulas/conceitos';
-        } else if (prova.diasRestantes === 4) {
-            sugestao = 'Hoje: Grupos de estudo';
-        } else if (prova.diasRestantes === 3) {
-            sugestao = 'Hoje: Revisão rápida';
-        } else if (prova.diasRestantes === 2) {
-            sugestao = 'Hoje: Descanso ativo (revisão leve)';
-        } else if (prova.diasRestantes === 1) {
-            sugestao = 'Hoje: Véspera - revisão rápida e dormir cedo';
-        }
-        
-        container.innerHTML = `
-            <div class="prova-alerta">
-                <i class="fas fa-exclamation-triangle"></i>
-                <div class="prova-info">
-                    <h3>⚠️ Prova em ${prova.diasRestantes} dias: ${prova.nome}</h3>
-                    <p>${getNomeMateria(prova.materia)}</p>
-                    <p class="prova-contador">${sugestao}</p>
-                </div>
-            </div>
-        `;
-        
     } catch (erro) {
-        console.error('Erro ao verificar provas:', erro);
+        console.error('Erro ao resetar checklist:', erro);
     }
 }
-
-function atualizarNotificacoes() {
-    try {
-        const hoje = new Date();
-        
-        const prazosProximos = prazos
-            .filter(p => !p.concluido)
-            .map(p => {
-                const dataPrazo = new Date(p.data + 'T12:00:00');
-                const diasRestantes = Math.ceil((dataPrazo - hoje) / (1000 * 60 * 60 * 24));
-                return { ...p, diasRestantes };
-            })
-            .filter(p => p.diasRestantes <= 7 && p.diasRestantes > 0);
-        
-        const badge = document.getElementById('notificacao-badge');
-        if (badge) {
-            badge.textContent = prazosProximos.length;
-            badge.style.display = prazosProximos.length > 0 ? 'flex' : 'none';
-        }
-        
-    } catch (erro) {
-        console.error('Erro ao atualizar notificações:', erro);
-    }
-}
-
-function mostrarNotificacoes() {
-    try {
-        const hoje = new Date();
-        
-        const prazosProximos = prazos
-            .filter(p => !p.concluido)
-            .map(p => {
-                const dataPrazo = new Date(p.data + 'T12:00:00');
-                const diasRestantes = Math.ceil((dataPrazo - hoje) / (1000 * 60 * 60 * 24));
-                return { ...p, diasRestantes };
-            })
-            .filter(p => p.diasRestantes <= 7 && p.diasRestantes > 0)
-            .sort((a, b) => a.diasRestantes - b.diasRestantes);
-        
-        if (prazosProximos.length === 0) {
-            mostrarToast('Nenhuma notificação no momento', 'info');
-            return;
-        }
-        
-        let mensagem = '📢 Prazos próximos:\n';
-        prazosProximos.forEach(p => {
-            mensagem += `\n- ${p.nome}: ${p.diasRestantes} dias`;
-        });
-        
-        alert(mensagem);
-        
-    } catch (erro) {
-        console.error('Erro ao mostrar notificações:', erro);
-    }
-}
-
-// ============================================
-// FUNÇÕES DE CC50
-// ============================================
-
-function inicializarCC50() {
-    renderizarCC50();
-    atualizarProgressoCC50();
-}
-
-function renderizarCC50() {
-    try {
-        const container = document.getElementById('cc50-modulos');
-        if (!container) return;
-        
-        container.innerHTML = '';
-        
-        cc50Modulos.forEach((modulo, indexModulo) => {
-            const moduloDiv = document.createElement('div');
-            moduloDiv.className = 'cc50-modulo';
-            
-            let totalAulas = modulo.aulas.length;
-            let concluidas = 0;
-            modulo.aulas.forEach((aula, indexAula) => {
-                const aulaId = `cc50-${indexModulo}-${indexAula}`;
-                if (estado.cc50Progresso[aulaId]?.status === 'completa') concluidas++;
-            });
-            const progressoModulo = Math.round((concluidas / totalAulas) * 100);
-            
-            moduloDiv.innerHTML = `
-                <div class="modulo-header" data-modulo="${indexModulo}">
-                    <h3>${modulo.nome}</h3>
-                    <span class="modulo-progresso">${concluidas}/${totalAulas} (${progressoModulo}%)</span>
-                </div>
-                <div class="modulo-aulas" id="modulo-${indexModulo}-aulas"></div>
-            `;
-            
-            container.appendChild(moduloDiv);
-            
-            const aulasContainer = document.getElementById(`modulo-${indexModulo}-aulas`);
-            
-            modulo.aulas.forEach((aula, indexAula) => {
-                const aulaId = `cc50-${indexModulo}-${indexAula}`;
-                const status = estado.cc50Progresso[aulaId]?.status || 'nao_iniciada';
-                
-                const aulaDiv = document.createElement('div');
-                aulaDiv.className = 'aula-item';
-                aulaDiv.dataset.modulo = indexModulo;
-                aulaDiv.dataset.aula = indexAula;
-                
-                let statusIcon = '';
-                if (status === 'assistida') statusIcon = '<i class="fas fa-play"></i>';
-                else if (status === 'exercicios') statusIcon = '<i class="fas fa-code"></i>';
-                else if (status === 'completa') statusIcon = '<i class="fas fa-check"></i>';
-                
-                aulaDiv.innerHTML = `
-                    <div class="aula-status ${status}">${statusIcon}</div>
-                    <div class="aula-info">
-                        <h4>${aula}</h4>
-                        <p>${getStatusTexto(status)}</p>
-                    </div>
-                `;
-                
-                aulaDiv.addEventListener('click', () => abrirAulaCC50(indexModulo, indexAula));
-                
-                aulasContainer.appendChild(aulaDiv);
-            });
-            
-            const header = moduloDiv.querySelector('.modulo-header');
-            header.addEventListener('click', () => {
-                aulasContainer.classList.toggle('expandido');
-            });
-        });
-    } catch (erro) {
-        console.error('Erro ao renderizar CC50:', erro);
-    }
-}
-
-function getStatusTexto(status) {
-    const textos = {
-        'nao_iniciada': 'Não iniciada',
-        'assistida': 'Assistida',
-        'exercicios': 'Exercícios',
-        'completa': 'Concluída'
-    };
-    return textos[status] || status;
-}
-
-function abrirAulaCC50(moduloIndex, aulaIndex) {
-    try {
-        const aulaId = `cc50-${moduloIndex}-${aulaIndex}`;
-        const aula = cc50Modulos[moduloIndex].aulas[aulaIndex];
-        const progresso = estado.cc50Progresso[aulaId] || { status: 'nao_iniciada', anotacoes: '' };
-        
-        estado.cc50AulaAtual = { moduloIndex, aulaIndex, aulaId };
-        
-        document.getElementById('modal-aula-titulo').querySelector('span').textContent = aula;
-        document.getElementById('aula-status').value = progresso.status;
-        document.getElementById('aula-anotacoes').value = progresso.anotacoes || '';
-        
-        document.getElementById('modal-aula-cc50').classList.add('active');
-    } catch (erro) {
-        console.error('Erro ao abrir aula CC50:', erro);
-    }
-}
-
-function salvarAulaCC50() {
-    try {
-        if (!estado.cc50AulaAtual) return;
-        
-        const { moduloIndex, aulaIndex, aulaId } = estado.cc50AulaAtual;
-        const status = document.getElementById('aula-status').value;
-        const anotacoes = document.getElementById('aula-anotacoes').value;
-        
-        estado.cc50Progresso[aulaId] = {
-            status,
-            anotacoes
-        };
-        
-        localStorage.setItem('agenda_cc50', JSON.stringify(estado.cc50Progresso));
-        
-        fecharModalAulaCC50();
-        renderizarCC50();
-        atualizarProgressoCC50();
-        renderizarPreviaCC50();
-        
-        // Verificar conquistas
-        verificarConquistasCC50();
-        
-        mostrarToast('Progresso salvo!', 'success');
-    } catch (erro) {
-        console.error('Erro ao salvar aula CC50:', erro);
-    }
-}
-
-function fecharModalAulaCC50() {
-    document.getElementById('modal-aula-cc50').classList.remove('active');
-    estado.cc50AulaAtual = null;
-}
-
-function atualizarProgressoCC50() {
-    try {
-        let totalAulas = 0;
-        let concluidas = 0;
-        
-        cc50Modulos.forEach((modulo, i) => {
-            modulo.aulas.forEach((aula, j) => {
-                totalAulas++;
-                const aulaId = `cc50-${i}-${j}`;
-                if (estado.cc50Progresso[aulaId]?.status === 'completa') concluidas++;
-            });
-        });
-        
-        const percentual = Math.round((concluidas / totalAulas) * 100);
-        
-        document.getElementById('cc50-percentual').textContent = percentual + '%';
-        document.getElementById('cc50-aulas-concluidas').textContent = concluidas;
-        document.getElementById('cc50-progresso-header').textContent = percentual + '%';
-        
-        const grau = (percentual / 100) * 360;
-        document.querySelector('.progresso-circular').style.background = 
-            `conic-gradient(#ec4899 ${grau}deg, #333 ${grau}deg)`;
-        
-        const horasEstudadas = Math.round(concluidas * 0.75);
-        document.getElementById('cc50-horas-estudadas').textContent = horasEstudadas;
-        
-        document.getElementById('cc50-horas-bonus').textContent = estado.cc50Bonus;
-        
-        const semanasRestantes = Math.ceil((totalAulas - concluidas) / 7);
-        const dataPrevista = new Date();
-        dataPrevista.setDate(dataPrevista.getDate() + (semanasRestantes * 7));
-        
-        const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-        document.getElementById('cc50-previsao').textContent = meses[dataPrevista.getMonth()] + '/' + dataPrevista.getFullYear();
-        
-    } catch (erro) {
-        console.error('Erro ao atualizar progresso CC50:', erro);
-    }
-}
-
-function renderizarPreviaCC50() {
-    try {
-        const container = document.getElementById('cc50-previa');
-        if (!container) return;
-        
-        let totalAulas = 0;
-        let concluidas = 0;
-        
-        cc50Modulos.forEach((modulo, i) => {
-            modulo.aulas.forEach((aula, j) => {
-                totalAulas++;
-                const aulaId = `cc50-${i}-${j}`;
-                if (estado.cc50Progresso[aulaId]?.status === 'completa') concluidas++;
-            });
-        });
-        
-        const percentual = Math.round((concluidas / totalAulas) * 100);
-        
-        container.innerHTML = `
-            <h3><i class="fas fa-laptop-code"></i> CC50</h3>
-            <div class="cc50-progresso-hoje">
-                <div class="progresso-mini" style="background: conic-gradient(#ec4899 ${(percentual/100)*360}deg, #333 ${(percentual/100)*360}deg)">
-                    ${percentual}%
-                </div>
-                <div>
-                    <p><strong>Progresso:</strong> ${concluidas}/${totalAulas} aulas</p>
-                    <p><strong>Hoje:</strong> ${new Date().getDay() === 1 ? '4.5h' : '30min'} disponíveis</p>
-                    <button class="btn-primary" onclick="document.getElementById('nav-cc50').click()">Continuar</button>
-                </div>
-            </div>
-        `;
-    } catch (erro) {
-        console.error('Erro ao renderizar prévia CC50:', erro);
-    }
-}
-
-function verificarConquistasCC50() {
-    try {
-        let totalAulas = 0;
-        let concluidas = 0;
-        
-        cc50Modulos.forEach((modulo, i) => {
-            modulo.aulas.forEach((aula, j) => {
-                totalAulas++;
-                const aulaId = `cc50-${i}-${j}`;
-                if (estado.cc50Progresso[aulaId]?.status === 'completa') concluidas++;
-            });
-        });
-        
-        const percentual = Math.round((concluidas / totalAulas) * 100);
-        
-        if (percentual >= 25 && !estado.conquistas.includes('cc50-25')) {
-            estado.conquistas.push('cc50-25');
-            mostrarToast('🏆 Conquista: 25% do CC50!', 'success');
-        }
-        
-        if (percentual >= 50 && !estado.conquistas.includes('cc50-50')) {
-            estado.conquistas.push('cc50-50');
-            mostrarToast('🏆 Conquista: Metade do CC50!', 'success');
-        }
-        
-        if (percentual >= 75 && !estado.conquistas.includes('cc50-75')) {
-            estado.conquistas.push('cc50-75');
-            mostrarToast('🏆 Conquista: 75% do CC50!', 'success');
-        }
-        
-        if (percentual >= 100 && !estado.conquistas.includes('cc50-100')) {
-            estado.conquistas.push('cc50-100');
-            mostrarToast('🏆🏆🏆 CONQUISTA MÁXIMA: CC50 CONCLUÍDO!', 'success');
-        }
-        
-        localStorage.setItem('agenda_conquistas', JSON.stringify(estado.conquistas));
-        
-    } catch (erro) {
-        console.error('Erro ao verificar conquistas:', erro);
-    }
-}
-
-// ============================================
-// FUNÇÕES DE PRAZOS
-// ============================================
 
 function renderizarPrazos(filtro = 'todos') {
     try {
@@ -1664,7 +1150,7 @@ function renderizarPrazos(filtro = 'todos') {
         
         prazosFiltrados.forEach(prazo => {
             const div = document.createElement('div');
-            div.className = `prazo-item ${prazo.concluido ? 'concluido' : ''}`;
+            div.className = `prazo-item ${prazo.tipo} ${prazo.concluido ? 'concluido' : ''}`;
             
             const dataPrazo = new Date(prazo.data + 'T12:00:00');
             const diasRestantes = Math.ceil((dataPrazo - hoje) / (1000 * 60 * 60 * 24));
@@ -1705,6 +1191,411 @@ function renderizarPrazos(filtro = 'todos') {
     }
 }
 
+function renderizarCalendario() {
+    try {
+        const grid = document.getElementById('calendario-grid');
+        if (!grid) return;
+        
+        grid.innerHTML = '';
+        
+        const primeiroDia = new Date(estado.anoCalendario, estado.mesCalendario, 1);
+        const ultimoDia = new Date(estado.anoCalendario, estado.mesCalendario + 1, 0);
+        const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+        
+        diasSemana.forEach(dia => {
+            const div = document.createElement('div');
+            div.className = 'calendario-dia-semana';
+            div.textContent = dia;
+            grid.appendChild(div);
+        });
+        
+        for (let i = 0; i < primeiroDia.getDay(); i++) {
+            const div = document.createElement('div');
+            div.className = 'calendario-dia outro-mes';
+            grid.appendChild(div);
+        }
+        
+        const hoje = new Date();
+        
+        for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
+            const div = document.createElement('div');
+            div.className = 'calendario-dia';
+            
+            const dataAtual = new Date(estado.anoCalendario, estado.mesCalendario, dia);
+            if (dataAtual.toDateString() === hoje.toDateString()) {
+                div.classList.add('hoje');
+            }
+            
+            div.innerHTML = `<span class="dia-numero">${dia}</span>`;
+            
+            const dataStr = `${estado.anoCalendario}-${String(estado.mesCalendario + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+            const eventos = prazos.filter(p => p.data === dataStr && !p.concluido);
+            
+            if (eventos.length > 0) {
+                const eventosDiv = document.createElement('div');
+                eventosDiv.className = 'dia-eventos';
+                eventos.forEach(e => {
+                    const indicador = document.createElement('span');
+                    indicador.className = `evento-indicador ${e.tipo}`;
+                    eventosDiv.appendChild(indicador);
+                });
+                div.appendChild(eventosDiv);
+            }
+
+            div.addEventListener('click', () => verEventosDoDia(dia));
+            
+            grid.appendChild(div);
+        }
+        
+        const mesAnoEl = document.getElementById('mes-ano');
+        if (mesAnoEl) {
+            mesAnoEl.textContent = new Date(estado.anoCalendario, estado.mesCalendario).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+        }
+        
+    } catch (erro) {
+        console.error('Erro ao renderizar calendário:', erro);
+    }
+}
+
+function verEventosDoDia(dia) {
+    try {
+        const dataStr = `${estado.anoCalendario}-${String(estado.mesCalendario + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+        const eventos = prazos.filter(p => p.data === dataStr && !p.concluido);
+        
+        if (eventos.length === 0) {
+            mostrarToast('Nenhum evento neste dia', 'info');
+            return;
+        }
+        
+        const titulo = document.querySelector('#modal-evento-titulo span');
+        if (titulo) titulo.textContent = formatarData(dataStr);
+        
+        const lista = document.getElementById('modal-evento-lista');
+        lista.innerHTML = '';
+        
+        eventos.forEach(e => {
+            const div = document.createElement('div');
+            div.className = 'evento-item';
+            div.innerHTML = `
+                <span class="evento-cor ${e.tipo}"></span>
+                <span class="evento-nome">${e.nome}</span>
+                <span class="evento-materia">${getNomeMateria(e.materia)}</span>
+            `;
+            lista.appendChild(div);
+        });
+        
+        document.getElementById('modal-evento').classList.add('active');
+        
+    } catch (erro) {
+        console.error('Erro ao ver eventos:', erro);
+    }
+}
+
+function fecharModalEvento() {
+    document.getElementById('modal-evento').classList.remove('active');
+}
+
+function mesAnterior() {
+    if (estado.mesCalendario === 0) {
+        estado.mesCalendario = 11;
+        estado.anoCalendario--;
+    } else {
+        estado.mesCalendario--;
+    }
+    renderizarCalendario();
+}
+
+function proximoMes() {
+    if (estado.mesCalendario === 11) {
+        estado.mesCalendario = 0;
+        estado.anoCalendario++;
+    } else {
+        estado.mesCalendario++;
+    }
+    renderizarCalendario();
+}
+
+// ============================================
+// FUNÇÕES DE CRONOGRAMA E CC50
+// ============================================
+
+function renderizarCronogramaDia() {
+    try {
+        const container = document.getElementById('cronograma-dia');
+        if (!container) return;
+        
+        container.innerHTML = '<h3><i class="fas fa-clock"></i> Seu cronograma de hoje</h3>';
+        
+        const hoje = new Date();
+        const diaSemana = hoje.getDay();
+        const isSegunda = diaSemana === 1;
+        
+        const cronograma = [
+            { horario: '09:30 - 10:30', atividade: '📖 Pré-aula', descricao: getNomeMateria(getMateriaManha(diaSemana)) || 'Descanso', tipo: 'preaula', duracao: '1h' },
+            { horario: '10:30 - 11:30', atividade: '📝 Trabalhos', descricao: 'Adiantar prazos da faculdade', tipo: 'trabalho', duracao: '1h' },
+            { horario: '11:30 - 12:00', atividade: '🎓 CC50', descricao: 'Estudo diário', tipo: 'cc50', duracao: '30min' }
+        ];
+        
+        if (isSegunda) {
+            cronograma.push(
+                { horario: '14:00 - 18:00', atividade: '🔥 CC50 INTENSIVO', descricao: 'Aproveitar tarde livre', tipo: 'cc50', duracao: '4h' }
+            );
+        }
+        
+        cronograma.forEach(item => {
+            if (item.descricao === 'null' || item.descricao === 'undefined') return;
+            
+            const div = document.createElement('div');
+            div.className = `cronograma-item ${item.tipo}`;
+            div.innerHTML = `
+                <div class="cronograma-horario">${item.horario}</div>
+                <div class="cronograma-atividade">
+                    <h4>${item.atividade}</h4>
+                    <p>${item.descricao}</p>
+                </div>
+                <div class="cronograma-duracao">${item.duracao}</div>
+            `;
+            container.appendChild(div);
+        });
+    } catch (erro) {
+        console.error('Erro ao renderizar cronograma:', erro);
+    }
+}
+
+function renderizarDestaqueCC50() {
+    try {
+        const container = document.getElementById('cc50-destaque-hoje');
+        if (!container) return;
+        
+        const hoje = new Date();
+        const diaSemana = hoje.getDay();
+        const isSegunda = diaSemana === 1;
+        
+        let horasHoje = isSegunda ? 4.5 : 0.5;
+        
+        // Calcula progresso do CC50
+        let totalAulas = 0;
+        let concluidas = 0;
+        cc50Modulos.forEach((modulo, i) => {
+            modulo.aulas.forEach((aula, j) => {
+                totalAulas++;
+                const aulaId = `cc50-${i}-${j}`;
+                if (estado.cc50Progresso[aulaId]?.status === 'completa') concluidas++;
+            });
+        });
+        const percentual = Math.round((concluidas / totalAulas) * 100);
+        
+        container.innerHTML = `
+            <div class="cc50-destaque">
+                <h3><i class="fas fa-laptop-code"></i> CC50 - Introdução à Ciência da Computação</h3>
+                <div class="cc50-progresso-hoje">
+                    <div class="progresso-mini" style="background: conic-gradient(#ec4899 ${(percentual/100)*360}deg, #333 ${(percentual/100)*360}deg)">
+                        ${percentual}%
+                    </div>
+                    <div>
+                        <p><strong>Hoje:</strong> ${horasHoje}h de CC50</p>
+                        <p><strong>Progresso:</strong> ${concluidas}/${totalAulas} aulas</p>
+                        <p><strong>Bônus acumulado:</strong> +${estado.cc50Bonus}h</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    } catch (erro) {
+        console.error('Erro ao renderizar destaque CC50:', erro);
+    }
+}
+
+function inicializarCC50() {
+    renderizarCC50();
+    atualizarProgressoCC50();
+}
+
+function renderizarCC50() {
+    try {
+        const container = document.getElementById('cc50-modulos');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        cc50Modulos.forEach((modulo, indexModulo) => {
+            const moduloDiv = document.createElement('div');
+            moduloDiv.className = 'cc50-modulo';
+            
+            // Calcula progresso do módulo
+            let totalAulas = modulo.aulas.length;
+            let concluidas = 0;
+            modulo.aulas.forEach((aula, indexAula) => {
+                const aulaId = `cc50-${indexModulo}-${indexAula}`;
+                if (estado.cc50Progresso[aulaId]?.status === 'completa') concluidas++;
+            });
+            const progressoModulo = Math.round((concluidas / totalAulas) * 100);
+            
+            moduloDiv.innerHTML = `
+                <div class="modulo-header" data-modulo="${indexModulo}">
+                    <h3>${modulo.nome}</h3>
+                    <span class="modulo-progresso">${concluidas}/${totalAulas} (${progressoModulo}%)</span>
+                </div>
+                <div class="modulo-aulas" id="modulo-${indexModulo}-aulas"></div>
+            `;
+            
+            container.appendChild(moduloDiv);
+            
+            const aulasContainer = document.getElementById(`modulo-${indexModulo}-aulas`);
+            
+            modulo.aulas.forEach((aula, indexAula) => {
+                const aulaId = `cc50-${indexModulo}-${indexAula}`;
+                const status = estado.cc50Progresso[aulaId]?.status || 'nao_iniciada';
+                
+                const aulaDiv = document.createElement('div');
+                aulaDiv.className = 'aula-item';
+                aulaDiv.dataset.modulo = indexModulo;
+                aulaDiv.dataset.aula = indexAula;
+                
+                let statusIcon = '';
+                if (status === 'nao_iniciada') statusIcon = '';
+                else if (status === 'assistida') statusIcon = '<i class="fas fa-play"></i>';
+                else if (status === 'exercicios') statusIcon = '<i class="fas fa-code"></i>';
+                else if (status === 'completa') statusIcon = '<i class="fas fa-check"></i>';
+                
+                aulaDiv.innerHTML = `
+                    <div class="aula-status ${status}">
+                        ${statusIcon}
+                    </div>
+                    <div class="aula-info">
+                        <h4>${aula}</h4>
+                        <p>${getStatusTexto(status)}</p>
+                    </div>
+                `;
+                
+                aulaDiv.addEventListener('click', () => abrirAulaCC50(indexModulo, indexAula));
+                
+                aulasContainer.appendChild(aulaDiv);
+            });
+            
+            // Evento para expandir/colapsar módulo
+            const header = moduloDiv.querySelector('.modulo-header');
+            header.addEventListener('click', () => {
+                aulasContainer.classList.toggle('expandido');
+            });
+        });
+    } catch (erro) {
+        console.error('Erro ao renderizar CC50:', erro);
+    }
+}
+
+function getStatusTexto(status) {
+    const textos = {
+        'nao_iniciada': 'Não iniciada',
+        'assistida': 'Aula assistida',
+        'exercicios': 'Exercícios em andamento',
+        'completa': 'Concluída'
+    };
+    return textos[status] || status;
+}
+
+function abrirAulaCC50(moduloIndex, aulaIndex) {
+    try {
+        const aulaId = `cc50-${moduloIndex}-${aulaIndex}`;
+        const aula = cc50Modulos[moduloIndex].aulas[aulaIndex];
+        const progresso = estado.cc50Progresso[aulaId] || { status: 'nao_iniciada', anotacoes: '' };
+        
+        estado.cc50AulaAtual = { moduloIndex, aulaIndex, aulaId };
+        
+        document.getElementById('modal-aula-titulo').querySelector('span').textContent = aula;
+        document.getElementById('modal-aula-descricao').textContent = `Módulo: ${cc50Modulos[moduloIndex].nome}`;
+        document.getElementById('aula-status').value = progresso.status;
+        document.getElementById('aula-anotacoes').value = progresso.anotacoes || '';
+        
+        document.getElementById('modal-aula-cc50').classList.add('active');
+    } catch (erro) {
+        console.error('Erro ao abrir aula CC50:', erro);
+    }
+}
+
+function salvarAulaCC50() {
+    try {
+        if (!estado.cc50AulaAtual) return;
+        
+        const { moduloIndex, aulaIndex, aulaId } = estado.cc50AulaAtual;
+        const status = document.getElementById('aula-status').value;
+        const anotacoes = document.getElementById('aula-anotacoes').value;
+        
+        estado.cc50Progresso[aulaId] = {
+            status,
+            anotacoes
+        };
+        
+        localStorage.setItem('agenda_cc50', JSON.stringify(estado.cc50Progresso));
+        
+        fecharModalAulaCC50();
+        renderizarCC50();
+        atualizarProgressoCC50();
+        
+        mostrarToast('Progresso do CC50 salvo!', 'success');
+    } catch (erro) {
+        console.error('Erro ao salvar aula CC50:', erro);
+    }
+}
+
+function fecharModalAulaCC50() {
+    document.getElementById('modal-aula-cc50').classList.remove('active');
+    estado.cc50AulaAtual = null;
+}
+
+function atualizarProgressoCC50() {
+    try {
+        let totalAulas = 0;
+        let concluidas = 0;
+        
+        cc50Modulos.forEach((modulo, i) => {
+            modulo.aulas.forEach((aula, j) => {
+                totalAulas++;
+                const aulaId = `cc50-${i}-${j}`;
+                if (estado.cc50Progresso[aulaId]?.status === 'completa') concluidas++;
+            });
+        });
+        
+        const percentual = Math.round((concluidas / totalAulas) * 100);
+        
+        // Atualiza elementos na interface
+        const percentualEl = document.getElementById('cc50-percentual');
+        if (percentualEl) percentualEl.textContent = percentual + '%';
+        
+        const aulasConcluidasEl = document.getElementById('cc50-aulas-concluidas');
+        if (aulasConcluidasEl) aulasConcluidasEl.textContent = concluidas;
+        
+        const headerEl = document.getElementById('cc50-progresso-header');
+        if (headerEl) headerEl.textContent = percentual + '%';
+        
+        // Atualiza gráfico circular
+        const grau = (percentual / 100) * 360;
+        const circularEl = document.querySelector('.progresso-circular');
+        if (circularEl) {
+            circularEl.style.background = `conic-gradient(#ec4899 ${grau}deg, #333 ${grau}deg)`;
+        }
+        
+        // Calcula horas estudadas (estimativa)
+        const horasEstudadas = Math.round(concluidas * 0.75); // média de 45min por aula
+        const horasEl = document.getElementById('cc50-horas-estudadas');
+        if (horasEl) horasEl.textContent = horasEstudadas;
+        
+        // Atualiza bônus
+        const bonusEl = document.getElementById('cc50-horas-bonus');
+        if (bonusEl) bonusEl.textContent = estado.cc50Bonus;
+        
+        // Calcula previsão de conclusão
+        const semanasRestantes = Math.ceil((totalAulas - concluidas) / 7); // 7 aulas por semana
+        const dataPrevista = new Date();
+        dataPrevista.setDate(dataPrevista.getDate() + (semanasRestantes * 7));
+        
+        const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+        const previsaoEl = document.getElementById('cc50-previsao');
+        if (previsaoEl) previsaoEl.textContent = meses[dataPrevista.getMonth()] + '/' + dataPrevista.getFullYear();
+    } catch (erro) {
+        console.error('Erro ao atualizar progresso CC50:', erro);
+    }
+}
+
 // ============================================
 // FUNÇÕES DE BÔNUS
 // ============================================
@@ -1715,183 +1606,7 @@ function adicionarBonusCC50(diasGanhos) {
     
     mostrarToast(`🎉 Ganhou ${diasGanhos}h extras para o CC50!`, 'success');
     atualizarProgressoCC50();
-    renderizarPreviaCC50();
-}
-
-// ============================================
-// FUNÇÕES DE NOTAS
-// ============================================
-
-function renderizarNotas() {
-    try {
-        const container = document.getElementById('notas-container');
-        if (!container) return;
-        
-        container.innerHTML = '';
-        
-        const busca = document.getElementById('notas-busca')?.value.toLowerCase() || '';
-        let notasFiltradas = notas.filter(n => n.materia === estado.materiaAtual);
-        
-        if (busca) {
-            notasFiltradas = notasFiltradas.filter(n => 
-                n.titulo?.toLowerCase().includes(busca) || 
-                n.conteudo?.toLowerCase().includes(busca)
-            );
-        }
-        
-        const fixadas = notasFiltradas.filter(n => n.fixada);
-        const normais = notasFiltradas.filter(n => !n.fixada);
-        
-        const fixadasGrid = document.getElementById('fixadas-grid');
-        if (fixadasGrid) {
-            fixadasGrid.innerHTML = '';
-            fixadas.forEach(nota => criarElementoNota(nota, fixadasGrid));
-        }
-        
-        normais.sort((a, b) => new Date(b.data) - new Date(a.data));
-        normais.forEach(nota => criarElementoNota(nota, container));
-        
-        if (notasFiltradas.length === 0) {
-            container.innerHTML = '<p class="text-muted">Nenhuma nota ainda. Clique em "Nova Nota".</p>';
-        }
-        
-    } catch (erro) {
-        console.error('Erro ao renderizar notas:', erro);
-    }
-}
-
-function criarElementoNota(nota, container) {
-    const div = document.createElement('div');
-    div.className = `nota-item ${nota.fixada ? 'fixada' : ''}`;
-    div.dataset.materia = nota.materia;
-    
-    div.innerHTML = `
-        <div class="nota-header">
-            <span class="nota-data">${formatarData(nota.data)}</span>
-            <div class="nota-acoes">
-                <button class="btn-fixar" data-id="${nota.id}"><i class="fas fa-thumbtack"></i></button>
-                <button class="btn-editar" data-id="${nota.id}"><i class="fas fa-edit"></i></button>
-                <button class="btn-excluir" data-id="${nota.id}"><i class="fas fa-trash"></i></button>
-            </div>
-        </div>
-        <div class="nota-titulo">${nota.titulo || 'Sem título'}</div>
-        <div class="nota-conteudo">${(nota.conteudo || '').replace(/\n/g, '<br>')}</div>
-        <div class="nota-tags">
-            ${nota.tags ? nota.tags.map(t => `<span class="nota-tag">#${t}</span>`).join('') : ''}
-        </div>
-    `;
-
-    div.querySelector('.btn-fixar')?.addEventListener('click', () => fixarNota(nota.id));
-    div.querySelector('.btn-editar')?.addEventListener('click', () => editarNota(nota.id));
-    div.querySelector('.btn-excluir')?.addEventListener('click', () => excluirNota(nota.id));
-    
-    container.appendChild(div);
-}
-
-function fixarNota(id) {
-    try {
-        const nota = notas.find(n => n.id === id);
-        if (nota) {
-            nota.fixada = !nota.fixada;
-            localStorage.setItem('agenda_notas', JSON.stringify(notas));
-            renderizarNotas();
-            mostrarToast(nota.fixada ? 'Nota fixada' : 'Nota desafixada', 'success');
-        }
-    } catch (erro) {
-        console.error('Erro ao fixar nota:', erro);
-    }
-}
-
-function criarNovaNota() {
-    try {
-        document.getElementById('nota-materia').value = estado.materiaAtual;
-        document.getElementById('nota-titulo').value = '';
-        document.getElementById('nota-conteudo').value = '';
-        document.getElementById('nota-tags').value = '';
-        document.getElementById('nota-fixada').checked = false;
-        document.getElementById('modal-nota').classList.add('active');
-    } catch (erro) {
-        console.error('Erro ao criar nota:', erro);
-    }
-}
-
-function salvarNota() {
-    try {
-        const materia = document.getElementById('nota-materia').value;
-        const titulo = document.getElementById('nota-titulo').value;
-        const conteudo = document.getElementById('nota-conteudo').value;
-        const tagsInput = document.getElementById('nota-tags').value;
-        const fixada = document.getElementById('nota-fixada').checked;
-        
-        if (!titulo || !conteudo) {
-            mostrarToast('Preencha título e conteúdo', 'error');
-            return;
-        }
-        
-        const tags = tagsInput.split(',').map(t => t.trim()).filter(t => t);
-        
-        const novaNota = {
-            id: Date.now().toString(),
-            materia,
-            titulo,
-            conteudo,
-            tags,
-            fixada,
-            data: new Date().toISOString().split('T')[0]
-        };
-        
-        notas.push(novaNota);
-        localStorage.setItem('agenda_notas', JSON.stringify(notas));
-        
-        fecharModalNota();
-        renderizarNotas();
-        mostrarToast('Nota salva!', 'success');
-        
-    } catch (erro) {
-        console.error('Erro ao salvar nota:', erro);
-        mostrarToast('Erro ao salvar', 'error');
-    }
-}
-
-function editarNota(id) {
-    try {
-        const nota = notas.find(n => n.id === id);
-        if (!nota) return;
-        
-        document.getElementById('nota-materia').value = nota.materia;
-        document.getElementById('nota-titulo').value = nota.titulo;
-        document.getElementById('nota-conteudo').value = nota.conteudo;
-        document.getElementById('nota-tags').value = nota.tags ? nota.tags.join(', ') : '';
-        document.getElementById('nota-fixada').checked = nota.fixada || false;
-        
-        const index = notas.findIndex(n => n.id === id);
-        if (index !== -1) notas.splice(index, 1);
-        
-        document.getElementById('modal-nota').classList.add('active');
-        
-    } catch (erro) {
-        console.error('Erro ao editar nota:', erro);
-    }
-}
-
-function excluirNota(id) {
-    try {
-        if (!confirm('Excluir nota?')) return;
-        
-        const index = notas.findIndex(n => n.id === id);
-        if (index !== -1) {
-            notas.splice(index, 1);
-            localStorage.setItem('agenda_notas', JSON.stringify(notas));
-            renderizarNotas();
-            mostrarToast('Nota excluída', 'success');
-        }
-    } catch (erro) {
-        console.error('Erro ao excluir nota:', erro);
-    }
-}
-
-function fecharModalNota() {
-    document.getElementById('modal-nota').classList.remove('active');
+    renderizarDestaqueCC50();
 }
 
 // ============================================
@@ -1959,7 +1674,7 @@ function renderizarProgresso() {
             const div = document.createElement('div');
             div.className = 'card-resumo';
             div.innerHTML = `
-                <div class="resumo-icon">${getIconeMateria(materia)}</div>
+                <div class="resumo-icon ${materia}-icon">${getIconeMateria(materia)}</div>
                 <div>
                     <h4>${getSiglaMateria(materia)}</h4>
                     <span class="resumo-valor">${progresso}%</span>
@@ -1969,41 +1684,9 @@ function renderizarProgresso() {
         });
         
         desenharGraficoBarras();
-        renderizarConquistas();
         
     } catch (erro) {
         console.error('Erro ao renderizar progresso:', erro);
-    }
-}
-
-function renderizarConquistas() {
-    try {
-        const container = document.getElementById('conquistas-grid');
-        if (!container) return;
-        
-        const conquistasLista = [
-            { id: 'cc50-25', nome: '25% do CC50', icone: '🎓', obtida: estado.conquistas.includes('cc50-25') },
-            { id: 'cc50-50', nome: 'Metade do CC50', icone: '🏆', obtida: estado.conquistas.includes('cc50-50') },
-            { id: 'cc50-75', nome: '75% do CC50', icone: '🚀', obtida: estado.conquistas.includes('cc50-75') },
-            { id: 'cc50-100', nome: 'CC50 Concluído', icone: '🌟', obtida: estado.conquistas.includes('cc50-100') },
-            { id: 'primeiro-prazo', nome: 'Primeiro Prazo', icone: '✅', obtida: true },
-            { id: 'checklist-completo', nome: 'Checklist Completo', icone: '📋', obtida: false }
-        ];
-        
-        container.innerHTML = '';
-        
-        conquistasLista.forEach(conq => {
-            const div = document.createElement('div');
-            div.className = `conquista-item ${conq.obtida ? 'obtida' : 'bloqueada'}`;
-            div.innerHTML = `
-                <div class="conquista-icone">${conq.icone}</div>
-                <div class="conquista-nome">${conq.nome}</div>
-            `;
-            container.appendChild(div);
-        });
-        
-    } catch (erro) {
-        console.error('Erro ao renderizar conquistas:', erro);
     }
 }
 
@@ -2040,23 +1723,22 @@ function desenharGraficoBarras() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         const dados = [
-            { cor: '#f97316', horas: 34 },
-            { cor: '#3b82f6', horas: 35 },
-            { cor: '#10b981', horas: 39 },
-            { cor: '#8b5cf6', horas: 33 },
-            { cor: '#ec4899', horas: 21 },
-            { cor: '#64748b', horas: 23 }
+            { cor: '#f97316', horas: 25 },
+            { cor: '#3b82f6', horas: 20 },
+            { cor: '#10b981', horas: 30 },
+            { cor: '#8b5cf6', horas: 15 },
+            { cor: '#ec4899', horas: 5 },
+            { cor: '#64748b', horas: 5 }
         ];
         
         const siglas = ['ES', 'IC', 'LP', 'BD', 'BC', 'FD'];
         const largura = 40;
         const espaco = 20;
         const alturaMax = 200;
-        const maxHoras = 40;
         
         dados.forEach((d, i) => {
             const x = 50 + i * (largura + espaco);
-            const altura = (d.horas / maxHoras) * alturaMax;
+            const altura = (d.horas / 30) * alturaMax;
             const y = 250 - altura;
             
             ctx.fillStyle = d.cor;
@@ -2082,8 +1764,15 @@ function desenharGraficoBarras() {
 
 function abrirModalConclusao(atividadeId) {
     try {
-        const atividade = prazos.find(p => p.id === atividadeId);
-        if (!atividade) return;
+        let atividade = prazos.find(p => p.id === atividadeId);
+        
+        if (!atividade) {
+            atividade = {
+                id: atividadeId,
+                nome: `Estudo de ${getNomeMateria(atividadeId)}`,
+                diasPrevistos: 1
+            };
+        }
         
         estado.atividadeConcluindo = atividade;
         document.getElementById('modal-atividade-nome').textContent = atividade.nome;
@@ -2140,227 +1829,60 @@ function confirmarConclusao() {
 }
 
 // ============================================
-// FUNÇÕES DE SUGESTÕES
+// FUNÇÕES DE TIMER
 // ============================================
 
-function renderizarSugestoes() {
+function iniciarTimer() {
     try {
-        const container = document.getElementById('sugestoes-container');
-        if (!container) return;
+        if (estado.timerAtivo) return;
         
-        container.innerHTML = '';
-        
-        const hoje = new Date();
-        const dataStr = hoje.toISOString().split('T')[0];
-        
-        // Sugestão 1: Trabalho do dia (se houver)
-        const trabalho = trabalhosDiarios[dataStr];
-        if (trabalho) {
-            const prazo = prazos.find(p => p.id === trabalho.id);
-            if (prazo && !prazo.concluido) {
-                const div = document.createElement('div');
-                div.className = 'suggestion-item';
-                div.innerHTML = `
-                    <div>
-                        <h4>📝 Trabalho de hoje</h4>
-                        <p>${prazo.nome} - ${trabalho.descricao}</p>
-                    </div>
-                    <button class="btn-concluir" onclick="abrirModalConclusao('${prazo.id}')">✓</button>
-                `;
-                container.appendChild(div);
-            }
-        }
-        
-        // Sugestão 2: Prova próxima
-        const provasProximas = prazos
-            .filter(p => p.tipo === 'prova' && !p.concluido)
-            .map(p => {
-                const dataProva = new Date(p.data + 'T12:00:00');
-                const diasRestantes = Math.ceil((dataProva - hoje) / (1000 * 60 * 60 * 24));
-                return { ...p, diasRestantes };
-            })
-            .filter(p => p.diasRestantes <= 7 && p.diasRestantes > 0)
-            .sort((a, b) => a.diasRestantes - b.diasRestantes);
-        
-        if (provasProximas.length > 0) {
-            const prova = provasProximas[0];
-            const div = document.createElement('div');
-            div.className = 'suggestion-item';
-            div.innerHTML = `
-                <div>
-                    <h4>📚 Prova em ${prova.diasRestantes} dias</h4>
-                    <p>${prova.nome} - Começar revisão hoje!</p>
-                </div>
-                <button class="btn-concluir" onclick="alert('Bons estudos!')">→</button>
-            `;
-            container.appendChild(div);
-        }
-        
-        // Sugestão 3: CC50
-        let totalAulas = 0;
-        let concluidas = 0;
-        cc50Modulos.forEach((modulo, i) => {
-            modulo.aulas.forEach((aula, j) => {
-                totalAulas++;
-                const aulaId = `cc50-${i}-${j}`;
-                if (estado.cc50Progresso[aulaId]?.status === 'completa') concluidas++;
-            });
-        });
-        
-        if (concluidas < totalAulas) {
-            const div = document.createElement('div');
-            div.className = 'suggestion-item';
-            div.innerHTML = `
-                <div>
-                    <h4>🎓 CC50</h4>
-                    <p>Você já fez ${concluidas} de ${totalAulas} aulas. Continue!</p>
-                </div>
-                <button class="btn-concluir" onclick="document.getElementById('nav-cc50').click()">Ir</button>
-            `;
-            container.appendChild(div);
-        }
-        
-    } catch (erro) {
-        console.error('Erro ao renderizar sugestões:', erro);
-    }
-}
-
-// ============================================
-// FUNÇÕES DE CALENDÁRIO
-// ============================================
-
-function renderizarCalendario() {
-    try {
-        const grid = document.getElementById('calendario-grid');
-        if (!grid) return;
-        
-        grid.innerHTML = '';
-        
-        const primeiroDia = new Date(estado.anoCalendario, estado.mesCalendario, 1);
-        const ultimoDia = new Date(estado.anoCalendario, estado.mesCalendario + 1, 0);
-        const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-        
-        diasSemana.forEach(dia => {
-            const div = document.createElement('div');
-            div.className = 'calendario-dia-semana';
-            div.textContent = dia;
-            grid.appendChild(div);
-        });
-        
-        for (let i = 0; i < primeiroDia.getDay(); i++) {
-            const div = document.createElement('div');
-            div.className = 'calendario-dia outro-mes';
-            grid.appendChild(div);
-        }
-        
-        const hoje = new Date();
-        
-        for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
-            const div = document.createElement('div');
-            div.className = 'calendario-dia';
+        estado.timerAtivo = true;
+        estado.timerInterval = setInterval(() => {
+            estado.timerTempo++;
             
-            const dataAtual = new Date(estado.anoCalendario, estado.mesCalendario, dia);
-            if (dataAtual.toDateString() === hoje.toDateString()) {
-                div.classList.add('hoje');
+            const horas = estado.timerTempo / 3600;
+            const progresso = (horas / HORAS_POR_DIA) * 100;
+            
+            const progressoEl = document.getElementById('timer-progresso');
+            if (progressoEl) progressoEl.style.width = `${Math.min(progresso, 100)}%`;
+            
+            const displayEl = document.getElementById('timer-display');
+            if (displayEl) {
+                const h = Math.floor(estado.timerTempo / 3600);
+                const m = Math.floor((estado.timerTempo % 3600) / 60);
+                displayEl.textContent = `${h}h${m < 10 ? '0' : ''}${m}`;
             }
             
-            div.innerHTML = `<span class="dia-numero">${dia}</span>`;
-            
-            const dataStr = `${estado.anoCalendario}-${String(estado.mesCalendario + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
-            const eventos = prazos.filter(p => p.data === dataStr && !p.concluido);
-            
-            if (eventos.length > 0) {
-                const eventosDiv = document.createElement('div');
-                eventosDiv.className = 'dia-eventos';
-                eventos.forEach(e => {
-                    const indicador = document.createElement('span');
-                    indicador.className = `evento-indicador ${e.tipo}`;
-                    eventosDiv.appendChild(indicador);
-                });
-                div.appendChild(eventosDiv);
+            if (horas >= HORAS_POR_DIA) {
+                pausarTimer();
+                mostrarToast('🎉 Meta diária atingida!', 'success');
             }
-            
-            div.addEventListener('click', () => verEventosDoDia(dia));
-            
-            grid.appendChild(div);
-        }
-        
-        const mesAnoEl = document.getElementById('mes-ano');
-        if (mesAnoEl) {
-            mesAnoEl.textContent = new Date(estado.anoCalendario, estado.mesCalendario).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-        }
+        }, 1000);
         
     } catch (erro) {
-        console.error('Erro ao renderizar calendário:', erro);
+        console.error('Erro no timer:', erro);
     }
 }
 
-function verEventosDoDia(dia) {
-    try {
-        const dataStr = `${estado.anoCalendario}-${String(estado.mesCalendario + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
-        const eventos = prazos.filter(p => p.data === dataStr && !p.concluido);
-        
-        if (eventos.length === 0) {
-            mostrarToast('Nenhum evento neste dia', 'info');
-            return;
-        }
-        
-        let mensagem = `📅 Eventos em ${dia}/${estado.mesCalendario + 1}:\n\n`;
-        eventos.forEach(e => {
-            mensagem += `- ${e.nome} (${e.tipo})\n`;
-        });
-        
-        alert(mensagem);
-        
-    } catch (erro) {
-        console.error('Erro ao ver eventos:', erro);
+function pausarTimer() {
+    estado.timerAtivo = false;
+    if (estado.timerInterval) {
+        clearInterval(estado.timerInterval);
     }
 }
 
-function mesAnterior() {
-    if (estado.mesCalendario === 0) {
-        estado.mesCalendario = 11;
-        estado.anoCalendario--;
-    } else {
-        estado.mesCalendario--;
-    }
-    renderizarCalendario();
-}
-
-function proximoMes() {
-    if (estado.mesCalendario === 11) {
-        estado.mesCalendario = 0;
-        estado.anoCalendario++;
-    } else {
-        estado.mesCalendario++;
-    }
-    renderizarCalendario();
+function zerarTimer() {
+    pausarTimer();
+    estado.timerTempo = 0;
+    const progressoEl = document.getElementById('timer-progresso');
+    if (progressoEl) progressoEl.style.width = '0%';
+    const displayEl = document.getElementById('timer-display');
+    if (displayEl) displayEl.textContent = '0h00';
 }
 
 // ============================================
 // FUNÇÕES AUXILIARES
 // ============================================
-
-function getMateriaManha(diaSemana) {
-    const mapa = {
-        1: 'fundamentos',
-        2: 'es',
-        3: 'ic',
-        4: 'lp',
-        5: 'bd'
-    };
-    return mapa[diaSemana] || null;
-}
-
-function getMateriaTarde(diaSemana) {
-    const mapa = {
-        2: 'es',
-        3: 'ic',
-        4: 'lp',
-        5: 'bd'
-    };
-    return mapa[diaSemana] || null;
-}
 
 function getNomeMateria(materia) {
     const nomes = {
@@ -2370,7 +1892,8 @@ function getNomeMateria(materia) {
         bd: 'Banco de Dados I',
         bootcamp: 'Bootcamp I',
         fundamentos: 'Fundamentos',
-        cc50: 'CC50'
+        cc50: 'CC50',
+        trabalhos: 'Trabalhos da Faculdade'
     };
     return nomes[materia] || materia;
 }
@@ -2402,6 +1925,7 @@ function mostrarToast(mensagem, tipo = 'info') {
         let icone = 'fa-info-circle';
         if (tipo === 'success') icone = 'fa-check-circle';
         if (tipo === 'error') icone = 'fa-exclamation-circle';
+        if (tipo === 'warning') icone = 'fa-exclamation-triangle';
         
         toast.innerHTML = `<i class="fas ${icone}"></i><span>${mensagem}</span>`;
         container.appendChild(toast);
@@ -2414,27 +1938,50 @@ function mostrarToast(mensagem, tipo = 'info') {
 }
 
 // ============================================
+// DELEGAÇÃO DE EVENTOS PARA MODAIS DINÂMICOS
+// ============================================
+
+document.addEventListener('click', function(e) {
+    // Botão Salvar Aula CC50
+    if (e.target.id === 'btn-salvar-aula' || e.target.closest('#btn-salvar-aula')) {
+        e.preventDefault();
+        console.log('💾 Salvando aula CC50...');
+        salvarAulaCC50();
+    }
+    
+    // Botão Fechar Aula CC50
+    if (e.target.id === 'btn-fechar-aula' || e.target.closest('#btn-fechar-aula')) {
+        e.preventDefault();
+        console.log('❌ Fechando modal CC50...');
+        fecharModalAulaCC50();
+    }
+    
+    // Botão Abrir CC50 na tela Hoje
+    if (e.target.id === 'btn-abrir-cc50-hoje' || e.target.closest('#btn-abrir-cc50-hoje')) {
+        e.preventDefault();
+        console.log('🎯 Abrindo aba CC50...');
+        document.getElementById('nav-cc50').click();
+    }
+});
+
+// ============================================
 // CONFIGURAÇÃO DO ENTER NO LOGIN
 // ============================================
 
-window.fazerLogin = fazerLogin;
-
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('📄 DOM carregado');
+    console.log('📄 DOM carregado!');
     
+    // Formulário de login
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            console.log('🔑 Formulário submetido');
             fazerLogin();
         });
     }
     
-    const btnLogin = document.getElementById('btn-login');
-    if (btnLogin) {
-        btnLogin.addEventListener('click', fazerLogin);
-    }
-    
+    // Enter nos campos
     const campos = ['login-usuario', 'login-senha'];
     campos.forEach(id => {
         const campo = document.getElementById(id);
@@ -2442,33 +1989,36 @@ document.addEventListener('DOMContentLoaded', function() {
             campo.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
+                    console.log('⏎ Enter pressionado');
                     fazerLogin();
                 }
             });
         }
     });
+    
+    console.log('✅ Enter configurado!');
 });
 
 // ============================================
 // EXPOR FUNÇÕES GLOBAIS
 // ============================================
 
+window.fazerLogin = fazerLogin;
 window.fazerLogout = fazerLogout;
 window.abrirModalConclusao = abrirModalConclusao;
 window.fecharModal = fecharModal;
 window.confirmarConclusao = confirmarConclusao;
 window.toggleChecklistItem = toggleChecklistItem;
-window.criarNovaNota = criarNovaNota;
-window.salvarNota = salvarNota;
-window.editarNota = editarNota;
-window.excluirNota = excluirNota;
-window.fixarNota = fixarNota;
-window.fecharModalNota = fecharModalNota;
+window.resetarChecklistDiario = resetarChecklistDiario;
+window.iniciarTimer = iniciarTimer;
+window.pausarTimer = pausarTimer;
+window.zerarTimer = zerarTimer;
 window.mesAnterior = mesAnterior;
 window.proximoMes = proximoMes;
 window.mostrarPlanoAula = mostrarPlanoAula;
 window.verEventosDoDia = verEventosDoDia;
+window.fecharModalEvento = fecharModalEvento;
 window.salvarAulaCC50 = salvarAulaCC50;
 window.fecharModalAulaCC50 = fecharModalAulaCC50;
 
-console.log('🚀 Sistema carregado com sucesso!');
+console.log('🚀 Script carregado com sucesso!');
