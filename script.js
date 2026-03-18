@@ -1,37 +1,30 @@
 // ============================================
-// STUDYOS - VERSÃO COMPLETA COM LOGIN
+// AGENDA PALMIERE - SISTEMA INTELIGENTE DE ESTUDOS
+// VERSÃO CORRIGIDA - AZUL MARINHO + DOURADO
 // ============================================
 
-// Função de inicialização chamada após login
-function inicializarSistema() {
-    console.log('Sistema inicializado para Carla');
-    
-    // Configuração inicial
-    const VERSAO = '1.0.0';
-    const HORAS_POR_DIA = 2.5; // 2h30
-    
-    // Estado global
-    window.estado = {
-        usuario: 'Carla',
-        materiaAtual: 'es',
-        timerAtivo: false,
-        timerTempo: 0,
-        timerInterval: null,
-        mesCalendario: new Date().getMonth(),
-        anoCalendario: new Date().getFullYear(),
-        atividadeConcluindo: null
-    };
-    
-    // Carregar dados
-    carregarDados();
-    inicializarData();
-    inicializarNavegacao();
-    atualizarInterface();
-    verificarVersao();
-}
+// ============================================
+// CONFIGURAÇÕES INICIAIS
+// ============================================
+
+const VERSAO = '2.0.0';
+const HORAS_POR_DIA = 2.5; // 2h30
+
+// Estado global
+let estado = {
+    usuario: 'Carla',
+    materiaAtual: 'es',
+    timerAtivo: false,
+    timerTempo: 0, // em segundos
+    timerInterval: null,
+    mesCalendario: new Date().getMonth(),
+    anoCalendario: new Date().getFullYear(),
+    atividadeConcluindo: null,
+    checklistItens: []
+};
 
 // ============================================
-// SEUS DADOS COMPLETOS (PRAZOS, PLANOS, ETC)
+// DADOS COMPLETOS (PRAZOS, PLANOS, ETC)
 // ============================================
 
 const prazos = [
@@ -205,7 +198,7 @@ const prazos = [
         nome: 'Desafio - Entrega Inicial', 
         data: '2026-04-12', 
         diasPrevistos: 10, 
-        concluido: true,  // ✅ JÁ CONCLUÍDO!
+        concluido: true,
         dataConclusao: '2026-03-17',
         diasGastos: 3,
         anotacoes: 'Desafio inicial concluído antes do prazo'
@@ -307,7 +300,7 @@ const prazos = [
         nome: 'Exercícios Avaliativos 1 e 2', 
         data: '2026-03-29', 
         diasPrevistos: 3, 
-        concluido: true,  // ✅ JÁ CONCLUÍDO!
+        concluido: true,
         dataConclusao: '2026-03-17',
         diasGastos: 2,
         anotacoes: 'Exercícios concluídos com antecedência'
@@ -464,7 +457,7 @@ const cursosExtras = [
 ];
 
 // ============================================
-// NOTAS (INICIALMENTE VAZIO)
+// NOTAS
 // ============================================
 
 let notas = [];
@@ -473,23 +466,40 @@ let notas = [];
 // FUNÇÕES DE INICIALIZAÇÃO
 // ============================================
 
+function inicializarSistema() {
+    console.log('Agenda Palmiere inicializada para Carla');
+    
+    carregarDados();
+    inicializarData();
+    inicializarNavegacao();
+    inicializarEventListeners();
+    atualizarInterface();
+    verificarVersao();
+    
+    mostrarToast('Bem-vinda, Carla! 🎉', 'success');
+}
+
 function carregarDados() {
     try {
-        const notasSalvas = localStorage.getItem('studyos_notas');
+        const notasSalvas = localStorage.getItem('agenda_notas');
         if (notasSalvas) {
             notas = JSON.parse(notasSalvas);
         }
         
-        const prazosSalvos = localStorage.getItem('studyos_prazos');
+        const prazosSalvos = localStorage.getItem('agenda_prazos');
         if (prazosSalvos) {
             const prazosAtualizados = JSON.parse(prazosSalvos);
-            // Mesclar com prazos padrão (manter concluídos)
             prazos.forEach((prazo, index) => {
                 const atualizado = prazosAtualizados.find(p => p.id === prazo.id);
                 if (atualizado) {
                     prazos[index] = { ...prazo, ...atualizado };
                 }
             });
+        }
+        
+        const checklistSalvo = localStorage.getItem('agenda_checklist');
+        if (checklistSalvo) {
+            estado.checklistItens = JSON.parse(checklistSalvo);
         }
     } catch (e) {
         console.error('Erro ao carregar dados:', e);
@@ -498,34 +508,20 @@ function carregarDados() {
 
 function inicializarData() {
     atualizarDataHora();
-    setInterval(atualizarDataHora, 1000);
+    setInterval(atualizarDataHora, 60000); // atualizar a cada minuto
 }
 
 function atualizarDataHora() {
     const agora = new Date();
     
+    // Data extensa
     const opcoes = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    const dataCompleta = document.getElementById('data-completa');
-    if (dataCompleta) {
-        dataCompleta.textContent = agora.toLocaleDateString('pt-BR', opcoes);
+    const dataExtensa = document.getElementById('data-extensa');
+    if (dataExtensa) {
+        dataExtensa.querySelector('span').textContent = agora.toLocaleDateString('pt-BR', opcoes);
     }
     
-    const dataHoraSidebar = document.getElementById('data-hora-sidebar');
-    if (dataHoraSidebar) {
-        dataHoraSidebar.textContent = agora.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' });
-    }
-    
-    const saudacao = document.getElementById('saudacao');
-    if (saudacao) {
-        const hora = agora.getHours();
-        let texto = '';
-        if (hora < 12) texto = 'Bom dia';
-        else if (hora < 18) texto = 'Boa tarde';
-        else texto = 'Boa noite';
-        
-        saudacao.textContent = `${texto}, Carla!`;
-    }
-    
+    // Dia da semana (para a grade)
     const diaSemana = document.getElementById('dia-semana');
     if (diaSemana) {
         const dias = ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'];
@@ -534,33 +530,40 @@ function atualizarDataHora() {
 }
 
 function inicializarNavegacao() {
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', (e) => {
-            e.preventDefault();
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tabId = btn.dataset.tab;
             
-            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-            item.classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
             
-            const tabId = item.dataset.tab;
             document.querySelectorAll('.tab-pane').forEach(tab => tab.classList.remove('active'));
             const tabElement = document.getElementById(`tab-${tabId}`);
             if (tabElement) {
                 tabElement.classList.add('active');
             }
-            
-            // Fechar sidebar mobile se aberta
-            if (window.innerWidth <= 768) {
-                document.querySelector('.sidebar').classList.remove('active');
-            }
         });
     });
+}
+
+function inicializarEventListeners() {
+    // Login
+    document.getElementById('btn-entrar').addEventListener('click', fazerLogin);
     
-    const menuToggle = document.getElementById('menuToggle');
-    if (menuToggle) {
-        menuToggle.addEventListener('click', () => {
-            document.querySelector('.sidebar').classList.toggle('active');
-        });
-    }
+    // Sair
+    document.getElementById('btn-sair').addEventListener('click', fazerLogout);
+    
+    // Timer
+    document.getElementById('btn-iniciar-timer').addEventListener('click', iniciarTimer);
+    document.getElementById('btn-pausar-timer').addEventListener('click', pausarTimer);
+    document.getElementById('btn-zerar-timer').addEventListener('click', zerarTimer);
+    
+    // Checklist
+    document.getElementById('btn-resetar-checklist').addEventListener('click', resetarChecklistDiario);
+    
+    // Notas
+    document.getElementById('btn-nova-nota').addEventListener('click', criarNovaNota);
+    document.getElementById('busca-notas').addEventListener('input', buscarNotas);
     
     document.querySelectorAll('.materia-tab').forEach(tab => {
         tab.addEventListener('click', () => {
@@ -571,6 +574,7 @@ function inicializarNavegacao() {
         });
     });
     
+    // Prazos
     document.querySelectorAll('.filtro-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
@@ -578,37 +582,91 @@ function inicializarNavegacao() {
             renderizarPrazos(btn.dataset.filtro);
         });
     });
+    
+    // Calendário
+    document.getElementById('mes-anterior').addEventListener('click', mesAnterior);
+    document.getElementById('proximo-mes').addEventListener('click', proximoMes);
+    
+    // Planos de aula
+    document.querySelectorAll('.plano-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const materia = card.dataset.materia;
+            mostrarPlanoAula(materia);
+        });
+    });
+    
+    // Modais
+    document.getElementById('btn-cancelar-modal').addEventListener('click', fecharModal);
+    document.getElementById('btn-confirmar-conclusao').addEventListener('click', confirmarConclusao);
+    document.getElementById('btn-cancelar-nota').addEventListener('click', fecharModalNota);
+    document.getElementById('btn-salvar-nota').addEventListener('click', salvarNota);
+    document.getElementById('btn-fechar-evento').addEventListener('click', fecharModalEvento);
+    
+    // Enter no login
+    document.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && document.getElementById('login-container').style.display !== 'none') {
+            fazerLogin();
+        }
+    });
 }
 
 function verificarVersao() {
-    const VERSAO = '1.0.0';
-    const versaoSalva = localStorage.getItem('studyos_versao');
+    const versaoSalva = localStorage.getItem('agenda_versao');
     if (versaoSalva !== VERSAO) {
-        localStorage.setItem('studyos_versao', VERSAO);
-        mostrarToast('Sistema atualizado!', 'info');
+        localStorage.setItem('agenda_versao', VERSAO);
     }
 }
 
 // ============================================
-// FUNÇÕES DE INTERFACE
+// FUNÇÕES DE LOGIN/LOGOUT
+// ============================================
+
+function fazerLogin() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    
+    if (username === 'Carla' && password === 'Cacau') {
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('app-container').style.display = 'block';
+        inicializarSistema();
+    } else {
+        document.getElementById('login-error').style.display = 'block';
+    }
+}
+
+function fazerLogout() {
+    document.getElementById('login-container').style.display = 'flex';
+    document.getElementById('app-container').style.display = 'none';
+    
+    // Parar timer se estiver ativo
+    if (estado.timerAtivo) {
+        pausarTimer();
+    }
+    
+    zerarTimer();
+}
+
+// ============================================
+// FUNÇÕES DE INTERFACE PRINCIPAL
 // ============================================
 
 function atualizarInterface() {
     renderizarPrazosUrgentes();
     renderizarGradeDia();
     renderizarSugestoes();
+    renderizarChecklist();
     renderizarPrazos('todos');
     renderizarCalendario();
     renderizarProgresso();
-    renderizarHistoricoConclusoes();
-    renderizarPlanosAulaResumo();
+    renderizarNotas();
+    atualizarEstatisticasNotas();
 }
 
 function renderizarPrazosUrgentes() {
-    const urgentesLista = document.getElementById('urgentes-lista');
-    if (!urgentesLista) return;
+    const container = document.getElementById('urgentes-lista');
+    if (!container) return;
     
-    urgentesLista.innerHTML = '';
+    container.innerHTML = '';
     
     const hoje = new Date();
     const prazosProximos = prazos
@@ -619,16 +677,18 @@ function renderizarPrazosUrgentes() {
             return { ...p, diasRestantes };
         })
         .filter(p => p.diasRestantes <= 14 && p.diasRestantes > 0)
-        .sort((a, b) => a.diasRestantes - b.diasRestantes);
+        .sort((a, b) => a.diasRestantes - b.diasRestantes)
+        .slice(0, 3);
     
     if (prazosProximos.length === 0) {
-        urgentesLista.innerHTML = '<p class="text-muted">Nenhum prazo urgente. Aproveite para adiantar estudos!</p>';
+        container.innerHTML = '<p class="text-muted">Nenhum prazo urgente. Aproveite para adiantar estudos!</p>';
         return;
     }
     
     prazosProximos.forEach(prazo => {
         const card = document.createElement('div');
-        card.className = `prazo-urgente-card ${prazo.tipo}`;
+        card.className = `urgent-card ${prazo.tipo}`;
+        card.onclick = () => abrirModalConclusao(prazo.id);
         
         let icone = '';
         if (prazo.tipo === 'prova') icone = 'fa-file-alt';
@@ -636,100 +696,89 @@ function renderizarPrazosUrgentes() {
         else icone = 'fa-upload';
         
         card.innerHTML = `
-            <i class="fas ${icone}"></i>
-            <div class="prazo-urgente-info">
+            <div class="urgent-icon">
+                <i class="fas ${icone}"></i>
+            </div>
+            <div class="urgent-info">
                 <h4>${prazo.nome}</h4>
                 <p>${getNomeMateria(prazo.materia)}</p>
                 <div class="dias ${prazo.diasRestantes <= 7 ? 'urgente' : 'atencao'}">${prazo.diasRestantes} dias</div>
             </div>
         `;
         
-        urgentesLista.appendChild(card);
+        container.appendChild(card);
     });
 }
 
 function renderizarGradeDia() {
     const hoje = new Date();
-    const diaSemana = hoje.getDay(); // 0=Domingo, 1=Segunda, etc.
+    const diaSemana = hoje.getDay();
     
-    // Verificar se é fim de semana
+    // Verificar fim de semana
     if (diaSemana === 0 || diaSemana === 6) {
-        document.querySelectorAll('.periodo-conteudo').forEach(el => {
-            el.innerHTML = '<div class="off-day"><i class="fas fa-umbrella-beach"></i> Dia de descanso! 🎉</div>';
-        });
+        document.getElementById('periodo-manha').innerHTML = '<div class="off-day"><i class="fas fa-umbrella-beach"></i> Dia de descanso! 🎉</div>';
+        document.getElementById('periodo-tarde').innerHTML = '<div class="off-day"><i class="fas fa-umbrella-beach"></i> Dia de descanso! 🎉</div>';
+        document.getElementById('periodo-noite').innerHTML = '<div class="off-day"><i class="fas fa-umbrella-beach"></i> Dia de descanso! 🎉</div>';
         return;
     }
     
-    // Manhã (Pré-aula)
+    // Manhã
     const manhaContainer = document.getElementById('periodo-manha');
-    if (manhaContainer) {
-        manhaContainer.innerHTML = '';
-        
-        const materiaManha = getMateriaManha(diaSemana);
-        if (materiaManha) {
-            const planoHoje = getPlanoAulaDoDia(materiaManha, hoje);
-            if (planoHoje) {
-                manhaContainer.appendChild(criarAtividadeElemento(
-                    materiaManha, 
-                    'Pré-aula', 
-                    `Estudar: ${planoHoje.tema} - ${planoHoje.conteudo}`,
-                    false
-                ));
-            } else {
-                manhaContainer.appendChild(criarAtividadeElemento(
-                    materiaManha, 
-                    'Pré-aula', 
-                    'Revisar conteúdo da matéria',
-                    false
-                ));
-            }
-        } else {
-            manhaContainer.innerHTML = '<p class="text-muted">Nenhuma atividade programada para a manhã</p>';
-        }
-    }
+    manhaContainer.innerHTML = '';
     
-    // Tarde (Aula)
-    const tardeContainer = document.getElementById('periodo-tarde');
-    if (tardeContainer) {
-        tardeContainer.innerHTML = '';
-        
-        const materiaTarde = getMateriaTarde(diaSemana);
-        if (materiaTarde) {
-            const planoHoje = getPlanoAulaDoDia(materiaTarde, hoje);
-            if (planoHoje) {
-                tardeContainer.appendChild(criarAtividadeElemento(
-                    materiaTarde, 
-                    'Aula', 
-                    `${planoHoje.tema}: ${planoHoje.conteudo}`,
-                    true
-                ));
-            } else {
-                tardeContainer.appendChild(criarAtividadeElemento(
-                    materiaTarde, 
-                    'Aula', 
-                    'Aula presencial',
-                    true
-                ));
-            }
+    const materiaManha = getMateriaManha(diaSemana);
+    if (materiaManha) {
+        const planoHoje = getPlanoAulaDoDia(materiaManha, hoje);
+        if (planoHoje) {
+            manhaContainer.appendChild(criarAtividadeElemento(
+                materiaManha,
+                `Estudar: ${planoHoje.tema}`,
+                planoHoje.conteudo
+            ));
         } else {
-            tardeContainer.innerHTML = '<p class="text-muted">Nenhuma aula programada para hoje</p>';
-        }
-    }
-    
-    // Noite (Cursos extras)
-    const noiteContainer = document.getElementById('periodo-noite');
-    if (noiteContainer) {
-        noiteContainer.innerHTML = '';
-        
-        const sugestaoExtra = sugeriCursoExtra();
-        if (sugestaoExtra) {
-            noiteContainer.appendChild(criarAtividadeElemento(
-                'extras', 
-                'Curso Extra', 
-                sugestaoExtra,
-                false
+            manhaContainer.appendChild(criarAtividadeElemento(
+                materiaManha,
+                'Pré-aula',
+                'Revisar conteúdo da matéria'
             ));
         }
+    }
+    
+    // Tarde
+    const tardeContainer = document.getElementById('periodo-tarde');
+    tardeContainer.innerHTML = '';
+    
+    const materiaTarde = getMateriaTarde(diaSemana);
+    if (materiaTarde) {
+        const planoHoje = getPlanoAulaDoDia(materiaTarde, hoje);
+        if (planoHoje) {
+            tardeContainer.appendChild(criarAtividadeElemento(
+                materiaTarde,
+                `Aula: ${planoHoje.tema}`,
+                planoHoje.conteudo,
+                true
+            ));
+        } else {
+            tardeContainer.appendChild(criarAtividadeElemento(
+                materiaTarde,
+                'Aula',
+                'Aula presencial',
+                true
+            ));
+        }
+    }
+    
+    // Noite
+    const noiteContainer = document.getElementById('periodo-noite');
+    noiteContainer.innerHTML = '';
+    
+    const sugestaoExtra = sugeriCursoExtra();
+    if (sugestaoExtra) {
+        noiteContainer.appendChild(criarAtividadeElemento(
+            'extras',
+            'Curso Extra',
+            sugestaoExtra
+        ));
     }
 }
 
@@ -740,7 +789,7 @@ function getPlanoAulaDoDia(materia, data) {
     return planosAula[materia].find(aula => aula.data === dataStr);
 }
 
-function criarAtividadeElemento(materia, tipo, descricao, isAula = false) {
+function criarAtividadeElemento(materia, titulo, descricao, isAula = false) {
     const div = document.createElement('div');
     div.className = `atividade-item ${materia}`;
     
@@ -757,8 +806,7 @@ function criarAtividadeElemento(materia, tipo, descricao, isAula = false) {
     div.innerHTML = `
         <div class="atividade-info">
             <h4>${nomes[materia] || materia}</h4>
-            <p>${descricao}</p>
-            ${!isAula && materia !== 'extras' ? '<small class="text-muted">Clique em "Concluir" quando terminar</small>' : ''}
+            <p><strong>${titulo}</strong> - ${descricao}</p>
         </div>
         ${!isAula && materia !== 'extras' ? '<button class="btn-concluir" onclick="abrirModalConclusao(\'' + materia + '\')"><i class="fas fa-check"></i> Concluir</button>' : ''}
     `;
@@ -767,20 +815,19 @@ function criarAtividadeElemento(materia, tipo, descricao, isAula = false) {
 }
 
 function renderizarSugestoes() {
-    const listaSugestoes = document.getElementById('lista-sugestoes');
-    if (!listaSugestoes) return;
+    const container = document.getElementById('lista-sugestoes');
+    if (!container) return;
     
-    listaSugestoes.innerHTML = '';
+    container.innerHTML = '';
     
     const hoje = new Date();
     const diaSemana = hoje.getDay();
     
     if (diaSemana === 0 || diaSemana === 6) {
-        listaSugestoes.innerHTML = '<p class="text-muted">Dia de descanso! Aproveite para recarregar as energias.</p>';
+        container.innerHTML = '<p class="text-muted">Dia de descanso! Aproveite para recarregar as energias.</p>';
         return;
     }
     
-    // Sugerir atividades baseadas nos prazos
     const prazosPendentes = prazos
         .filter(p => !p.concluido)
         .sort((a, b) => new Date(a.data) - new Date(b.data))
@@ -788,7 +835,7 @@ function renderizarSugestoes() {
     
     prazosPendentes.forEach(prazo => {
         const div = document.createElement('div');
-        div.className = `sugestao-item ${prazo.materia}`;
+        div.className = `suggestion-item ${prazo.materia}`;
         
         const diasAte = Math.ceil((new Date(prazo.data + 'T12:00:00') - hoje) / (1000 * 60 * 60 * 24));
         
@@ -802,15 +849,121 @@ function renderizarSugestoes() {
             </button>
         `;
         
-        listaSugestoes.appendChild(div);
+        container.appendChild(div);
     });
 }
 
-function renderizarPrazos(filtro = 'todos') {
-    const prazosLista = document.getElementById('prazos-lista');
-    if (!prazosLista) return;
+// ============================================
+// FUNÇÕES DE CHECKLIST
+// ============================================
+
+function renderizarChecklist() {
+    const container = document.getElementById('checklist-diario');
+    if (!container) return;
     
-    prazosLista.innerHTML = '';
+    container.innerHTML = '';
+    
+    const hoje = new Date();
+    const diaSemana = hoje.getDay();
+    
+    if (diaSemana === 0 || diaSemana === 6) {
+        container.innerHTML = '<p class="text-muted">Dia de descanso! Nenhuma tarefa.</p>';
+        document.getElementById('checklist-progress').textContent = '0/0 concluídas';
+        return;
+    }
+    
+    // Criar itens do checklist baseado nas atividades do dia
+    const itensChecklist = [];
+    
+    // Manhã
+    const materiaManha = getMateriaManha(diaSemana);
+    if (materiaManha) {
+        itensChecklist.push({
+            id: `check-manha-${hoje.toISOString().split('T')[0]}`,
+            materia: materiaManha,
+            titulo: `Estudar ${getNomeMateria(materiaManha)} (pré-aula)`,
+            concluido: estado.checklistItens?.includes(`check-manha-${hoje.toISOString().split('T')[0]}`) || false
+        });
+    }
+    
+    // Tarde
+    const materiaTarde = getMateriaTarde(diaSemana);
+    if (materiaTarde) {
+        itensChecklist.push({
+            id: `check-tarde-${hoje.toISOString().split('T')[0]}`,
+            materia: materiaTarde,
+            titulo: `Assistir aula de ${getNomeMateria(materiaTarde)}`,
+            concluido: estado.checklistItens?.includes(`check-tarde-${hoje.toISOString().split('T')[0]}`) || false
+        });
+    }
+    
+    // Cursos extras
+    itensChecklist.push({
+        id: `check-noite-${hoje.toISOString().split('T')[0]}`,
+        materia: 'extras',
+        titulo: 'Fazer curso extra (Python/HTML)',
+        concluido: estado.checklistItens?.includes(`check-noite-${hoje.toISOString().split('T')[0]}`) || false
+    });
+    
+    // Contar concluídos
+    const concluidos = itensChecklist.filter(item => item.concluido).length;
+    document.getElementById('checklist-progress').textContent = `${concluidos}/${itensChecklist.length} concluídas`;
+    
+    itensChecklist.forEach(item => {
+        const div = document.createElement('div');
+        div.className = `checklist-item ${item.concluido ? 'concluido' : ''}`;
+        
+        div.innerHTML = `
+            <div class="checklist-checkbox ${item.concluido ? 'checked' : ''}" onclick="toggleChecklistItem('${item.id}')">
+                ${item.concluido ? '<i class="fas fa-check"></i>' : ''}
+            </div>
+            <div class="checklist-info">
+                <h4>${item.titulo}</h4>
+                <p>${getNomeMateria(item.materia)}</p>
+            </div>
+            <span class="checklist-materia ${item.materia}">${item.materia.toUpperCase()}</span>
+        `;
+        
+        container.appendChild(div);
+    });
+}
+
+function toggleChecklistItem(itemId) {
+    if (!estado.checklistItens) {
+        estado.checklistItens = [];
+    }
+    
+    const index = estado.checklistItens.indexOf(itemId);
+    if (index === -1) {
+        estado.checklistItens.push(itemId);
+        mostrarToast('✅ Tarefa concluída!', 'success');
+    } else {
+        estado.checklistItens.splice(index, 1);
+        mostrarToast('Tarefa desmarcada', 'info');
+    }
+    
+    localStorage.setItem('agenda_checklist', JSON.stringify(estado.checklistItens));
+    renderizarChecklist();
+}
+
+function resetarChecklistDiario() {
+    if (confirm('Tem certeza que deseja resetar o checklist de hoje?')) {
+        estado.checklistItens = [];
+        localStorage.setItem('agenda_checklist', JSON.stringify(estado.checklistItens));
+        renderizarChecklist();
+        mostrarToast('Checklist resetado!', 'info');
+    }
+}
+
+// ============================================
+// FUNÇÕES DE PRAZOS
+// ============================================
+
+function renderizarPrazos(filtro = 'todos') {
+    const container = document.getElementById('prazos-lista');
+    if (!container) return;
+    
+    container.innerHTML = '';
     
     const hoje = new Date();
     const prazosFiltrados = prazos
@@ -818,9 +971,14 @@ function renderizarPrazos(filtro = 'todos') {
         .sort((a, b) => new Date(a.data) - new Date(b.data));
     
     if (prazosFiltrados.length === 0) {
-        prazosLista.innerHTML = '<p class="text-muted">Nenhum prazo encontrado</p>';
+        container.innerHTML = '<p class="text-muted">Nenhum prazo encontrado</p>';
         return;
     }
+    
+    // Atualizar estatísticas
+    document.getElementById('total-prazos').textContent = prazos.length;
+    document.getElementById('prazos-concluidos').textContent = prazos.filter(p => p.concluido).length;
+    document.getElementById('prazos-pendentes').textContent = prazos.filter(p => !p.concluido).length;
     
     prazosFiltrados.forEach(prazo => {
         const div = document.createElement('div');
@@ -857,9 +1015,13 @@ function renderizarPrazos(filtro = 'todos') {
             ${!prazo.concluido ? `<button class="btn-concluir-pequeno" onclick="abrirModalConclusao('${prazo.id}')"><i class="fas fa-check"></i></button>` : ''}
         `;
         
-        prazosLista.appendChild(div);
+        container.appendChild(div);
     });
 }
+
+// ============================================
+// FUNÇÕES DE CALENDÁRIO
+// ============================================
 
 function renderizarCalendario() {
     const grid = document.getElementById('calendario-grid');
@@ -889,6 +1051,7 @@ function renderizarCalendario() {
     for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
         const div = document.createElement('div');
         div.className = 'calendario-dia';
+        div.onclick = () => verEventosDoDia(dia);
         
         const dataAtual = new Date(estado.anoCalendario, estado.mesCalendario, dia);
         if (dataAtual.toDateString() === hoje.toDateString()) {
@@ -923,36 +1086,469 @@ function renderizarCalendario() {
     if (mesAnoEl) {
         mesAnoEl.textContent = new Date(estado.anoCalendario, estado.mesCalendario).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
     }
-    
-    renderizarProximosPrazosLista();
 }
 
-function renderizarProximosPrazosLista() {
-    const container = document.getElementById('proximos-prazos-lista');
-    if (!container) return;
+function verEventosDoDia(dia) {
+    const dataStr = `${estado.anoCalendario}-${String(estado.mesCalendario + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+    const eventos = prazos.filter(p => p.data === dataStr && !p.concluido);
     
-    container.innerHTML = '<h4>Próximos prazos</h4>';
+    if (eventos.length === 0) {
+        mostrarToast('Nenhum evento neste dia', 'info');
+        return;
+    }
     
-    const hoje = new Date();
-    const proximos = prazos
-        .filter(p => !p.concluido)
-        .sort((a, b) => new Date(a.data) - new Date(b.data))
-        .slice(0, 5);
+    const modalTitulo = document.querySelector('#modal-dia-titulo span');
+    modalTitulo.textContent = formatarData(dataStr);
     
-    proximos.forEach(prazo => {
-        const dataPrazo = new Date(prazo.data + 'T12:00:00');
-        const diasRestantes = Math.ceil((dataPrazo - hoje) / (1000 * 60 * 60 * 24));
+    const listaEventos = document.getElementById('modal-eventos-lista');
+    listaEventos.innerHTML = '';
+    
+    eventos.forEach(evento => {
+        const div = document.createElement('div');
+        div.className = 'evento-item';
         
-        const item = document.createElement('div');
-        item.className = `proximo-prazo-item ${prazo.tipo}`;
-        item.innerHTML = `
-            <span class="prazo-nome">${prazo.nome}</span>
-            <span class="prazo-data-pequena">${formatarData(prazo.data)} (${diasRestantes} dias)</span>
+        let icone = '';
+        if (evento.tipo === 'prova') icone = '📝';
+        else if (evento.tipo === 'trabalho') icone = '👥';
+        else icone = '📦';
+        
+        div.innerHTML = `
+            <span class="evento-cor ${evento.tipo}"></span>
+            <span class="evento-nome">${icone} ${evento.nome}</span>
+            <span class="evento-materia">${getNomeMateria(evento.materia)}</span>
         `;
         
-        container.appendChild(item);
+        listaEventos.appendChild(div);
     });
+    
+    document.getElementById('modal-evento-dia').classList.add('active');
 }
+
+function fecharModalEvento() {
+    document.getElementById('modal-evento-dia').classList.remove('active');
+}
+
+function mesAnterior() {
+    if (estado.mesCalendario === 0) {
+        estado.mesCalendario = 11;
+        estado.anoCalendario--;
+    } else {
+        estado.mesCalendario--;
+    }
+    renderizarCalendario();
+}
+
+function proximoMes() {
+    if (estado.mesCalendario === 11) {
+        estado.mesCalendario = 0;
+        estado.anoCalendario++;
+    } else {
+        estado.mesCalendario++;
+    }
+    renderizarCalendario();
+}
+
+// ============================================
+// FUNÇÕES DE NOTAS (REFORMULADO)
+// ============================================
+
+function renderizarNotas() {
+    const container = document.getElementById('notas-container');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    const buscaTermo = document.getElementById('busca-notas').value.toLowerCase();
+    let notasFiltradas = notas.filter(n => n.materia === estado.materiaAtual);
+    
+    if (buscaTermo) {
+        notasFiltradas = notasFiltradas.filter(n => 
+            n.titulo.toLowerCase().includes(buscaTermo) || 
+            n.conteudo.toLowerCase().includes(buscaTermo) ||
+            (n.tags && n.tags.some(tag => tag.toLowerCase().includes(buscaTermo)))
+        );
+    }
+    
+    // Separar fixadas
+    const fixadas = notasFiltradas.filter(n => n.fixada);
+    const normais = notasFiltradas.filter(n => !n.fixada);
+    
+    // Renderizar fixadas
+    const fixadasContainer = document.querySelector('.fixadas-grid');
+    if (fixadasContainer) {
+        fixadasContainer.innerHTML = '';
+        if (fixadas.length > 0) {
+            fixadas.forEach(nota => criarElementoNota(nota, fixadasContainer));
+        } else {
+            fixadasContainer.innerHTML = '<p class="text-muted">Nenhuma nota fixada</p>';
+        }
+    }
+    
+    // Renderizar normais
+    normais.sort((a, b) => new Date(b.data) - new Date(a.data));
+    normais.forEach(nota => criarElementoNota(nota, container));
+    
+    if (notasFiltradas.length === 0) {
+        container.innerHTML = '<p class="text-muted">Nenhuma nota encontrada. Crie uma nova nota!</p>';
+    }
+}
+
+function criarElementoNota(nota, container) {
+    const div = document.createElement('div');
+    div.className = `nota-item ${nota.fixada ? 'fixada' : ''}`;
+    div.dataset.materia = nota.materia;
+    div.dataset.id = nota.id;
+    
+    div.innerHTML = `
+        <div class="nota-header">
+            <span class="nota-data">${formatarData(nota.data)}</span>
+            <div class="nota-acoes">
+                <button onclick="fixarNota('${nota.id}')" title="${nota.fixada ? 'Desfixar' : 'Fixar'}">
+                    <i class="fas fa-thumbtack" style="color: ${nota.fixada ? 'var(--dourado)' : 'inherit'}"></i>
+                </button>
+                <button onclick="editarNota('${nota.id}')"><i class="fas fa-edit"></i></button>
+                <button onclick="excluirNota('${nota.id}')"><i class="fas fa-trash"></i></button>
+            </div>
+        </div>
+        <div class="nota-titulo">${nota.titulo}</div>
+        <div class="nota-conteudo">${nota.conteudo.replace(/\n/g, '<br>')}</div>
+        <div class="nota-tags">
+            ${nota.tags ? nota.tags.map(tag => `<span class="nota-tag">#${tag}</span>`).join('') : ''}
+        </div>
+    `;
+    
+    container.appendChild(div);
+}
+
+function atualizarEstatisticasNotas() {
+    document.getElementById('total-notas').textContent = notas.length;
+    document.getElementById('total-es').textContent = notas.filter(n => n.materia === 'es').length;
+    document.getElementById('total-ic').textContent = notas.filter(n => n.materia === 'ic').length;
+    document.getElementById('total-lp').textContent = notas.filter(n => n.materia === 'lp').length;
+    document.getElementById('total-bd').textContent = notas.filter(n => n.materia === 'bd').length;
+}
+
+function buscarNotas() {
+    renderizarNotas();
+}
+
+function fixarNota(id) {
+    const nota = notas.find(n => n.id === id);
+    if (nota) {
+        nota.fixada = !nota.fixada;
+        localStorage.setItem('agenda_notas', JSON.stringify(notas));
+        renderizarNotas();
+        mostrarToast(nota.fixada ? 'Nota fixada! 📌' : 'Nota desafixada', 'success');
+    }
+}
+
+function criarNovaNota() {
+    document.getElementById('nota-materia').value = estado.materiaAtual;
+    document.getElementById('nota-titulo').value = '';
+    document.getElementById('nota-conteudo').value = '';
+    document.getElementById('nota-tags').value = '';
+    document.getElementById('nota-fixada').checked = false;
+    
+    document.getElementById('modal-nota').classList.add('active');
+}
+
+function salvarNota() {
+    const materia = document.getElementById('nota-materia').value;
+    const titulo = document.getElementById('nota-titulo').value;
+    const conteudo = document.getElementById('nota-conteudo').value;
+    const tagsInput = document.getElementById('nota-tags').value;
+    const fixada = document.getElementById('nota-fixada').checked;
+    
+    if (!titulo || !conteudo) {
+        mostrarToast('Preencha título e conteúdo!', 'error');
+        return;
+    }
+    
+    const tags = tagsInput.split(',').map(t => t.trim()).filter(t => t);
+    
+    const novaNota = {
+        id: Date.now().toString(),
+        materia,
+        titulo,
+        conteudo,
+        tags,
+        fixada,
+        data: new Date().toISOString().split('T')[0]
+    };
+    
+    notas.push(novaNota);
+    localStorage.setItem('agenda_notas', JSON.stringify(notas));
+    
+    fecharModalNota();
+    renderizarNotas();
+    atualizarEstatisticasNotas();
+    mostrarToast('Nota salva com sucesso!', 'success');
+}
+
+function editarNota(id) {
+    const nota = notas.find(n => n.id === id);
+    if (!nota) return;
+    
+    document.getElementById('nota-materia').value = nota.materia;
+    document.getElementById('nota-titulo').value = nota.titulo;
+    document.getElementById('nota-conteudo').value = nota.conteudo;
+    document.getElementById('nota-tags').value = nota.tags ? nota.tags.join(', ') : '';
+    document.getElementById('nota-fixada').checked = nota.fixada || false;
+    
+    // Remover a nota antiga
+    const index = notas.findIndex(n => n.id === id);
+    if (index !== -1) notas.splice(index, 1);
+    
+    document.getElementById('modal-nota').classList.add('active');
+}
+
+function excluirNota(id) {
+    if (!confirm('Tem certeza que deseja excluir esta nota?')) return;
+    
+    const index = notas.findIndex(n => n.id === id);
+    if (index !== -1) {
+        notas.splice(index, 1);
+        localStorage.setItem('agenda_notas', JSON.stringify(notas));
+        renderizarNotas();
+        atualizarEstatisticasNotas();
+        mostrarToast('Nota excluída!', 'success');
+    }
+}
+
+function fecharModalNota() {
+    document.getElementById('modal-nota').classList.remove('active');
+}
+
+// ============================================
+// FUNÇÕES DE CONCLUSÃO DE ATIVIDADES
+// ============================================
+
+function abrirModalConclusao(atividadeId) {
+    let atividade = prazos.find(p => p.id === atividadeId);
+    
+    if (!atividade) {
+        atividade = {
+            id: atividadeId,
+            nome: `Estudo de ${getNomeMateria(atividadeId)}`,
+            diasPrevistos: 1,
+            materia: atividadeId
+        };
+    }
+    
+    estado.atividadeConcluindo = atividade;
+    
+    document.getElementById('modal-atividade-nome').textContent = atividade.nome;
+    
+    document.querySelectorAll('input[name="dias-gastos"]').forEach(r => r.checked = false);
+    document.querySelector('input[name="dias-gastos"][value="1"]').checked = true;
+    
+    document.getElementById('anotacoes-conclusao').value = '';
+    
+    document.getElementById('modal-concluir').classList.add('active');
+}
+
+function fecharModal() {
+    document.getElementById('modal-concluir').classList.remove('active');
+}
+
+function confirmarConclusao() {
+    const radios = document.querySelectorAll('input[name="dias-gastos"]');
+    let diasGastos = null;
+    
+    for (const radio of radios) {
+        if (radio.checked) {
+            diasGastos = parseInt(radio.value);
+            break;
+        }
+    }
+    
+    if (!diasGastos || isNaN(diasGastos)) {
+        mostrarToast('Selecione os dias gastos', 'error');
+        return;
+    }
+    
+    const anotacoes = document.getElementById('anotacoes-conclusao').value;
+    const diasPrevistos = estado.atividadeConcluindo.diasPrevistos || 1;
+    const diasGanhos = Math.max(0, diasPrevistos - diasGastos);
+    
+    const atividadeIndex = prazos.findIndex(p => p.id === estado.atividadeConcluindo.id);
+    if (atividadeIndex !== -1) {
+        prazos[atividadeIndex].concluido = true;
+        prazos[atividadeIndex].dataConclusao = new Date().toISOString().split('T')[0];
+        prazos[atividadeIndex].diasGastos = diasGastos;
+        prazos[atividadeIndex].anotacoes = anotacoes;
+        
+        localStorage.setItem('agenda_prazos', JSON.stringify(prazos));
+    }
+    
+    fecharModal();
+    
+    if (diasGanhos > 0) {
+        reorganizarEstudos(estado.atividadeConcluindo, diasGanhos);
+        mostrarToast(`🎉 Parabéns! Você ganhou ${diasGanhos} dias extras!`, 'success');
+    } else {
+        mostrarToast('Atividade concluída com sucesso!', 'success');
+    }
+    
+    atualizarInterface();
+}
+
+function reorganizarEstudos(atividade, diasGanhos) {
+    const hoje = new Date();
+    let diasRestantes = diasGanhos;
+    
+    const provasProximas = prazos
+        .filter(p => p.tipo === 'prova' && !p.concluido)
+        .map(p => {
+            const diasAte = Math.ceil((new Date(p.data + 'T12:00:00') - hoje) / (1000 * 60 * 60 * 24));
+            return { ...p, diasAte };
+        })
+        .filter(p => p.diasAte <= 14 && p.diasAte > 0)
+        .sort((a, b) => a.diasAte - b.diasAte);
+    
+    while (diasRestantes > 0 && provasProximas.length > 0) {
+        const prova = provasProximas[0];
+        
+        const dataEstudo = new Date(hoje);
+        dataEstudo.setDate(dataEstudo.getDate() + (diasGanhos - diasRestantes + 1));
+        
+        if (dataEstudo.getDay() !== 0 && dataEstudo.getDay() !== 6) {
+            const estudoEvento = {
+                id: `estudo-${Date.now()}-${diasRestantes}`,
+                materia: prova.materia,
+                tipo: 'estudo',
+                nome: `Estudo para ${prova.nome}`,
+                data: dataEstudo.toISOString().split('T')[0],
+                diasPrevistos: 1,
+                concluido: false
+            };
+            
+            prazos.push(estudoEvento);
+        }
+        
+        diasRestantes--;
+    }
+    
+    if (diasRestantes > 0) {
+        const cursos = ['Python Santander', 'HTML Coddy'];
+        
+        for (let i = 0; i < diasRestantes; i++) {
+            const dataCurso = new Date(hoje);
+            dataCurso.setDate(dataCurso.getDate() + i + 1);
+            
+            if (dataCurso.getDay() !== 0 && dataCurso.getDay() !== 6) {
+                const cursoEvento = {
+                    id: `curso-${Date.now()}-${i}`,
+                    materia: 'extras',
+                    tipo: 'estudo',
+                    nome: cursos[i % 2],
+                    data: dataCurso.toISOString().split('T')[0],
+                    diasPrevistos: 1,
+                    concluido: false
+                };
+                
+                prazos.push(cursoEvento);
+            }
+        }
+    }
+    
+    localStorage.setItem('agenda_prazos', JSON.stringify(prazos));
+}
+
+// ============================================
+// FUNÇÕES DE TIMER
+// ============================================
+
+function iniciarTimer() {
+    if (estado.timerAtivo) return;
+    
+    estado.timerAtivo = true;
+    estado.timerInterval = setInterval(() => {
+        estado.timerTempo++;
+        
+        const horas = (estado.timerTempo / 3600).toFixed(2);
+        const progresso = (horas / HORAS_POR_DIA) * 100;
+        
+        document.getElementById('timer-progresso').style.width = `${Math.min(progresso, 100)}%`;
+        document.getElementById('timer-display').textContent = `${Math.floor(estado.timerTempo / 3600)}h${Math.floor((estado.timerTempo % 3600) / 60)}m`;
+        
+        if (horas >= HORAS_POR_DIA) {
+            pausarTimer();
+            mostrarToast('🎉 Parabéns! Você completou suas 2h30 de estudo hoje!', 'success');
+        }
+    }, 1000);
+}
+
+function pausarTimer() {
+    estado.timerAtivo = false;
+    if (estado.timerInterval) {
+        clearInterval(estado.timerInterval);
+    }
+}
+
+function zerarTimer() {
+    pausarTimer();
+    estado.timerTempo = 0;
+    document.getElementById('timer-progresso').style.width = '0%';
+    document.getElementById('timer-display').textContent = '0h00';
+}
+
+// ============================================
+// FUNÇÕES DE PLANOS DE AULA
+// ============================================
+
+function mostrarPlanoAula(materia) {
+    const titulo = document.getElementById('plano-titulo');
+    const tabela = document.getElementById('plano-tabela');
+    
+    if (titulo) {
+        titulo.textContent = `Plano de Aula - ${getNomeMateria(materia)}`;
+    }
+    
+    if (tabela && planosAula[materia]) {
+        tabela.innerHTML = '';
+        
+        const table = document.createElement('table');
+        table.className = 'tabela-planos';
+        
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Tema</th>
+                    <th>Conteúdo</th>
+                    <th>Preparação</th>
+                </tr>
+            </thead>
+            <tbody id="tabela-corpo">
+            </tbody>
+        `;
+        
+        const tbody = table.querySelector('#tabela-corpo');
+        
+        planosAula[materia].forEach(aula => {
+            const tr = document.createElement('tr');
+            
+            const dataObj = new Date(aula.data + 'T12:00:00');
+            const dataFormatada = dataObj.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+            
+            tr.innerHTML = `
+                <td>${dataFormatada}</td>
+                <td><strong>${aula.tema}</strong></td>
+                <td>${aula.conteudo}</td>
+                <td>${aula.paraCasa || '-'}</td>
+            `;
+            
+            tbody.appendChild(tr);
+        });
+        
+        tabela.appendChild(table);
+    }
+}
+
+// ============================================
+// FUNÇÕES DE PROGRESSO
+// ============================================
 
 function renderizarProgresso() {
     const materias = ['es', 'ic', 'lp', 'bd', 'bootcamp', 'fundamentos'];
@@ -997,454 +1593,17 @@ function desenharGraficoBarras() {
         const altura = (materia.horas / 30) * alturaMaxima;
         const y = 250 - altura;
         
-        // Barra
         ctx.fillStyle = materia.cor;
         ctx.fillRect(x, y, larguraBarra, altura);
         
-        // Nome
         ctx.fillStyle = '#cbd5e1';
         ctx.font = '12px Inter';
         ctx.fillText(materia.nome, x + 10, 280);
         
-        // Valor
         ctx.fillStyle = '#f1f5f9';
         ctx.font = 'bold 12px Inter';
         ctx.fillText(materia.horas + 'h', x + 5, y - 5);
     });
-}
-
-function renderizarHistoricoConclusoes() {
-    const container = document.getElementById('historico-conclusoes');
-    if (!container) return;
-    
-    container.innerHTML = '<h3>Últimas Conclusões</h3>';
-    
-    const concluidas = prazos
-        .filter(p => p.concluido && p.dataConclusao)
-        .sort((a, b) => new Date(b.dataConclusao) - new Date(a.dataConclusao))
-        .slice(0, 5);
-    
-    if (concluidas.length === 0) {
-        container.innerHTML += '<p class="text-muted">Nenhuma atividade concluída ainda</p>';
-        return;
-    }
-    
-    concluidas.forEach(p => {
-        const item = document.createElement('div');
-        item.className = `historico-item ${p.materia}`;
-        item.innerHTML = `
-            <div class="historico-info">
-                <strong>${p.nome}</strong>
-                <span>${getNomeMateria(p.materia)}</span>
-            </div>
-            <div class="historico-data">
-                ${formatarData(p.dataConclusao)} • ${p.diasGastos || '?'} dias
-            </div>
-        `;
-        container.appendChild(item);
-    });
-}
-
-function renderizarPlanosAulaResumo() {
-    // Essa função é chamada quando clica em uma matéria na aba Planos de Aula
-}
-
-function mostrarPlanoAula(materia) {
-    const titulo = document.getElementById('plano-titulo');
-    const tabela = document.getElementById('plano-tabela');
-    
-    if (titulo) {
-        titulo.textContent = `Plano de Aula - ${getNomeMateria(materia)}`;
-    }
-    
-    if (tabela && planosAula[materia]) {
-        tabela.innerHTML = '';
-        
-        const table = document.createElement('table');
-        table.className = 'tabela-planos';
-        
-        // Cabeçalho
-        table.innerHTML = `
-            <thead>
-                <tr>
-                    <th>Data</th>
-                    <th>Tema</th>
-                    <th>Conteúdo</th>
-                    <th>Preparação</th>
-                </tr>
-            </thead>
-            <tbody id="tabela-corpo">
-            </tbody>
-        `;
-        
-        const tbody = table.querySelector('#tabela-corpo');
-        
-        planosAula[materia].forEach(aula => {
-            const tr = document.createElement('tr');
-            
-            const dataObj = new Date(aula.data + 'T12:00:00');
-            const dataFormatada = dataObj.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
-            
-            tr.innerHTML = `
-                <td>${dataFormatada}</td>
-                <td><strong>${aula.tema}</strong></td>
-                <td>${aula.conteudo}</td>
-                <td>${aula.paraCasa || '-'}</td>
-            `;
-            
-            tbody.appendChild(tr);
-        });
-        
-        tabela.appendChild(table);
-    }
-}
-
-// ============================================
-// FUNÇÕES DE NOTAS
-// ============================================
-
-function renderizarNotas() {
-    const container = document.getElementById('notas-container');
-    if (!container) return;
-    
-    container.innerHTML = '';
-    
-    const notasFiltradas = notas.filter(n => n.materia === estado.materiaAtual);
-    
-    if (notasFiltradas.length === 0) {
-        container.innerHTML = '<p class="text-muted">Nenhuma nota ainda. Crie uma nova nota!</p>';
-        return;
-    }
-    
-    notasFiltradas.sort((a, b) => new Date(b.data) - new Date(a.data));
-    
-    notasFiltradas.forEach(nota => {
-        const div = document.createElement('div');
-        div.className = `nota-item`;
-        div.dataset.materia = nota.materia;
-        
-        div.innerHTML = `
-            <div class="nota-header">
-                <span class="nota-data">${formatarData(nota.data)}</span>
-                <div class="nota-acoes">
-                    <button onclick="editarNota('${nota.id}')"><i class="fas fa-edit"></i></button>
-                    <button onclick="excluirNota('${nota.id}')"><i class="fas fa-trash"></i></button>
-                </div>
-            </div>
-            <div class="nota-titulo">${nota.titulo}</div>
-            <div class="nota-conteudo">${nota.conteudo.replace(/\n/g, '<br>')}</div>
-            <div class="nota-tags">
-                ${nota.tags ? nota.tags.map(tag => `<span class="nota-tag">#${tag}</span>`).join('') : ''}
-            </div>
-        `;
-        
-        container.appendChild(div);
-    });
-}
-
-function criarNovaNota() {
-    const selectMateria = document.getElementById('nota-materia');
-    if (selectMateria) {
-        selectMateria.value = estado.materiaAtual;
-    }
-    
-    const titulo = document.getElementById('nota-titulo');
-    const conteudo = document.getElementById('nota-conteudo');
-    const tags = document.getElementById('nota-tags');
-    
-    if (titulo) titulo.value = '';
-    if (conteudo) conteudo.value = '';
-    if (tags) tags.value = '';
-    
-    const modal = document.getElementById('modal-nota');
-    if (modal) {
-        modal.classList.add('active');
-    }
-}
-
-function salvarNota() {
-    const materia = document.getElementById('nota-materia').value;
-    const titulo = document.getElementById('nota-titulo').value;
-    const conteudo = document.getElementById('nota-conteudo').value;
-    const tagsInput = document.getElementById('nota-tags').value;
-    
-    if (!titulo || !conteudo) {
-        mostrarToast('Preencha título e conteúdo!', 'error');
-        return;
-    }
-    
-    const tags = tagsInput.split(',').map(t => t.trim()).filter(t => t);
-    
-    const novaNota = {
-        id: Date.now().toString(),
-        materia,
-        titulo,
-        conteudo,
-        tags,
-        data: new Date().toISOString().split('T')[0]
-    };
-    
-    notas.push(novaNota);
-    localStorage.setItem('studyos_notas', JSON.stringify(notas));
-    
-    fecharModalNota();
-    renderizarNotas();
-    mostrarToast('Nota salva com sucesso!', 'success');
-}
-
-function editarNota(id) {
-    const nota = notas.find(n => n.id === id);
-    if (!nota) return;
-    
-    document.getElementById('nota-materia').value = nota.materia;
-    document.getElementById('nota-titulo').value = nota.titulo;
-    document.getElementById('nota-conteudo').value = nota.conteudo;
-    document.getElementById('nota-tags').value = nota.tags ? nota.tags.join(', ') : '';
-    
-    const index = notas.findIndex(n => n.id === id);
-    if (index !== -1) notas.splice(index, 1);
-    
-    document.getElementById('modal-nota').classList.add('active');
-}
-
-function excluirNota(id) {
-    if (!confirm('Tem certeza que deseja excluir esta nota?')) return;
-    
-    const index = notas.findIndex(n => n.id === id);
-    if (index !== -1) {
-        notas.splice(index, 1);
-        localStorage.setItem('studyos_notas', JSON.stringify(notas));
-        renderizarNotas();
-        mostrarToast('Nota excluída!', 'success');
-    }
-}
-
-function fecharModalNota() {
-    document.getElementById('modal-nota').classList.remove('active');
-}
-
-// ============================================
-// FUNÇÕES DE CONCLUSÃO DE ATIVIDADES
-// ============================================
-
-function abrirModalConclusao(atividadeId) {
-    let atividade = prazos.find(p => p.id === atividadeId);
-    
-    if (!atividade) {
-        // Pode ser uma matéria (pré-aula)
-        atividade = {
-            id: atividadeId,
-            nome: `Estudo de ${getNomeMateria(atividadeId)}`,
-            diasPrevistos: 1,
-            materia: atividadeId
-        };
-    }
-    
-    estado.atividadeConcluindo = atividade;
-    
-    document.getElementById('modal-atividade-nome').textContent = atividade.nome;
-    
-    // Resetar radio buttons
-    document.querySelectorAll('input[name="dias-gastos"]').forEach(r => r.checked = false);
-    document.querySelector('input[name="dias-gastos"][value="1"]').checked = true;
-    
-    document.getElementById('dias-outro').disabled = true;
-    document.getElementById('dias-outro').value = '';
-    
-    document.getElementById('horas-por-dia').value = '2.5';
-    document.getElementById('anotacoes-conclusao').value = '';
-    
-    document.getElementById('modal-concluir').classList.add('active');
-}
-
-function fecharModal() {
-    document.getElementById('modal-concluir').classList.remove('active');
-}
-
-function confirmarConclusao() {
-    const radios = document.querySelectorAll('input[name="dias-gastos"]');
-    let diasGastos = null;
-    
-    for (const radio of radios) {
-        if (radio.checked) {
-            if (radio.value === 'outro') {
-                diasGastos = parseInt(document.getElementById('dias-outro').value);
-            } else {
-                diasGastos = parseInt(radio.value);
-            }
-            break;
-        }
-    }
-    
-    if (!diasGastos || isNaN(diasGastos)) {
-        mostrarToast('Selecione ou informe os dias gastos', 'error');
-        return;
-    }
-    
-    const horasPorDia = parseFloat(document.getElementById('horas-por-dia').value);
-    const anotacoes = document.getElementById('anotacoes-conclusao').value;
-    
-    const diasPrevistos = estado.atividadeConcluindo.diasPrevistos || 1;
-    const diasGanhos = Math.max(0, diasPrevistos - diasGastos);
-    
-    // Marcar atividade como concluída
-    const atividadeIndex = prazos.findIndex(p => p.id === estado.atividadeConcluindo.id);
-    if (atividadeIndex !== -1) {
-        prazos[atividadeIndex].concluido = true;
-        prazos[atividadeIndex].dataConclusao = new Date().toISOString().split('T')[0];
-        prazos[atividadeIndex].diasGastos = diasGastos;
-        prazos[atividadeIndex].anotacoes = anotacoes;
-        
-        localStorage.setItem('studyos_prazos', JSON.stringify(prazos));
-    }
-    
-    fecharModal();
-    
-    if (diasGanhos > 0) {
-        reorganizarEstudos(estado.atividadeConcluindo, diasGanhos);
-        mostrarToast(`🎉 Parabéns! Você ganhou ${diasGanhos} dias extras!`, 'success');
-    } else {
-        mostrarToast('Atividade concluída com sucesso!', 'success');
-    }
-    
-    atualizarInterface();
-}
-
-function reorganizarEstudos(atividade, diasGanhos) {
-    const hoje = new Date();
-    let diasRestantes = diasGanhos;
-    
-    // Prioridade 1: Provas nas próximas 2 semanas
-    const provasProximas = prazos
-        .filter(p => p.tipo === 'prova' && !p.concluido)
-        .map(p => {
-            const diasAte = Math.ceil((new Date(p.data + 'T12:00:00') - hoje) / (1000 * 60 * 60 * 24));
-            return { ...p, diasAte };
-        })
-        .filter(p => p.diasAte <= 14 && p.diasAte > 0)
-        .sort((a, b) => a.diasAte - b.diasAte);
-    
-    while (diasRestantes > 0 && provasProximas.length > 0) {
-        const prova = provasProximas[0];
-        const dataProva = new Date(prova.data + 'T12:00:00');
-        
-        // Adicionar dia de estudo para a prova
-        const dataEstudo = new Date(hoje);
-        dataEstudo.setDate(dataEstudo.getDate() + (diasGanhos - diasRestantes + 1));
-        
-        if (dataEstudo.getDay() !== 0 && dataEstudo.getDay() !== 6) {
-            const estudoEvento = {
-                id: `estudo-${Date.now()}-${diasRestantes}`,
-                materia: prova.materia,
-                tipo: 'estudo',
-                nome: `Estudo para ${prova.nome}`,
-                data: dataEstudo.toISOString().split('T')[0],
-                diasPrevistos: 1,
-                concluido: false
-            };
-            
-            prazos.push(estudoEvento);
-            mostrarToast(`📚 Dia de estudo extra para ${getNomeMateria(prova.materia)} adicionado!`, 'info');
-        }
-        
-        diasRestantes--;
-    }
-    
-    // Prioridade 2: Cursos extras
-    if (diasRestantes > 0) {
-        const cursos = ['Python Santander', 'HTML Coddy'];
-        
-        for (let i = 0; i < diasRestantes; i++) {
-            const dataCurso = new Date(hoje);
-            dataCurso.setDate(dataCurso.getDate() + i + 1);
-            
-            if (dataCurso.getDay() !== 0 && dataCurso.getDay() !== 6) {
-                const cursoEvento = {
-                    id: `curso-${Date.now()}-${i}`,
-                    materia: 'extras',
-                    tipo: 'estudo',
-                    nome: cursos[i % 2],
-                    data: dataCurso.toISOString().split('T')[0],
-                    diasPrevistos: 1,
-                    concluido: false
-                };
-                
-                prazos.push(cursoEvento);
-            }
-        }
-        
-        if (diasRestantes > 0) {
-            mostrarToast(`🚀 Dias extras usados para cursos!`, 'info');
-        }
-    }
-    
-    localStorage.setItem('studyos_prazos', JSON.stringify(prazos));
-}
-
-// ============================================
-// FUNÇÕES DE TIMER
-// ============================================
-
-function iniciarTimer() {
-    if (estado.timerAtivo) return;
-    
-    estado.timerAtivo = true;
-    estado.timerInterval = setInterval(() => {
-        estado.timerTempo++;
-        
-        const horas = estado.timerTempo / 3600;
-        const progresso = (horas / 2.5) * 100;
-        
-        const progressoEl = document.getElementById('timer-progresso');
-        if (progressoEl) {
-            progressoEl.style.width = `${Math.min(progresso, 100)}%`;
-        }
-        
-        if (horas >= 2.5) {
-            pausarTimer();
-            mostrarToast('🎉 Parabéns! Você completou suas 2h30 de estudo hoje!', 'success');
-        }
-    }, 1000);
-}
-
-function pausarTimer() {
-    estado.timerAtivo = false;
-    if (estado.timerInterval) {
-        clearInterval(estado.timerInterval);
-    }
-}
-
-function zerarTimer() {
-    pausarTimer();
-    estado.timerTempo = 0;
-    const progressoEl = document.getElementById('timer-progresso');
-    if (progressoEl) {
-        progressoEl.style.width = '0%';
-    }
-}
-
-// ============================================
-// FUNÇÕES DE CALENDÁRIO
-// ============================================
-
-function mesAnterior() {
-    if (estado.mesCalendario === 0) {
-        estado.mesCalendario = 11;
-        estado.anoCalendario--;
-    } else {
-        estado.mesCalendario--;
-    }
-    renderizarCalendario();
-}
-
-function proximoMes() {
-    if (estado.mesCalendario === 11) {
-        estado.mesCalendario = 0;
-        estado.anoCalendario++;
-    } else {
-        estado.mesCalendario++;
-    }
-    renderizarCalendario();
 }
 
 // ============================================
@@ -1465,23 +1624,22 @@ function getNomeMateria(materia) {
 }
 
 function getMateriaManha(diaSemana) {
-    // 0=Domingo, 1=Segunda, 2=Terça, 3=Quarta, 4=Quinta, 5=Sexta, 6=Sábado
     const mapa = {
-        1: 'fundamentos', // Segunda: matérias online
-        2: 'es',          // Terça: pré-aula ES
-        3: 'ic',          // Quarta: pré-aula IC
-        4: 'lp',          // Quinta: pré-aula LP
-        5: 'bd'           // Sexta: pré-aula BD
+        1: 'fundamentos',
+        2: 'es',
+        3: 'ic',
+        4: 'lp',
+        5: 'bd'
     };
     return mapa[diaSemana] || null;
 }
 
 function getMateriaTarde(diaSemana) {
     const mapa = {
-        2: 'es',          // Terça: aula ES
-        3: 'ic',          // Quarta: aula IC
-        4: 'lp',          // Quinta: aula LP
-        5: 'bd'           // Sexta: aula BD
+        2: 'es',
+        3: 'ic',
+        4: 'lp',
+        5: 'bd'
     };
     return mapa[diaSemana] || null;
 }
@@ -1526,41 +1684,12 @@ function mostrarToast(mensagem, tipo = 'info') {
     }, 3000);
 }
 
-function fecharModalPlano() {
-    document.getElementById('modal-plano-aula').classList.remove('active');
-}
-
 // ============================================
-// FUNÇÃO DE LOGIN (COLOQUE AQUI)
+// EXPOR FUNÇÕES GLOBAIS (PARA O HTML)
 // ============================================
 
-function fazerLogin() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    
-    if (username === 'Carla' && password === 'Cacau') {
-        document.getElementById('login-container').style.display = 'none';
-        document.getElementById('app-container').style.display = 'flex';
-        if (typeof inicializarSistema === 'function') {
-            inicializarSistema();
-        }
-        mostrarToast('Bem-vinda, Carla! 🎉', 'success');
-    } else {
-        document.getElementById('login-error').style.display = 'block';
-    }
-}
-
-// Permitir login com Enter
-document.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        fazerLogin();
-    }
-});
-
-// ============================================
-// EXPOR FUNÇÕES PARA O HTML
-// ============================================
-
+window.fazerLogin = fazerLogin;
+window.fazerLogout = fazerLogout;
 window.inicializarSistema = inicializarSistema;
 window.abrirModalConclusao = abrirModalConclusao;
 window.fecharModal = fecharModal;
@@ -1569,6 +1698,7 @@ window.criarNovaNota = criarNovaNota;
 window.salvarNota = salvarNota;
 window.editarNota = editarNota;
 window.excluirNota = excluirNota;
+window.fixarNota = fixarNota;
 window.fecharModalNota = fecharModalNota;
 window.iniciarTimer = iniciarTimer;
 window.pausarTimer = pausarTimer;
@@ -1576,20 +1706,8 @@ window.zerarTimer = zerarTimer;
 window.mesAnterior = mesAnterior;
 window.proximoMes = proximoMes;
 window.mostrarPlanoAula = mostrarPlanoAula;
-window.fecharModalPlano = fecharModalPlano;
-
-// Configurar radio buttons
-document.addEventListener('DOMContentLoaded', function() {
-    const radios = document.querySelectorAll('input[name="dias-gastos"]');
-    radios.forEach(radio => {
-        radio.addEventListener('change', function() {
-            const outroInput = document.getElementById('dias-outro');
-            if (outroInput) {
-                outroInput.disabled = this.value !== 'outro';
-                if (this.value === 'outro') {
-                    outroInput.focus();
-                }
-            }
-        });
-    });
-});
+window.verEventosDoDia = verEventosDoDia;
+window.fecharModalEvento = fecharModalEvento;
+window.toggleChecklistItem = toggleChecklistItem;
+window.resetarChecklistDiario = resetarChecklistDiario;
+window.buscarNotas = buscarNotas;
