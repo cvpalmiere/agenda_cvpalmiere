@@ -8,15 +8,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <!-- TELA DE LOGIN -->
-    <div class="login-container" id="login-container">
-        <div class="login-card">
-            <div class="login-logo">
-                <i class="fas fa-calendar-alt"></i>
-                <h1>Agenda Palmiere</h1>
-            </div>
-            <p class="login-subtitle">Sistema Inteligente de Estudos</p>
-            
+   <!-- TELA DE LOGIN -->
+<div class="login-container" id="login-container">
+    <div class="login-card">
+        <div class="login-logo">
+            <i class="fas fa-calendar-alt"></i>
+            <h1>Agenda Palmiere</h1>
+        </div>
+        <p class="login-subtitle">Sistema Inteligente de Estudos</p>
+        
+        <!-- ADICIONEI A TAG FORM AQUI -->
+        <form id="login-form" onsubmit="return false;">
             <div class="input-group">
                 <i class="fas fa-user"></i>
                 <input type="text" id="login-usuario" placeholder="Usuário">
@@ -26,20 +28,22 @@
                 <i class="fas fa-lock"></i>
                 <input type="password" id="login-senha" placeholder="Senha">
             </div>
-            
-            <button class="btn-login" id="btn-login">
-                <i class="fas fa-sign-in-alt"></i> Entrar
-            </button>
-            
-            <div class="login-info" id="login-erro" style="display: none;">
-                <i class="fas fa-exclamation-circle"></i> Usuário ou senha incorretos!
-            </div>
-            
-            <div class="login-footer">
-                <p>Apenas para uso pessoal de Carla</p>
-            </div>
+        </form>
+        <!-- FIM DO FORM -->
+        
+        <button class="btn-login" id="btn-login">
+            <i class="fas fa-sign-in-alt"></i> Entrar
+        </button>
+        
+        <div class="login-info" id="login-erro" style="display: none;">
+            <i class="fas fa-exclamation-circle"></i> Usuário ou senha incorretos!
+        </div>
+        
+        <div class="login-footer">
+            <p>Apenas para uso pessoal de Carla</p>
         </div>
     </div>
+</div>
 
     <!-- SISTEMA PRINCIPAL -->
     <div class="app-container" id="app-container" style="display: none;">
