@@ -628,11 +628,16 @@ function fazerLogin() {
     if (username === 'Carla' && password === 'Cacau') {
         document.getElementById('login-container').style.display = 'none';
         document.getElementById('app-container').style.display = 'block';
-        inicializarSistema();
+        if (typeof inicializarSistema === 'function') {
+            inicializarSistema();
+        }
     } else {
         document.getElementById('login-error').style.display = 'block';
     }
 }
+
+// TORNAR GLOBAL
+window.fazerLogin = fazerLogin;
 
 function fazerLogout() {
     document.getElementById('login-container').style.display = 'flex';
