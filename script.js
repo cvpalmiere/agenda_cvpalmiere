@@ -2177,38 +2177,70 @@ function mostrarToast(mensagem, tipo = 'info') {
 }
 
 // ============================================
-// CONFIGURAÇÃO DO ENTER NO LOGIN
+// CONFIGURAÇÃO DO ENTER NO LOGIN - VERSÃO FINAL
 // ============================================
 
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('📄 DOM carregado!');
+// GARANTIR QUE A FUNÇÃO EXISTE GLOBALMENTE
+window.fazerLogin = function() {
+    console.log('🔑 Função fazerLogin chamada');
+    const usuario = document.getElementById('login-usuario').value;
+    const senha = document.getElementById('login-senha').value;
     
-    // Formulário de login
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
+    if (usuario === 'Carla' && senha === 'Cacau') {
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('app-container').style.display = 'block';
+        if (typeof inicializarSistema === 'function') {
+            inicializarSistema();
+        }
+    } else {
+        document.getElementById('login-erro').style.display = 'block';
+    }
+};
+
+// QUANDO A PÁGINA CARREGAR
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('📄 DOM carregado');
+    
+    // 1. BOTÃO DE LOGIN
+    const btnLogin = document.getElementById('btn-login');
+    if (btnLogin) {
+        btnLogin.onclick = function(e) {
             e.preventDefault();
-            console.log('🔑 Formulário submetido');
-            fazerLogin();
-        });
+            window.fazerLogin();
+        };
     }
     
-    // Enter nos campos
-    const campos = ['login-usuario', 'login-senha'];
-    campos.forEach(id => {
-        const campo = document.getElementById(id);
-        if (campo) {
-            campo.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    console.log('⏎ Enter pressionado');
-                    fazerLogin();
-                }
-            });
-        }
-    });
+    // 2. CAMPOS DE LOGIN - SOLUÇÃO MAIS SIMPLES POSSÍVEL
+    const usuario = document.getElementById('login-usuario');
+    const senha = document.getElementById('login-senha');
     
-    console.log('✅ Enter configurado!');
+    if (usuario) {
+        usuario.onkeydown = function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                window.fazerLogin();
+            }
+        };
+    }
+    
+    if (senha) {
+        senha.onkeydown = function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                window.fazerLogin();
+            }
+        };
+    }
+    
+    // 3. FORMULÁRIO (se existir)
+    const form = document.getElementById('login-form');
+    if (form) {
+        form.onsubmit = function(e) {
+            e.preventDefault();
+            window.fazerLogin();
+            return false;
+        };
+    }
 });
 
 // ============================================
