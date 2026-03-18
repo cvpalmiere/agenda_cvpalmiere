@@ -19,19 +19,19 @@
             
             <div class="input-group">
                 <i class="fas fa-user"></i>
-                <input type="text" id="username" placeholder="Usuário">
+                <input type="text" id="login-usuario" placeholder="Usuário">
             </div>
             
             <div class="input-group">
                 <i class="fas fa-lock"></i>
-                <input type="password" id="password" placeholder="Senha">
+                <input type="password" id="login-senha" placeholder="Senha">
             </div>
             
-            <button class="btn-login" id="btn-entrar">
+            <button class="btn-login" id="btn-login">
                 <i class="fas fa-sign-in-alt"></i> Entrar
             </button>
             
-            <div class="login-info" id="login-error" style="display: none;">
+            <div class="login-info" id="login-erro" style="display: none;">
                 <i class="fas fa-exclamation-circle"></i> Usuário ou senha incorretos!
             </div>
             
@@ -42,7 +42,7 @@
     </div>
 
     <!-- SISTEMA PRINCIPAL -->
-    <div class="app-container" id="app-container">
+    <div class="app-container" id="app-container" style="display: none;">
         <!-- HEADER -->
         <header class="agenda-header">
             <div class="header-content">
@@ -55,28 +55,22 @@
             <!-- BOTÕES DE NAVEGAÇÃO -->
             <div class="nav-buttons-container">
                 <button class="nav-btn active" data-tab="hoje">
-                    <i class="fas fa-calendar-day"></i>
-                    Hoje
+                    <i class="fas fa-calendar-day"></i> Hoje
                 </button>
                 <button class="nav-btn" data-tab="notas">
-                    <i class="fas fa-sticky-note"></i>
-                    Notas
+                    <i class="fas fa-sticky-note"></i> Notas
                 </button>
                 <button class="nav-btn" data-tab="prazos">
-                    <i class="fas fa-clock"></i>
-                    Prazos
+                    <i class="fas fa-clock"></i> Prazos
                 </button>
                 <button class="nav-btn" data-tab="calendario">
-                    <i class="fas fa-calendar-alt"></i>
-                    Calendário
+                    <i class="fas fa-calendar-alt"></i> Calendário
                 </button>
-                <button class="nav-btn" data-tab="plano-aulas">
-                    <i class="fas fa-book-open"></i>
-                    Planos
+                <button class="nav-btn" data-tab="planos">
+                    <i class="fas fa-book-open"></i> Planos
                 </button>
                 <button class="nav-btn" data-tab="progresso">
-                    <i class="fas fa-chart-line"></i>
-                    Progresso
+                    <i class="fas fa-chart-line"></i> Progresso
                 </button>
             </div>
 
@@ -88,7 +82,7 @@
                 
                 <div class="notification-icon">
                     <i class="fas fa-bell"></i>
-                    <span class="notification-badge" id="notificacao-badge">3</span>
+                    <span class="notification-badge" id="notificacao-badge">0</span>
                 </div>
 
                 <button class="btn-logout" id="btn-sair">
@@ -102,19 +96,16 @@
             <!-- ABA HOJE -->
             <div class="tab-pane active" id="tab-hoje">
                 <div class="dashboard-today">
-                    <!-- CABEÇALHO -->
                     <div class="today-header">
                         <h1>Olá, Carla! 👋</h1>
-                        <div class="date-badge" id="data-extensa">
+                        <div class="date-badge" id="data-hoje">
                             <i class="fas fa-calendar-alt"></i>
                             <span>Carregando...</span>
                         </div>
                     </div>
 
-                    <!-- PRAZOS URGENTES -->
-                    <div class="urgent-grid" id="urgentes-lista"></div>
+                    <div class="urgent-grid" id="urgentes-container"></div>
 
-                    <!-- TIMER -->
                     <div class="timer-card">
                         <div class="timer-header">
                             <i class="fas fa-hourglass-half"></i>
@@ -124,25 +115,23 @@
                             <div class="timer-progress-bar" id="timer-progresso" style="width: 0%"></div>
                         </div>
                         <div class="timer-buttons">
-                            <button class="timer-btn" id="btn-iniciar-timer"><i class="fas fa-play"></i> Iniciar</button>
-                            <button class="timer-btn" id="btn-pausar-timer"><i class="fas fa-pause"></i> Pausar</button>
-                            <button class="timer-btn" id="btn-zerar-timer"><i class="fas fa-stop"></i> Zerar</button>
+                            <button class="timer-btn" id="btn-timer-iniciar"><i class="fas fa-play"></i> Iniciar</button>
+                            <button class="timer-btn" id="btn-timer-pausar"><i class="fas fa-pause"></i> Pausar</button>
+                            <button class="timer-btn" id="btn-timer-zerar"><i class="fas fa-stop"></i> Zerar</button>
                         </div>
                     </div>
 
-                    <!-- CHECKLIST DIÁRIO -->
                     <div class="checklist-container">
                         <div class="checklist-header">
                             <h2><i class="fas fa-check-circle"></i> Checklist de Hoje</h2>
                             <span class="checklist-progress" id="checklist-progress">0/0 concluídas</span>
                         </div>
-                        <div class="checklist-grid" id="checklist-diario"></div>
-                        <button class="btn-checklist" id="btn-resetar-checklist">
+                        <div class="checklist-grid" id="checklist-container"></div>
+                        <button class="btn-checklist" id="btn-checklist-resetar">
                             <i class="fas fa-redo-alt"></i> Resetar Checklist
                         </button>
                     </div>
 
-                    <!-- GRADE DO DIA -->
                     <h2 class="section-title"><i class="fas fa-sun"></i> O que estudar hoje</h2>
                     <div class="study-grid">
                         <div class="study-card manha">
@@ -173,20 +162,19 @@
                         </div>
                     </div>
 
-                    <!-- SUGESTÕES -->
                     <h2 class="section-title"><i class="fas fa-lightbulb"></i> Sugestões para hoje</h2>
-                    <div class="suggestions-grid" id="lista-sugestoes"></div>
+                    <div class="suggestions-grid" id="sugestoes-container"></div>
                 </div>
             </div>
 
-            <!-- ABA NOTAS (REFORMULADA) -->
+            <!-- ABA NOTAS -->
             <div class="tab-pane" id="tab-notas">
                 <div class="notas-container">
                     <div class="notas-header">
                         <h2><i class="fas fa-sticky-note"></i> Caderno Digital</h2>
                         <div class="notas-busca">
                             <i class="fas fa-search"></i>
-                            <input type="text" id="busca-notas" placeholder="Buscar notas...">
+                            <input type="text" id="notas-busca" placeholder="Buscar notas...">
                         </div>
                     </div>
                     
@@ -200,23 +188,17 @@
                             <button class="materia-tab" data-materia="fundamentos">📐 Fundamentos</button>
                         </div>
                         
-                        <div class="notas-fixadas" id="notas-fixadas">
+                        <div class="notas-fixadas" id="notas-fixadas-container">
                             <h3><i class="fas fa-thumbtack"></i> Fixadas</h3>
-                            <div class="fixadas-grid"></div>
+                            <div class="fixadas-grid" id="fixadas-grid"></div>
                         </div>
                         
-                        <div class="notas-estatisticas">
-                            <span>📊 Total: <span id="total-notas">0</span> | </span>
-                            <span>🔧 ES: <span id="total-es">0</span> | </span>
-                            <span>💻 IC: <span id="total-ic">0</span> | </span>
-                            <span>🐍 LP: <span id="total-lp">0</span> | </span>
-                            <span>🗄️ BD: <span id="total-bd">0</span></span>
+                        <div class="notas-estatisticas" id="notas-estatisticas">
+                            <span>📊 Total: <span id="total-notas">0</span></span>
                         </div>
                     </div>
 
-                    <div class="notas-editor-container" id="notas-container">
-                        <p class="text-muted">Selecione uma matéria ou crie uma nova nota</p>
-                    </div>
+                    <div class="notas-editor-container" id="notas-container"></div>
                     
                     <button class="btn-primary" id="btn-nova-nota">
                         <i class="fas fa-plus"></i> Nova Nota
@@ -252,7 +234,7 @@
                         </div>
                     </div>
 
-                    <div class="prazos-lista" id="prazos-lista"></div>
+                    <div class="prazos-lista" id="prazos-container"></div>
                 </div>
             </div>
 
@@ -275,20 +257,15 @@
                         <span><span class="legenda-cor" style="background: #10b981"></span> Entrega</span>
                         <span><span class="legenda-cor" style="background: #000080"></span> Estudo</span>
                     </div>
-                    
-                    <div class="eventos-do-dia" id="eventos-do-dia" style="display: none;">
-                        <h3 id="dia-selecionado"></h3>
-                        <div id="lista-eventos-dia"></div>
-                    </div>
                 </div>
             </div>
 
             <!-- ABA PLANOS DE AULA -->
-            <div class="tab-pane" id="tab-plano-aulas">
-                <div class="plano-aulas-container">
+            <div class="tab-pane" id="tab-planos">
+                <div class="planos-container">
                     <h2><i class="fas fa-book-open"></i> Planos de Aula</h2>
                     
-                    <div class="materias-planos">
+                    <div class="planos-materias">
                         <div class="plano-card" data-materia="es">
                             <div class="plano-icon es-icon">🔧</div>
                             <h3>Engenharia de Software</h3>
@@ -333,49 +310,8 @@
                 <div class="progresso-container">
                     <h2><i class="fas fa-chart-line"></i> Seu Progresso</h2>
                     
-                    <div class="cards-resumo">
-                        <div class="card-resumo" data-materia="es">
-                            <div class="resumo-icon es-icon">🔧</div>
-                            <div>
-                                <h4>Eng. Software</h4>
-                                <span class="resumo-valor" id="progresso-es">0%</span>
-                            </div>
-                        </div>
-                        <div class="card-resumo" data-materia="ic">
-                            <div class="resumo-icon ic-icon">💻</div>
-                            <div>
-                                <h4>Intro. Computação</h4>
-                                <span class="resumo-valor" id="progresso-ic">0%</span>
-                            </div>
-                        </div>
-                        <div class="card-resumo" data-materia="lp">
-                            <div class="resumo-icon lp-icon">🐍</div>
-                            <div>
-                                <h4>Lógica Prog.</h4>
-                                <span class="resumo-valor" id="progresso-lp">0%</span>
-                            </div>
-                        </div>
-                        <div class="card-resumo" data-materia="bd">
-                            <div class="resumo-icon bd-icon">🗄️</div>
-                            <div>
-                                <h4>Banco de Dados</h4>
-                                <span class="resumo-valor" id="progresso-bd">0%</span>
-                            </div>
-                        </div>
-                        <div class="card-resumo" data-materia="bootcamp">
-                            <div class="resumo-icon bootcamp-icon">🚀</div>
-                            <div>
-                                <h4>Bootcamp</h4>
-                                <span class="resumo-valor" id="progresso-bootcamp">0%</span>
-                            </div>
-                        </div>
-                        <div class="card-resumo" data-materia="fundamentos">
-                            <div class="resumo-icon fundamentos-icon">📐</div>
-                            <div>
-                                <h4>Fundamentos</h4>
-                                <span class="resumo-valor" id="progresso-fundamentos">0%</span>
-                            </div>
-                        </div>
+                    <div class="cards-resumo" id="cards-progresso">
+                        <!-- Gerado via JS -->
                     </div>
                     
                     <div class="grafico-container">
@@ -387,7 +323,7 @@
         </main>
     </div>
 
-    <!-- MODAL DE CONCLUSÃO DE ATIVIDADE -->
+    <!-- MODAL DE CONCLUSÃO -->
     <div class="modal" id="modal-concluir">
         <div class="modal-conteudo">
             <h3><i class="fas fa-check-circle"></i> Concluir Atividade</h3>
@@ -396,12 +332,12 @@
             <div class="modal-form">
                 <label>Quantos dias de estudo você gastou?</label>
                 <div class="opcoes-dias">
-                    <label class="opcao-dia"><input type="radio" name="dias-gastos" value="1"> 1 dia</label>
-                    <label class="opcao-dia"><input type="radio" name="dias-gastos" value="2"> 2 dias</label>
-                    <label class="opcao-dia"><input type="radio" name="dias-gastos" value="3" checked> 3 dias</label>
-                    <label class="opcao-dia"><input type="radio" name="dias-gastos" value="5"> 5 dias</label>
-                    <label class="opcao-dia"><input type="radio" name="dias-gastos" value="7"> 7 dias</label>
-                    <label class="opcao-dia"><input type="radio" name="dias-gastos" value="10"> 10 dias</label>
+                    <label><input type="radio" name="dias-gastos" value="1"> 1 dia</label>
+                    <label><input type="radio" name="dias-gastos" value="2"> 2 dias</label>
+                    <label><input type="radio" name="dias-gastos" value="3" checked> 3 dias</label>
+                    <label><input type="radio" name="dias-gastos" value="5"> 5 dias</label>
+                    <label><input type="radio" name="dias-gastos" value="7"> 7 dias</label>
+                    <label><input type="radio" name="dias-gastos" value="10"> 10 dias</label>
                 </div>
                 
                 <label>Anotações (opcional):</label>
@@ -440,9 +376,7 @@
                 <label>Tags (separadas por vírgula):</label>
                 <input type="text" id="nota-tags" placeholder="Ex: importante, revisão, código">
                 
-                <label class="fixar-check">
-                    <input type="checkbox" id="nota-fixada"> Fixar esta nota
-                </label>
+                <label><input type="checkbox" id="nota-fixada"> Fixar esta nota</label>
             </div>
             
             <div class="modal-acoes">
@@ -453,18 +387,19 @@
     </div>
 
     <!-- MODAL DE EVENTOS DO DIA -->
-    <div class="modal" id="modal-evento-dia">
+    <div class="modal" id="modal-evento">
         <div class="modal-conteudo">
-            <h3 id="modal-dia-titulo"><i class="fas fa-calendar-day"></i> <span></span></h3>
-            <div id="modal-eventos-lista" class="eventos-lista"></div>
+            <h3 id="modal-evento-titulo"><i class="fas fa-calendar-day"></i> <span></span></h3>
+            <div id="modal-evento-lista" class="eventos-lista"></div>
             <div class="modal-acoes">
                 <button class="btn-primary" id="btn-fechar-evento">Fechar</button>
             </div>
         </div>
     </div>
 
-    <!-- TOAST -->
+    <!-- TOAST NOTIFICATION -->
     <div class="toast-container" id="toast-container"></div>
 
+    <script src="script.js"></script>
 </body>
 </html>
