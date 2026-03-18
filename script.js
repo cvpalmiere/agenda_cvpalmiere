@@ -2114,3 +2114,37 @@ window.fecharModalEvento = fecharModalEvento;
 window.buscarNotas = buscarNotas;
 window.salvarAulaCC50 = salvarAulaCC50;
 window.fecharModalAulaCC50 = fecharModalAulaCC50;
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Impede o reload da página
+            console.log('Formulário submetido!'); // Debug
+            fazerLogin(); // Agora a função já está no window
+        });
+    }
+    
+    // Opcional: Enter nos campos também
+    const loginUsuario = document.getElementById('login-usuario');
+    const loginSenha = document.getElementById('login-senha');
+    
+    if (loginUsuario) {
+        loginUsuario.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                fazerLogin();
+            }
+        });
+    }
+    
+    if (loginSenha) {
+        loginSenha.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                fazerLogin();
+            }
+        });
+    }
+});
