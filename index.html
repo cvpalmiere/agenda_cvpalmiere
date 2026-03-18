@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agenda Palmiere</title>
+    <title>Agenda Palmiere - CC50 Edition</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -54,23 +54,26 @@
 
             <!-- BOTÕES DE NAVEGAÇÃO -->
             <div class="nav-buttons-container">
-                <button class="nav-btn active" data-tab="hoje">
+                <button class="nav-btn active" id="nav-hoje" data-tab="hoje">
                     <i class="fas fa-calendar-day"></i> Hoje
                 </button>
-                <button class="nav-btn" data-tab="notas">
+                <button class="nav-btn" id="nav-notas" data-tab="notas">
                     <i class="fas fa-sticky-note"></i> Notas
                 </button>
-                <button class="nav-btn" data-tab="prazos">
+                <button class="nav-btn" id="nav-prazos" data-tab="prazos">
                     <i class="fas fa-clock"></i> Prazos
                 </button>
-                <button class="nav-btn" data-tab="calendario">
+                <button class="nav-btn" id="nav-calendario" data-tab="calendario">
                     <i class="fas fa-calendar-alt"></i> Calendário
                 </button>
-                <button class="nav-btn" data-tab="planos">
+                <button class="nav-btn" id="nav-planos" data-tab="planos">
                     <i class="fas fa-book-open"></i> Planos
                 </button>
-                <button class="nav-btn" data-tab="progresso">
+                <button class="nav-btn" id="nav-progresso" data-tab="progresso">
                     <i class="fas fa-chart-line"></i> Progresso
+                </button>
+                <button class="nav-btn" id="nav-cc50" data-tab="cc50">
+                    <i class="fas fa-laptop-code"></i> CC50
                 </button>
             </div>
 
@@ -80,7 +83,12 @@
                 <span class="user-badge student">ENG. SOFTWARE</span>
                 <span class="user-badge turma">TURMA C</span>
                 
-                <div class="notification-icon">
+                <div class="cc50-badge" id="cc50-badge">
+                    <i class="fas fa-fire"></i>
+                    <span>CC50: <span id="cc50-progresso-header">0%</span></span>
+                </div>
+
+                <div class="notification-icon" id="notification-icon">
                     <i class="fas fa-bell"></i>
                     <span class="notification-badge" id="notificacao-badge">0</span>
                 </div>
@@ -104,6 +112,11 @@
                         </div>
                     </div>
 
+                    <!-- CARD DO CC50 - DESTAQUE -->
+                    <div class="cc50-destaque" id="cc50-destaque-hoje">
+                        <!-- Gerado via JS -->
+                    </div>
+
                     <div class="urgent-grid" id="urgentes-container"></div>
 
                     <div class="timer-card">
@@ -119,6 +132,11 @@
                             <button class="timer-btn" id="btn-timer-pausar"><i class="fas fa-pause"></i> Pausar</button>
                             <button class="timer-btn" id="btn-timer-zerar"><i class="fas fa-stop"></i> Zerar</button>
                         </div>
+                    </div>
+
+                    <!-- CRONOGRAMA DO DIA -->
+                    <div class="cronograma-dia" id="cronograma-dia">
+                        <!-- Gerado via JS -->
                     </div>
 
                     <div class="checklist-container">
@@ -138,7 +156,7 @@
                             <div class="card-header">
                                 <i class="fas fa-cloud-sun"></i>
                                 <h3>Manhã (Pré-aula)</h3>
-                                <span class="period-time">08:00 - 12:00</span>
+                                <span class="period-time">09:30 - 12:00</span>
                             </div>
                             <div class="card-content" id="periodo-manha"></div>
                         </div>
@@ -152,13 +170,13 @@
                             <div class="card-content" id="periodo-tarde"></div>
                         </div>
 
-                        <div class="study-card noite">
+                        <div class="study-card cc50-card">
                             <div class="card-header">
-                                <i class="fas fa-moon"></i>
-                                <h3>Noite (Cursos)</h3>
-                                <span class="period-time">19:00 - 22:00</span>
+                                <i class="fas fa-laptop-code"></i>
+                                <h3>CC50</h3>
+                                <span class="period-time">11:30 - 12:00</span>
                             </div>
-                            <div class="card-content" id="periodo-noite"></div>
+                            <div class="card-content" id="periodo-cc50"></div>
                         </div>
                     </div>
 
@@ -186,6 +204,7 @@
                             <button class="materia-tab" data-materia="bd">🗄️ BD</button>
                             <button class="materia-tab" data-materia="bootcamp">🚀 Bootcamp</button>
                             <button class="materia-tab" data-materia="fundamentos">📐 Fundamentos</button>
+                            <button class="materia-tab" data-materia="cc50">🎓 CC50</button>
                         </div>
                         
                         <div class="notas-fixadas" id="notas-fixadas-container">
@@ -256,6 +275,7 @@
                         <span><span class="legenda-cor" style="background: #f59e0b"></span> Trabalho</span>
                         <span><span class="legenda-cor" style="background: #10b981"></span> Entrega</span>
                         <span><span class="legenda-cor" style="background: #000080"></span> Estudo</span>
+                        <span><span class="legenda-cor" style="background: #ec4899"></span> CC50</span>
                     </div>
                 </div>
             </div>
@@ -320,6 +340,38 @@
                     </div>
                 </div>
             </div>
+
+            <!-- ABA CC50 -->
+            <div class="tab-pane" id="tab-cc50">
+                <div class="cc50-container">
+                    <h2><i class="fas fa-laptop-code"></i> CC50: Introdução à Ciência da Computação</h2>
+                    
+                    <div class="cc50-header">
+                        <div class="cc50-progresso-grande">
+                            <div class="progresso-circular" id="progresso-circular">
+                                <span id="cc50-percentual">0%</span>
+                            </div>
+                            <div class="cc50-stats">
+                                <p><span id="cc50-aulas-concluidas">0</span>/90 aulas</p>
+                                <p><span id="cc50-horas-estudadas">0</span> horas estudadas</p>
+                                <p>🎯 Previsão: <span id="cc50-previsao">Junho/2026</span></p>
+                            </div>
+                        </div>
+                        
+                        <div class="cc50-bonus-container" id="cc50-bonus-container">
+                            <h4><i class="fas fa-gift"></i> Bônus Acumulado</h4>
+                            <p>Você ganhou <span id="cc50-horas-bonus">0</span> horas extras por concluir prazos antes do prazo!</p>
+                            <div class="bonus-bar">
+                                <div class="bonus-progresso" id="bonus-progresso" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cc50-modulos" id="cc50-modulos">
+                        <!-- Gerado via JS -->
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -342,6 +394,10 @@
                 
                 <label>Anotações (opcional):</label>
                 <textarea id="anotacoes-conclusao" rows="3" placeholder="O que aprendeu?"></textarea>
+                
+                <div class="bonus-aviso" id="bonus-aviso">
+                    <i class="fas fa-star"></i> Se concluir antes do prazo, ganha horas extras para o CC50!
+                </div>
             </div>
             
             <div class="modal-acoes">
@@ -365,6 +421,7 @@
                     <option value="bd">Banco de Dados I</option>
                     <option value="bootcamp">Bootcamp I</option>
                     <option value="fundamentos">Fundamentos</option>
+                    <option value="cc50">CC50</option>
                 </select>
                 
                 <label>Título:</label>
@@ -393,6 +450,33 @@
             <div id="modal-evento-lista" class="eventos-lista"></div>
             <div class="modal-acoes">
                 <button class="btn-primary" id="btn-fechar-evento">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE AULA CC50 -->
+    <div class="modal" id="modal-aula-cc50">
+        <div class="modal-conteudo">
+            <h3 id="modal-aula-titulo"><i class="fas fa-laptop-code"></i> <span></span></h3>
+            
+            <div class="modal-form">
+                <p id="modal-aula-descricao"></p>
+                
+                <label>Status da aula:</label>
+                <select id="aula-status">
+                    <option value="nao_iniciada">Não iniciada</option>
+                    <option value="assistida">Assistida</option>
+                    <option value="exercicios">Exercícios concluídos</option>
+                    <option value="completa">Completa</option>
+                </select>
+                
+                <label>Anotações:</label>
+                <textarea id="aula-anotacoes" rows="4" placeholder="Suas anotações..."></textarea>
+            </div>
+            
+            <div class="modal-acoes">
+                <button class="btn-secundario" id="btn-fechar-aula">Fechar</button>
+                <button class="btn-primary" id="btn-salvar-aula">Salvar Progresso</button>
             </div>
         </div>
     </div>
