@@ -1,13 +1,13 @@
 // ============================================
-// AGENDA PALMIERE - SISTEMA INTELIGENTE DE ESTUDOS
-// VERSÃO FINAL CORRIGIDA
+// AGENDA PALMIERE - CC50 EDITION
+// VERSÃO COMPLETA CORRIGIDA
 // ============================================
 
 // ============================================
 // CONFIGURAÇÕES INICIAIS
 // ============================================
 
-const VERSAO = '2.0.0';
+const VERSAO = '3.0.0';
 const HORAS_POR_DIA = 2.5; // 2h30
 
 // Estado global
@@ -20,11 +20,14 @@ let estado = {
     mesCalendario: new Date().getMonth(),
     anoCalendario: new Date().getFullYear(),
     atividadeConcluindo: null,
-    checklistItens: []
+    checklistItens: [],
+    cc50Progresso: {},
+    cc50Bonus: 0,
+    cc50AulaAtual: null
 };
 
 // ============================================
-// DADOS COMPLETOS (PRAZOS, PLANOS)
+// DADOS DOS PRAZOS (SEUS PRAZOS ORIGINAIS)
 // ============================================
 
 const prazos = [
@@ -318,7 +321,179 @@ const prazos = [
 ];
 
 // ============================================
-// PLANOS DE AULA
+// DADOS DO CC50
+// ============================================
+
+const cc50Modulos = [
+    {
+        nome: 'Introdução',
+        aulas: [
+            'Boas Vindas ao CC50',
+            'Conheça a Fundação Estudar!',
+            'Seus Professores',
+            'Como Participar'
+        ]
+    },
+    {
+        nome: 'Nossos Canais',
+        aulas: [
+            'Apresentação da Plataforma',
+            'Nosso Discord',
+            'IDE CC50 com Inteligência Artificial'
+        ]
+    },
+    {
+        nome: 'Módulo 0: Scratch',
+        aulas: [
+            'Introdução ao Módulo 0',
+            'Aula 0 - Conheça o Scratch',
+            'Anotações da Aula de Scratch',
+            'Exercícios'
+        ]
+    },
+    {
+        nome: 'Módulo 1: C',
+        aulas: [
+            'Introdução ao Módulo 1',
+            'Aula 1 - Linguagem de Programação C',
+            'Anotações da Aula de C',
+            'Instruções para os Exercícios',
+            'Exercício 1: Mario',
+            'Exercício 2: Mario (desafio)',
+            'Exercício 3: Dinheiro',
+            'Exercício 4: Crédito (desafio)',
+            'Laboratório 1: Crescimento Populacional'
+        ]
+    },
+    {
+        nome: 'Módulo 2: Arrays',
+        aulas: [
+            'Introdução ao Módulo 2',
+            'Aula 2 - Arrays',
+            'Anotações da Aula de Arrays',
+            'Instruções para os Exercícios',
+            'Exercício 1: Scrabble',
+            'Exercício 2: Legibilidade',
+            'Exercício 3: Caesar',
+            'Exercício 4: Substituição (desafio)'
+        ]
+    },
+    {
+        nome: 'Módulo 3: Algoritmos',
+        aulas: [
+            'Introdução ao Módulo 3',
+            'Aula 3 - Algoritmos',
+            'Anotações da Aula de Algoritmos',
+            'Instruções para os Exercícios',
+            'Exercício 1: Ordenação',
+            'Exercício 2: Plurality',
+            'Exercício 3: Runoff',
+            'Exercício 4: Tideman'
+        ]
+    },
+    {
+        nome: 'Módulo 4: Memória',
+        aulas: [
+            'Introdução ao Módulo 4',
+            'Aula 4 - Memória',
+            'Anotações da Aula de Memória',
+            'Instruções para os Exercícios',
+            'Exercício 1: Volume',
+            'Exercício 2: Filtro',
+            'Exercício 3: Filtro (Desafio)',
+            'Exercício 4: Recover'
+        ]
+    },
+    {
+        nome: 'Módulo 5: Estruturas de Dados',
+        aulas: [
+            'Introdução ao Módulo 5',
+            'Aula 5 - Estrutura de Dados',
+            'Anotações da Aula de Estrutura de Dados',
+            'Instruções para os Exercícios',
+            'Exercício 1: Herança',
+            'Exercício 2: Speller'
+        ]
+    },
+    {
+        nome: 'Módulo 6: Python',
+        aulas: [
+            'Introdução ao Módulo 6',
+            'Aula 6 - Python',
+            'Anotações da Aula de Python',
+            'Hello World usando Python',
+            'Instruções para os Exercícios',
+            'Exercício 1: Mario',
+            'Exercício 2: Mario (desafio)',
+            'Exercício 3: Dinheiro',
+            'Exercício 4: Crédito (desafio)',
+            'Exercício 5: Legibilidade',
+            'Exercício 6: DNA',
+            'Lab 6: Copa do Mundo'
+        ]
+    },
+    {
+        nome: 'Módulo 6.5: Inteligência Artificial',
+        aulas: [
+            'Aula 6.5 - Inteligência Artificial',
+            'Anotações da Aula de IA'
+        ]
+    },
+    {
+        nome: 'Módulo 7: SQL',
+        aulas: [
+            'Introdução ao Módulo 7',
+            'Aula 7 - SQL',
+            'Anotações da Aula de SQL',
+            'Instruções para os Exercícios',
+            'Exercício 1: Songs',
+            'Exercício 2: Movies',
+            'Exercício 3: Fiftyville'
+        ]
+    },
+    {
+        nome: 'Módulo 8: HTML, CSS, JavaScript',
+        aulas: [
+            'Introdução ao Módulo 8',
+            'Aula 8 - HTML, CSS e JavaScript',
+            'Anotações da Aula',
+            'Instruções para os Exercícios',
+            'Exercício 1: Trivia',
+            'Exercício 2: Homepage'
+        ]
+    },
+    {
+        nome: 'Módulo 9: Flask',
+        aulas: [
+            'Introdução ao Módulo 9',
+            'Aula 9 - Flask',
+            'Anotações da Aula',
+            'Instruções para os Exercícios',
+            'Exercício 1: Birthdays (Aniversários)',
+            'Exercício 2: C$50 Finanças'
+        ]
+    },
+    {
+        nome: 'Módulo 10: Ética',
+        aulas: [
+            'Introdução ao Módulo 10',
+            'Aula 10 - Ética',
+            'Anotações da Aula',
+            'Lab: Fake News e Facebook'
+        ]
+    },
+    {
+        nome: 'Encerramento do Curso',
+        aulas: [
+            'Projeto Final',
+            'Avaliação Final',
+            'Agradecimentos'
+        ]
+    }
+];
+
+// ============================================
+// PLANOS DE AULA (SEUS PLANOS ORIGINAIS)
 // ============================================
 
 const planosAula = {
@@ -414,15 +589,6 @@ const planosAula = {
 };
 
 // ============================================
-// CURSOS EXTRAS
-// ============================================
-
-const cursosExtras = [
-    { id: 'python', nome: 'Python Santander', horas: 30, concluido: false },
-    { id: 'html', nome: 'HTML Coddy', horas: 15, concluido: false }
-];
-
-// ============================================
 // NOTAS
 // ============================================
 
@@ -438,10 +604,11 @@ function inicializarSistema() {
         inicializarData();
         inicializarNavegacao();
         inicializarEventListeners();
+        inicializarCC50();
         atualizarInterface();
         verificarVersao();
         
-        mostrarToast('Bem-vinda, Carla! 🎉', 'success');
+        mostrarToast('Bem-vinda, Carla! 🎓 CC50 carregado!', 'success');
     } catch (erro) {
         console.error('Erro na inicialização:', erro);
         mostrarToast('Erro ao iniciar o sistema', 'error');
@@ -470,46 +637,375 @@ function carregarDados() {
         if (checklistSalvo) {
             estado.checklistItens = JSON.parse(checklistSalvo);
         }
+        
+        const cc50Salvo = localStorage.getItem('agenda_cc50');
+        if (cc50Salvo) {
+            estado.cc50Progresso = JSON.parse(cc50Salvo);
+        } else {
+            // Inicializa CC50
+            cc50Modulos.forEach((modulo, i) => {
+                modulo.aulas.forEach((aula, j) => {
+                    const aulaId = `cc50-${i}-${j}`;
+                    estado.cc50Progresso[aulaId] = {
+                        status: 'nao_iniciada',
+                        anotacoes: ''
+                    };
+                });
+            });
+        }
+        
+        const bonusSalvo = localStorage.getItem('agenda_cc50_bonus');
+        if (bonusSalvo) {
+            estado.cc50Bonus = parseInt(bonusSalvo);
+        }
     } catch (erro) {
         console.error('Erro ao carregar dados:', erro);
         mostrarToast('Erro ao carregar dados salvos', 'error');
     }
 }
 
-function inicializarData() {
-    atualizarDataHora();
-    setInterval(atualizarDataHora, 60000);
+function inicializarCC50() {
+    renderizarCC50();
+    atualizarProgressoCC50();
 }
 
-function atualizarDataHora() {
-    try {
-        const agora = new Date();
+function renderizarCC50() {
+    const container = document.getElementById('cc50-modulos');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    cc50Modulos.forEach((modulo, indexModulo) => {
+        const moduloDiv = document.createElement('div');
+        moduloDiv.className = 'cc50-modulo';
         
-        const elementoData = document.getElementById('data-hoje');
-        if (elementoData) {
-            const opcoes = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            elementoData.querySelector('span').textContent = agora.toLocaleDateString('pt-BR', opcoes);
+        // Calcula progresso do módulo
+        let totalAulas = modulo.aulas.length;
+        let concluidas = 0;
+        modulo.aulas.forEach((aula, indexAula) => {
+            const aulaId = `cc50-${indexModulo}-${indexAula}`;
+            if (estado.cc50Progresso[aulaId]?.status === 'completa') concluidas++;
+        });
+        const progressoModulo = Math.round((concluidas / totalAulas) * 100);
+        
+        moduloDiv.innerHTML = `
+            <div class="modulo-header" data-modulo="${indexModulo}">
+                <h3>${modulo.nome}</h3>
+                <span class="modulo-progresso">${concluidas}/${totalAulas} (${progressoModulo}%)</span>
+            </div>
+            <div class="modulo-aulas" id="modulo-${indexModulo}-aulas"></div>
+        `;
+        
+        container.appendChild(moduloDiv);
+        
+        const aulasContainer = document.getElementById(`modulo-${indexModulo}-aulas`);
+        
+        modulo.aulas.forEach((aula, indexAula) => {
+            const aulaId = `cc50-${indexModulo}-${indexAula}`;
+            const status = estado.cc50Progresso[aulaId]?.status || 'nao_iniciada';
+            
+            const aulaDiv = document.createElement('div');
+            aulaDiv.className = 'aula-item';
+            aulaDiv.dataset.modulo = indexModulo;
+            aulaDiv.dataset.aula = indexAula;
+            
+            let statusIcon = '';
+            if (status === 'nao_iniciada') statusIcon = '';
+            else if (status === 'assistida') statusIcon = '<i class="fas fa-play"></i>';
+            else if (status === 'exercicios') statusIcon = '<i class="fas fa-code"></i>';
+            else if (status === 'completa') statusIcon = '<i class="fas fa-check"></i>';
+            
+            aulaDiv.innerHTML = `
+                <div class="aula-status ${status}">
+                    ${statusIcon}
+                </div>
+                <div class="aula-info">
+                    <h4>${aula}</h4>
+                    <p>${getStatusTexto(status)}</p>
+                </div>
+            `;
+            
+            aulaDiv.addEventListener('click', () => abrirAulaCC50(indexModulo, indexAula));
+            
+            aulasContainer.appendChild(aulaDiv);
+        });
+        
+        // Evento para expandir/colapsar módulo
+        const header = moduloDiv.querySelector('.modulo-header');
+        header.addEventListener('click', () => {
+            aulasContainer.classList.toggle('expandido');
+        });
+    });
+}
+
+function getStatusTexto(status) {
+    const textos = {
+        'nao_iniciada': 'Não iniciada',
+        'assistida': 'Aula assistida',
+        'exercicios': 'Exercícios em andamento',
+        'completa': 'Concluída'
+    };
+    return textos[status] || status;
+}
+
+function abrirAulaCC50(moduloIndex, aulaIndex) {
+    const aulaId = `cc50-${moduloIndex}-${aulaIndex}`;
+    const aula = cc50Modulos[moduloIndex].aulas[aulaIndex];
+    const progresso = estado.cc50Progresso[aulaId] || { status: 'nao_iniciada', anotacoes: '' };
+    
+    estado.cc50AulaAtual = { moduloIndex, aulaIndex, aulaId };
+    
+    document.getElementById('modal-aula-titulo').querySelector('span').textContent = aula;
+    document.getElementById('modal-aula-descricao').textContent = `Módulo: ${cc50Modulos[moduloIndex].nome}`;
+    document.getElementById('aula-status').value = progresso.status;
+    document.getElementById('aula-anotacoes').value = progresso.anotacoes || '';
+    
+    document.getElementById('modal-aula-cc50').classList.add('active');
+}
+
+function salvarAulaCC50() {
+    if (!estado.cc50AulaAtual) return;
+    
+    const { moduloIndex, aulaIndex, aulaId } = estado.cc50AulaAtual;
+    const status = document.getElementById('aula-status').value;
+    const anotacoes = document.getElementById('aula-anotacoes').value;
+    
+    estado.cc50Progresso[aulaId] = {
+        status,
+        anotacoes
+    };
+    
+    localStorage.setItem('agenda_cc50', JSON.stringify(estado.cc50Progresso));
+    
+    fecharModalAulaCC50();
+    renderizarCC50();
+    atualizarProgressoCC50();
+    
+    mostrarToast('Progresso do CC50 salvo!', 'success');
+}
+
+function fecharModalAulaCC50() {
+    document.getElementById('modal-aula-cc50').classList.remove('active');
+    estado.cc50AulaAtual = null;
+}
+
+function atualizarProgressoCC50() {
+    let totalAulas = 0;
+    let concluidas = 0;
+    
+    cc50Modulos.forEach((modulo, i) => {
+        modulo.aulas.forEach((aula, j) => {
+            totalAulas++;
+            const aulaId = `cc50-${i}-${j}`;
+            if (estado.cc50Progresso[aulaId]?.status === 'completa') concluidas++;
+        });
+    });
+    
+    const percentual = Math.round((concluidas / totalAulas) * 100);
+    
+    // Atualiza elementos na interface
+    document.getElementById('cc50-percentual').textContent = percentual + '%';
+    document.getElementById('cc50-aulas-concluidas').textContent = concluidas;
+    document.getElementById('cc50-progresso-header').textContent = percentual + '%';
+    
+    // Atualiza gráfico circular
+    const grau = (percentual / 100) * 360;
+    document.querySelector('.progresso-circular').style.background = 
+        `conic-gradient(#ec4899 ${grau}deg, #333 ${grau}deg)`;
+    
+    // Calcula horas estudadas (estimativa)
+    const horasEstudadas = concluidas * 0.75; // média de 45min por aula
+    document.getElementById('cc50-horas-estudadas').textContent = Math.round(horasEstudadas);
+    
+    // Atualiza bônus
+    document.getElementById('cc50-horas-bonus').textContent = estado.cc50Bonus;
+    
+    // Calcula previsão de conclusão
+    const semanasRestantes = Math.ceil((totalAulas - concluidas) / 7); // 7 aulas por semana
+    const dataPrevista = new Date();
+    dataPrevista.setDate(dataPrevista.getDate() + (semanasRestantes * 7));
+    
+    const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    document.getElementById('cc50-previsao').textContent = meses[dataPrevista.getMonth()] + '/' + dataPrevista.getFullYear();
+}
+
+// ============================================
+// FUNÇÕES DE CRONOGRAMA DIÁRIO
+// ============================================
+
+function renderizarCronogramaDia() {
+    const container = document.getElementById('cronograma-dia');
+    if (!container) return;
+    
+    container.innerHTML = '<h3><i class="fas fa-clock"></i> Seu cronograma de hoje</h3>';
+    
+    const hoje = new Date();
+    const diaSemana = hoje.getDay();
+    const isSegunda = diaSemana === 1;
+    
+    const cronograma = [
+        { horario: '09:30 - 10:30', atividade: '📖 Pré-aula', descricao: getMateriaManha(diaSemana), tipo: 'preaula', duracao: '1h' },
+        { horario: '10:30 - 11:30', atividade: '📝 Trabalhos', descricao: 'Adiantar prazos', tipo: 'trabalho', duracao: '1h' },
+        { horario: '11:30 - 12:00', atividade: '🎓 CC50', descricao: 'Estudo diário', tipo: 'cc50', duracao: '30min' }
+    ];
+    
+    if (isSegunda) {
+        cronograma.push(
+            { horario: '14:00 - 18:00', atividade: '🔥 CC50 INTENSIVO', descricao: 'Aproveitar tarde livre', tipo: 'cc50', duracao: '4h' }
+        );
+    }
+    
+    cronograma.forEach(item => {
+        const div = document.createElement('div');
+        div.className = `cronograma-item ${item.tipo}`;
+        div.innerHTML = `
+            <div class="cronograma-horario">${item.horario}</div>
+            <div class="cronograma-atividade">
+                <h4>${item.atividade}</h4>
+                <p>${item.descricao}</p>
+            </div>
+            <div class="cronograma-duracao">${item.duracao}</div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function renderizarDestaqueCC50() {
+    const container = document.getElementById('cc50-destaque-hoje');
+    if (!container) return;
+    
+    const hoje = new Date();
+    const diaSemana = hoje.getDay();
+    const isSegunda = diaSemana === 1;
+    
+    let horasHoje = isSegunda ? 4.5 : 0.5;
+    
+    // Calcula progresso do CC50
+    let totalAulas = 0;
+    let concluidas = 0;
+    cc50Modulos.forEach((modulo, i) => {
+        modulo.aulas.forEach((aula, j) => {
+            totalAulas++;
+            const aulaId = `cc50-${i}-${j}`;
+            if (estado.cc50Progresso[aulaId]?.status === 'completa') concluidas++;
+        });
+    });
+    const percentual = Math.round((concluidas / totalAulas) * 100);
+    
+    container.innerHTML = `
+        <div class="cc50-destaque">
+            <h3><i class="fas fa-laptop-code"></i> CC50 - Introdução à Ciência da Computação</h3>
+            <div class="cc50-progresso-hoje">
+                <div class="progresso-mini" style="background: conic-gradient(#ec4899 ${(percentual/100)*360}deg, #333 ${(percentual/100)*360}deg)">
+                    ${percentual}%
+                </div>
+                <div>
+                    <p><strong>Hoje:</strong> ${horasHoje}h de CC50</p>
+                    <p><strong>Progresso:</strong> ${concluidas}/${totalAulas} aulas</p>
+                    <p><strong>Bônus acumulado:</strong> +${estado.cc50Bonus}h</p>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function getMateriaManha(diaSemana) {
+    const mapa = {
+        1: 'Fundamentos',
+        2: 'Engenharia de Software',
+        3: 'Introdução à Computação',
+        4: 'Lógica de Programação',
+        5: 'Banco de Dados'
+    };
+    return mapa[diaSemana] || 'Descanso';
+}
+
+// ============================================
+// FUNÇÕES DE BÔNUS
+// ============================================
+
+function adicionarBonusCC50(diasGanhos) {
+    estado.cc50Bonus += diasGanhos;
+    localStorage.setItem('agenda_cc50_bonus', estado.cc50Bonus.toString());
+    
+    mostrarToast(`🎉 Ganhou ${diasGanhos}h extras para o CC50!`, 'success');
+    atualizarProgressoCC50();
+    renderizarDestaqueCC50();
+}
+
+// ============================================
+// FUNÇÕES DE CONCLUSÃO (MODIFICADA PARA BÔNUS)
+// ============================================
+
+function confirmarConclusao() {
+    try {
+        const radios = document.querySelectorAll('input[name="dias-gastos"]');
+        let diasGastos = 1;
+        
+        for (const radio of radios) {
+            if (radio.checked) {
+                diasGastos = parseInt(radio.value);
+                break;
+            }
         }
+        
+        const anotacoes = document.getElementById('anotacoes-conclusao').value;
+        const diasPrevistos = estado.atividadeConcluindo.diasPrevistos || 1;
+        const diasGanhos = Math.max(0, diasPrevistos - diasGastos);
+        
+        const index = prazos.findIndex(p => p.id === estado.atividadeConcluindo.id);
+        if (index !== -1) {
+            prazos[index].concluido = true;
+            prazos[index].dataConclusao = new Date().toISOString().split('T')[0];
+            prazos[index].diasGastos = diasGastos;
+            prazos[index].anotacoes = anotacoes;
+            localStorage.setItem('agenda_prazos', JSON.stringify(prazos));
+        }
+        
+        fecharModal();
+        
+        if (diasGanhos > 0) {
+            adicionarBonusCC50(diasGanhos);
+        } else {
+            mostrarToast('Atividade concluída!', 'success');
+        }
+        
+        atualizarInterface();
+        
     } catch (erro) {
-        console.error('Erro ao atualizar data:', erro);
+        console.error('Erro ao confirmar conclusão:', erro);
+        mostrarToast('Erro ao concluir', 'error');
     }
 }
 
+// ============================================
+// FUNÇÕES DE INTERFACE (CORRIGIDAS COM EVENTOS)
+// ============================================
+
 function inicializarNavegacao() {
     try {
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tabId = btn.dataset.tab;
-                
-                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                document.querySelectorAll('.tab-pane').forEach(tab => tab.classList.remove('active'));
-                const tabElement = document.getElementById(`tab-${tabId}`);
-                if (tabElement) {
-                    tabElement.classList.add('active');
-                }
-            });
+        const botoesNav = {
+            'nav-hoje': 'hoje',
+            'nav-notas': 'notas',
+            'nav-prazos': 'prazos',
+            'nav-calendario': 'calendario',
+            'nav-planos': 'planos',
+            'nav-progresso': 'progresso',
+            'nav-cc50': 'cc50'
+        };
+
+        Object.entries(botoesNav).forEach(([id, tab]) => {
+            const btn = document.getElementById(id);
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    document.querySelectorAll('.tab-pane').forEach(t => t.classList.remove('active'));
+                    const tabElement = document.getElementById(`tab-${tab}`);
+                    if (tabElement) tabElement.classList.add('active');
+                });
+            }
         });
     } catch (erro) {
         console.error('Erro na navegação:', erro);
@@ -596,6 +1092,13 @@ function inicializarEventListeners() {
         const btnFecharEvento = document.getElementById('btn-fechar-evento');
         if (btnFecharEvento) btnFecharEvento.addEventListener('click', fecharModalEvento);
         
+        // CC50
+        const btnSalvarAula = document.getElementById('btn-salvar-aula');
+        if (btnSalvarAula) btnSalvarAula.addEventListener('click', salvarAulaCC50);
+        
+        const btnFecharAula = document.getElementById('btn-fechar-aula');
+        if (btnFecharAula) btnFecharAula.addEventListener('click', fecharModalAulaCC50);
+        
         // Enter no login
         document.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -611,20 +1114,23 @@ function inicializarEventListeners() {
     }
 }
 
-function verificarVersao() {
+function atualizarInterface() {
     try {
-        const versaoSalva = localStorage.getItem('agenda_versao');
-        if (versaoSalva !== VERSAO) {
-            localStorage.setItem('agenda_versao', VERSAO);
-        }
+        renderizarPrazosUrgentes();
+        renderizarGradeDia();
+        renderizarSugestoes();
+        renderizarChecklist();
+        renderizarPrazos('todos');
+        renderizarCalendario();
+        renderizarProgresso();
+        renderizarNotas();
+        renderizarCronogramaDia();
+        renderizarDestaqueCC50();
+        atualizarEstatisticasNotas();
     } catch (erro) {
-        console.error('Erro ao verificar versão:', erro);
+        console.error('Erro ao atualizar interface:', erro);
     }
 }
-
-// ============================================
-// FUNÇÕES DE LOGIN/LOGOUT
-// ============================================
 
 function fazerLogin() {
     try {
@@ -662,26 +1168,6 @@ function fazerLogout() {
     }
 }
 
-// ============================================
-// FUNÇÕES DE INTERFACE
-// ============================================
-
-function atualizarInterface() {
-    try {
-        renderizarPrazosUrgentes();
-        renderizarGradeDia();
-        renderizarSugestoes();
-        renderizarChecklist();
-        renderizarPrazos('todos');
-        renderizarCalendario();
-        renderizarProgresso();
-        renderizarNotas();
-        atualizarEstatisticasNotas();
-    } catch (erro) {
-        console.error('Erro ao atualizar interface:', erro);
-    }
-}
-
 function renderizarPrazosUrgentes() {
     try {
         const container = document.getElementById('urgentes-container');
@@ -709,7 +1195,8 @@ function renderizarPrazosUrgentes() {
         prazosProximos.forEach(prazo => {
             const card = document.createElement('div');
             card.className = `urgent-card ${prazo.tipo}`;
-            card.onclick = () => abrirModalConclusao(prazo.id);
+            
+            card.addEventListener('click', () => abrirModalConclusao(prazo.id));
             
             let icone = 'fa-calendar';
             if (prazo.tipo === 'prova') icone = 'fa-file-alt';
@@ -739,39 +1226,67 @@ function renderizarGradeDia() {
         
         const periodoManha = document.getElementById('periodo-manha');
         const periodoTarde = document.getElementById('periodo-tarde');
-        const periodoNoite = document.getElementById('periodo-noite');
+        const periodoCC50 = document.getElementById('periodo-cc50');
         
-        if (!periodoManha || !periodoTarde || !periodoNoite) return;
+        if (!periodoManha || !periodoTarde || !periodoCC50) return;
+        
+        periodoManha.innerHTML = '';
+        periodoTarde.innerHTML = '';
+        periodoCC50.innerHTML = '';
         
         if (diaSemana === 0 || diaSemana === 6) {
             periodoManha.innerHTML = '<div class="off-day">🚫 Dia de descanso</div>';
             periodoTarde.innerHTML = '<div class="off-day">🚫 Dia de descanso</div>';
-            periodoNoite.innerHTML = '<div class="off-day">🚫 Dia de descanso</div>';
+            periodoCC50.innerHTML = '<div class="off-day">🚫 Dia de descanso</div>';
             return;
         }
         
-        periodoManha.innerHTML = '';
-        periodoTarde.innerHTML = '';
-        periodoNoite.innerHTML = '';
-        
+        // Manhã - Pré-aula
         const materiaManha = getMateriaManha(diaSemana);
         if (materiaManha) {
-            periodoManha.appendChild(criarAtividadeElemento(materiaManha, 'Pré-aula', 'Estudar conteúdo da tarde'));
+            periodoManha.appendChild(criarAtividadeElemento(materiaManha, 'Pré-aula', '9:30 - 10:30'));
         }
         
+        // Tarde - Aula
         const materiaTarde = getMateriaTarde(diaSemana);
         if (materiaTarde) {
-            periodoTarde.appendChild(criarAtividadeElemento(materiaTarde, 'Aula', 'Aula presencial', true));
+            periodoTarde.appendChild(criarAtividadeElemento(materiaTarde, 'Aula Presencial', '14:00 - 18:00'));
         }
         
-        periodoNoite.appendChild(criarAtividadeElemento('extras', 'Curso Extra', 'Python ou HTML', false));
+        // CC50
+        const cc50Div = document.createElement('div');
+        cc50Div.className = 'atividade-item cc50';
+        cc50Div.innerHTML = `
+            <div class="atividade-info">
+                <h4>CC50 - Introdução à Ciência da Computação</h4>
+                <p><strong>Estudo Diário</strong> - 11:30 - 12:00</p>
+            </div>
+            <button class="btn-concluir" id="btn-abrir-cc50"><i class="fas fa-play"></i></button>
+        `;
+        
+        const btnAbrir = cc50Div.querySelector('#btn-abrir-cc50');
+        btnAbrir.addEventListener('click', () => {
+            document.querySelector('.nav-btn[data-tab="cc50"]').click();
+        });
+        
+        periodoCC50.appendChild(cc50Div);
         
     } catch (erro) {
         console.error('Erro ao renderizar grade:', erro);
     }
 }
 
-function criarAtividadeElemento(materia, titulo, descricao, isAula = false) {
+function getMateriaTarde(diaSemana) {
+    const mapa = {
+        2: 'es',
+        3: 'ic',
+        4: 'lp',
+        5: 'bd'
+    };
+    return mapa[diaSemana] || null;
+}
+
+function criarAtividadeElemento(materia, titulo, descricao) {
     const div = document.createElement('div');
     div.className = `atividade-item ${materia}`;
     
@@ -790,7 +1305,6 @@ function criarAtividadeElemento(materia, titulo, descricao, isAula = false) {
             <h4>${nomes[materia] || materia}</h4>
             <p><strong>${titulo}</strong> - ${descricao}</p>
         </div>
-        ${!isAula && materia !== 'extras' ? '<button class="btn-concluir" onclick="abrirModalConclusao(\'' + materia + '\')"><i class="fas fa-check"></i></button>' : ''}
     `;
     
     return div;
@@ -820,8 +1334,14 @@ function renderizarSugestoes() {
                     <h4>${prazo.nome}</h4>
                     <p>${getNomeMateria(prazo.materia)} • ${diasAte} dias</p>
                 </div>
-                <button class="btn-concluir" onclick="abrirModalConclusao('${prazo.id}')">✓</button>
+                <button class="btn-concluir" data-id="${prazo.id}">✓</button>
             `;
+
+            const btnConcluir = div.querySelector('.btn-concluir');
+            btnConcluir.addEventListener('click', (e) => {
+                e.stopPropagation();
+                abrirModalConclusao(prazo.id);
+            });
             
             container.appendChild(div);
         });
@@ -829,10 +1349,6 @@ function renderizarSugestoes() {
         console.error('Erro ao renderizar sugestões:', erro);
     }
 }
-
-// ============================================
-// FUNÇÕES DE CHECKLIST
-// ============================================
 
 function renderizarChecklist() {
     try {
@@ -852,10 +1368,14 @@ function renderizarChecklist() {
         }
         
         const itens = [
-            { id: `check-manha-${dataStr}`, materia: getMateriaManha(diaSemana), titulo: 'Estudo matinal (pré-aula)' },
-            { id: `check-tarde-${dataStr}`, materia: getMateriaTarde(diaSemana), titulo: 'Aula presencial' },
-            { id: `check-noite-${dataStr}`, materia: 'extras', titulo: 'Curso extra' }
+            { id: `check-preaula-${dataStr}`, materia: getMateriaManha(diaSemana), titulo: 'Pré-aula (9:30-10:30)' },
+            { id: `check-trabalho-${dataStr}`, materia: 'trabalhos', titulo: 'Trabalhos (10:30-11:30)' },
+            { id: `check-cc50-${dataStr}`, materia: 'cc50', titulo: 'CC50 (11:30-12:00)' }
         ].filter(item => item.materia);
+        
+        if (diaSemana === 1) { // Segunda
+            itens.push({ id: `check-cc50-tarde-${dataStr}`, materia: 'cc50', titulo: 'CC50 Intensivo (14:00-18:00)' });
+        }
         
         const concluidos = itens.filter(item => estado.checklistItens.includes(item.id)).length;
         document.getElementById('checklist-progress').textContent = `${concluidos}/${itens.length}`;
@@ -864,16 +1384,28 @@ function renderizarChecklist() {
             const div = document.createElement('div');
             div.className = `checklist-item ${estado.checklistItens.includes(item.id) ? 'concluido' : ''}`;
             
-            div.innerHTML = `
-                <div class="checklist-checkbox ${estado.checklistItens.includes(item.id) ? 'checked' : ''}" onclick="toggleChecklistItem('${item.id}')">
-                    ${estado.checklistItens.includes(item.id) ? '<i class="fas fa-check"></i>' : ''}
-                </div>
-                <div class="checklist-info">
-                    <h4>${item.titulo}</h4>
-                    <p>${getNomeMateria(item.materia)}</p>
-                </div>
-                <span class="checklist-materia ${item.materia}">${item.materia}</span>
+            const checkboxDiv = document.createElement('div');
+            checkboxDiv.className = `checklist-checkbox ${estado.checklistItens.includes(item.id) ? 'checked' : ''}`;
+            if (estado.checklistItens.includes(item.id)) {
+                checkboxDiv.innerHTML = '<i class="fas fa-check"></i>';
+            }
+
+            checkboxDiv.addEventListener('click', () => toggleChecklistItem(item.id));
+            
+            div.appendChild(checkboxDiv);
+            
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'checklist-info';
+            infoDiv.innerHTML = `
+                <h4>${item.titulo}</h4>
+                <p>${item.materia === 'cc50' ? 'Curso CC50' : getNomeMateria(item.materia)}</p>
             `;
+            div.appendChild(infoDiv);
+            
+            const spanMateria = document.createElement('span');
+            spanMateria.className = `checklist-materia ${item.materia}`;
+            spanMateria.textContent = item.materia === 'cc50' ? 'CC50' : item.materia;
+            div.appendChild(spanMateria);
             
             container.appendChild(div);
         });
@@ -918,10 +1450,6 @@ function resetarChecklistDiario() {
     }
 }
 
-// ============================================
-// FUNÇÕES DE PRAZOS
-// ============================================
-
 function renderizarPrazos(filtro = 'todos') {
     try {
         const container = document.getElementById('prazos-container');
@@ -962,8 +1490,16 @@ function renderizarPrazos(filtro = 'todos') {
                 </div>
                 <div class="prazo-data"><i class="far fa-calendar"></i> ${formatarData(prazo.data)}</div>
                 ${!prazo.concluido ? `<div class="prazo-dias ${classeDias}">${diasRestantes}d</div>` : ''}
-                ${!prazo.concluido ? `<button class="btn-concluir-pequeno" onclick="abrirModalConclusao('${prazo.id}')"><i class="fas fa-check"></i></button>` : ''}
+                ${!prazo.concluido ? `<button class="btn-concluir-pequeno" data-id="${prazo.id}"><i class="fas fa-check"></i></button>` : ''}
             `;
+
+            const btnConcluir = div.querySelector('.btn-concluir-pequeno');
+            if (btnConcluir) {
+                btnConcluir.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    abrirModalConclusao(prazo.id);
+                });
+            }
             
             container.appendChild(div);
         });
@@ -972,10 +1508,6 @@ function renderizarPrazos(filtro = 'todos') {
         console.error('Erro ao renderizar prazos:', erro);
     }
 }
-
-// ============================================
-// FUNÇÕES DE CALENDÁRIO
-// ============================================
 
 function renderizarCalendario() {
     try {
@@ -1006,7 +1538,6 @@ function renderizarCalendario() {
         for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
             const div = document.createElement('div');
             div.className = 'calendario-dia';
-            div.onclick = () => verEventosDoDia(dia);
             
             const dataAtual = new Date(estado.anoCalendario, estado.mesCalendario, dia);
             if (dataAtual.toDateString() === hoje.toDateString()) {
@@ -1028,6 +1559,8 @@ function renderizarCalendario() {
                 });
                 div.appendChild(eventosDiv);
             }
+
+            div.addEventListener('click', () => verEventosDoDia(dia));
             
             grid.appendChild(div);
         }
@@ -1100,10 +1633,6 @@ function proximoMes() {
     renderizarCalendario();
 }
 
-// ============================================
-// FUNÇÕES DE NOTAS
-// ============================================
-
 function renderizarNotas() {
     try {
         const container = document.getElementById('notas-container');
@@ -1151,9 +1680,9 @@ function criarElementoNota(nota, container) {
         <div class="nota-header">
             <span class="nota-data">${formatarData(nota.data)}</span>
             <div class="nota-acoes">
-                <button onclick="fixarNota('${nota.id}')"><i class="fas fa-thumbtack" style="color: ${nota.fixada ? 'var(--dourado)' : 'inherit'}"></i></button>
-                <button onclick="editarNota('${nota.id}')"><i class="fas fa-edit"></i></button>
-                <button onclick="excluirNota('${nota.id}')"><i class="fas fa-trash"></i></button>
+                <button class="btn-fixar" data-id="${nota.id}"><i class="fas fa-thumbtack" style="color: ${nota.fixada ? 'var(--dourado)' : 'inherit'}"></i></button>
+                <button class="btn-editar" data-id="${nota.id}"><i class="fas fa-edit"></i></button>
+                <button class="btn-excluir" data-id="${nota.id}"><i class="fas fa-trash"></i></button>
             </div>
         </div>
         <div class="nota-titulo">${nota.titulo || 'Sem título'}</div>
@@ -1162,6 +1691,10 @@ function criarElementoNota(nota, container) {
             ${nota.tags ? nota.tags.map(t => `<span class="nota-tag">#${t}</span>`).join('') : ''}
         </div>
     `;
+
+    div.querySelector('.btn-fixar')?.addEventListener('click', () => fixarNota(nota.id));
+    div.querySelector('.btn-editar')?.addEventListener('click', () => editarNota(nota.id));
+    div.querySelector('.btn-excluir')?.addEventListener('click', () => excluirNota(nota.id));
     
     container.appendChild(div);
 }
@@ -1286,10 +1819,6 @@ function fecharModalNota() {
     document.getElementById('modal-nota').classList.remove('active');
 }
 
-// ============================================
-// FUNÇÕES DE CONCLUSÃO
-// ============================================
-
 function abrirModalConclusao(atividadeId) {
     try {
         let atividade = prazos.find(p => p.id === atividadeId);
@@ -1314,145 +1843,6 @@ function abrirModalConclusao(atividadeId) {
 function fecharModal() {
     document.getElementById('modal-concluir').classList.remove('active');
 }
-
-function confirmarConclusao() {
-    try {
-        const radios = document.querySelectorAll('input[name="dias-gastos"]');
-        let diasGastos = 1;
-        
-        for (const radio of radios) {
-            if (radio.checked) {
-                diasGastos = parseInt(radio.value);
-                break;
-            }
-        }
-        
-        const anotacoes = document.getElementById('anotacoes-conclusao').value;
-        const diasPrevistos = estado.atividadeConcluindo.diasPrevistos || 1;
-        const diasGanhos = Math.max(0, diasPrevistos - diasGastos);
-        
-        const index = prazos.findIndex(p => p.id === estado.atividadeConcluindo.id);
-        if (index !== -1) {
-            prazos[index].concluido = true;
-            prazos[index].dataConclusao = new Date().toISOString().split('T')[0];
-            prazos[index].diasGastos = diasGastos;
-            prazos[index].anotacoes = anotacoes;
-            localStorage.setItem('agenda_prazos', JSON.stringify(prazos));
-        }
-        
-        fecharModal();
-        
-        if (diasGanhos > 0) {
-            reorganizarEstudos(estado.atividadeConcluindo, diasGanhos);
-            mostrarToast(`🎉 Ganhou ${diasGanhos} dias extras!`, 'success');
-        } else {
-            mostrarToast('Atividade concluída!', 'success');
-        }
-        
-        atualizarInterface();
-        
-    } catch (erro) {
-        console.error('Erro ao confirmar conclusão:', erro);
-        mostrarToast('Erro ao concluir', 'error');
-    }
-}
-
-function reorganizarEstudos(atividade, diasGanhos) {
-    try {
-        const hoje = new Date();
-        let diasRestantes = diasGanhos;
-        
-        const provasProximas = prazos
-            .filter(p => p.tipo === 'prova' && !p.concluido)
-            .map(p => {
-                const diasAte = Math.ceil((new Date(p.data + 'T12:00:00') - hoje) / (1000 * 60 * 60 * 24));
-                return { ...p, diasAte };
-            })
-            .filter(p => p.diasAte <= 14 && p.diasAte > 0)
-            .sort((a, b) => a.diasAte - b.diasAte);
-        
-        const cursos = ['Python Santander', 'HTML Coddy'];
-        
-        for (let i = 0; i < diasGanhos; i++) {
-            const data = new Date(hoje);
-            data.setDate(data.getDate() + i + 1);
-            
-            if (data.getDay() !== 0 && data.getDay() !== 6) {
-                const evento = {
-                    id: `extra-${Date.now()}-${i}`,
-                    materia: 'extras',
-                    tipo: 'estudo',
-                    nome: i % 2 === 0 ? cursos[0] : cursos[1],
-                    data: data.toISOString().split('T')[0],
-                    diasPrevistos: 1,
-                    concluido: false
-                };
-                prazos.push(evento);
-            }
-        }
-        
-        localStorage.setItem('agenda_prazos', JSON.stringify(prazos));
-        
-    } catch (erro) {
-        console.error('Erro ao reorganizar:', erro);
-    }
-}
-
-// ============================================
-// FUNÇÕES DE TIMER
-// ============================================
-
-function iniciarTimer() {
-    try {
-        if (estado.timerAtivo) return;
-        
-        estado.timerAtivo = true;
-        estado.timerInterval = setInterval(() => {
-            estado.timerTempo++;
-            
-            const horas = estado.timerTempo / 3600;
-            const progresso = (horas / HORAS_POR_DIA) * 100;
-            
-            const progressoEl = document.getElementById('timer-progresso');
-            if (progressoEl) progressoEl.style.width = `${Math.min(progresso, 100)}%`;
-            
-            const displayEl = document.getElementById('timer-display');
-            if (displayEl) {
-                const h = Math.floor(estado.timerTempo / 3600);
-                const m = Math.floor((estado.timerTempo % 3600) / 60);
-                displayEl.textContent = `${h}h${m < 10 ? '0' : ''}${m}`;
-            }
-            
-            if (horas >= HORAS_POR_DIA) {
-                pausarTimer();
-                mostrarToast('🎉 Meta diária atingida!', 'success');
-            }
-        }, 1000);
-        
-    } catch (erro) {
-        console.error('Erro no timer:', erro);
-    }
-}
-
-function pausarTimer() {
-    estado.timerAtivo = false;
-    if (estado.timerInterval) {
-        clearInterval(estado.timerInterval);
-    }
-}
-
-function zerarTimer() {
-    pausarTimer();
-    estado.timerTempo = 0;
-    const progressoEl = document.getElementById('timer-progresso');
-    if (progressoEl) progressoEl.style.width = '0%';
-    const displayEl = document.getElementById('timer-display');
-    if (displayEl) displayEl.textContent = '0h00';
-}
-
-// ============================================
-// FUNÇÕES DE PLANOS
-// ============================================
 
 function mostrarPlanoAula(materia) {
     try {
@@ -1493,10 +1883,6 @@ function mostrarPlanoAula(materia) {
         console.error('Erro ao mostrar plano:', erro);
     }
 }
-
-// ============================================
-// FUNÇÕES DE PROGRESSO
-// ============================================
 
 function renderizarProgresso() {
     try {
@@ -1599,10 +1985,6 @@ function desenharGraficoBarras() {
     }
 }
 
-// ============================================
-// FUNÇÕES AUXILIARES
-// ============================================
-
 function getNomeMateria(materia) {
     const nomes = {
         es: 'Engenharia de Software',
@@ -1611,35 +1993,63 @@ function getNomeMateria(materia) {
         bd: 'Banco de Dados I',
         bootcamp: 'Bootcamp I',
         fundamentos: 'Fundamentos',
-        extras: 'Cursos Extras'
+        extras: 'Cursos Extras',
+        cc50: 'CC50'
     };
     return nomes[materia] || materia;
-}
-
-function getMateriaManha(diaSemana) {
-    const mapa = {
-        1: 'fundamentos',
-        2: 'es',
-        3: 'ic',
-        4: 'lp',
-        5: 'bd'
-    };
-    return mapa[diaSemana] || null;
-}
-
-function getMateriaTarde(diaSemana) {
-    const mapa = {
-        2: 'es',
-        3: 'ic',
-        4: 'lp',
-        5: 'bd'
-    };
-    return mapa[diaSemana] || null;
 }
 
 function formatarData(dataStr) {
     const data = new Date(dataStr + 'T12:00:00');
     return data.toLocaleDateString('pt-BR');
+}
+
+function iniciarTimer() {
+    try {
+        if (estado.timerAtivo) return;
+        
+        estado.timerAtivo = true;
+        estado.timerInterval = setInterval(() => {
+            estado.timerTempo++;
+            
+            const horas = estado.timerTempo / 3600;
+            const progresso = (horas / HORAS_POR_DIA) * 100;
+            
+            const progressoEl = document.getElementById('timer-progresso');
+            if (progressoEl) progressoEl.style.width = `${Math.min(progresso, 100)}%`;
+            
+            const displayEl = document.getElementById('timer-display');
+            if (displayEl) {
+                const h = Math.floor(estado.timerTempo / 3600);
+                const m = Math.floor((estado.timerTempo % 3600) / 60);
+                displayEl.textContent = `${h}h${m < 10 ? '0' : ''}${m}`;
+            }
+            
+            if (horas >= HORAS_POR_DIA) {
+                pausarTimer();
+                mostrarToast('🎉 Meta diária atingida!', 'success');
+            }
+        }, 1000);
+        
+    } catch (erro) {
+        console.error('Erro no timer:', erro);
+    }
+}
+
+function pausarTimer() {
+    estado.timerAtivo = false;
+    if (estado.timerInterval) {
+        clearInterval(estado.timerInterval);
+    }
+}
+
+function zerarTimer() {
+    pausarTimer();
+    estado.timerTempo = 0;
+    const progressoEl = document.getElementById('timer-progresso');
+    if (progressoEl) progressoEl.style.width = '0%';
+    const displayEl = document.getElementById('timer-display');
+    if (displayEl) displayEl.textContent = '0h00';
 }
 
 function mostrarToast(mensagem, tipo = 'info') {
@@ -1662,6 +2072,17 @@ function mostrarToast(mensagem, tipo = 'info') {
         
     } catch (erro) {
         console.error('Erro ao mostrar toast:', erro);
+    }
+}
+
+function verificarVersao() {
+    try {
+        const versaoSalva = localStorage.getItem('agenda_versao');
+        if (versaoSalva !== VERSAO) {
+            localStorage.setItem('agenda_versao', VERSAO);
+        }
+    } catch (erro) {
+        console.error('Erro ao verificar versão:', erro);
     }
 }
 
@@ -1691,3 +2112,5 @@ window.mostrarPlanoAula = mostrarPlanoAula;
 window.verEventosDoDia = verEventosDoDia;
 window.fecharModalEvento = fecharModalEvento;
 window.buscarNotas = buscarNotas;
+window.salvarAulaCC50 = salvarAulaCC50;
+window.fecharModalAulaCC50 = fecharModalAulaCC50;
