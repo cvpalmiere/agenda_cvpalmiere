@@ -1531,6 +1531,33 @@ function fecharModalPlano() {
 }
 
 // ============================================
+// FUNÇÃO DE LOGIN (COLOQUE AQUI)
+// ============================================
+
+function fazerLogin() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    
+    if (username === 'Carla' && password === 'Cacau') {
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('app-container').style.display = 'flex';
+        if (typeof inicializarSistema === 'function') {
+            inicializarSistema();
+        }
+        mostrarToast('Bem-vinda, Carla! 🎉', 'success');
+    } else {
+        document.getElementById('login-error').style.display = 'block';
+    }
+}
+
+// Permitir login com Enter
+document.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        fazerLogin();
+    }
+});
+
+// ============================================
 // EXPOR FUNÇÕES PARA O HTML
 // ============================================
 
