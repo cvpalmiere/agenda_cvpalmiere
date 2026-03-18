@@ -1504,21 +1504,26 @@ body {
     color: var(--text-muted);
 }
 
-/* RESPONSIVIDADE */
+/* ===== RESPONSIVIDADE (CORRIGIDA) ===== */
 @media (max-width: 768px) {
     .agenda-main {
-        margin-top: 280px;
+        margin-top: 320px; /* Aumentado para mobile */
         padding: 1rem;
     }
     
     .nav-btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.85rem;
+        padding: 0.5rem 0.8rem;
+        font-size: 0.8rem;
+    }
+    
+    .nav-buttons-container {
+        gap: 0.3rem;
     }
     
     .user-info-bar {
         flex-direction: column;
         align-items: center;
+        gap: 0.5rem;
     }
     
     .study-grid {
@@ -1548,6 +1553,21 @@ body {
     
     .notas-busca input {
         width: 100%;
+    }
+    
+    .cc50-progresso-grande {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .cronograma-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .cronograma-horario {
+        min-width: auto;
     }
 }
 
@@ -1598,6 +1618,7 @@ body {
     align-items: center;
     gap: 2rem;
     margin: 1rem 0;
+    flex-wrap: wrap;
 }
 
 .progresso-mini {
@@ -1631,6 +1652,11 @@ body {
     border-radius: 20px;
     padding: 1.5rem;
     margin-bottom: 2rem;
+}
+
+.cronograma-dia h3 {
+    margin-bottom: 1rem;
+    color: var(--dourado);
 }
 
 .cronograma-item {
@@ -1705,6 +1731,7 @@ body {
     padding: 1.5rem;
     border-radius: 15px;
     margin-bottom: 1rem;
+    flex-wrap: wrap;
 }
 
 .progresso-circular {
@@ -1728,6 +1755,7 @@ body {
 .cc50-stats span {
     color: var(--dourado);
     font-weight: bold;
+    font-size: 1.1rem;
 }
 
 .cc50-bonus-container {
@@ -1760,6 +1788,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    margin-top: 2rem;
 }
 
 .cc50-modulo {
@@ -1776,6 +1805,11 @@ body {
     align-items: center;
     cursor: pointer;
     border-bottom: 1px solid var(--border);
+    transition: all 0.3s;
+}
+
+.modulo-header:hover {
+    background: var(--bg-card);
 }
 
 .modulo-header h3 {
@@ -1823,6 +1857,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 0.7rem;
 }
 
 .aula-status.nao_iniciada {
@@ -1832,20 +1867,19 @@ body {
 .aula-status.assistida {
     border-color: var(--azul-marinho);
     background: rgba(0, 0, 128, 0.2);
+    color: var(--azul-marinho);
 }
 
 .aula-status.exercicios {
     border-color: var(--warning);
     background: rgba(245, 158, 11, 0.2);
+    color: var(--warning);
 }
 
 .aula-status.completa {
     border-color: var(--success);
     background: rgba(16, 185, 129, 0.2);
-}
-
-.aula-status i {
-    font-size: 0.7rem;
+    color: var(--success);
 }
 
 .aula-info {
@@ -1862,6 +1896,72 @@ body {
     color: var(--text-muted);
 }
 
+/* Botão CC50 especial */
+.nav-btn[data-tab="cc50"] {
+    background: linear-gradient(135deg, #ec4899, #f97316);
+    color: white;
+    border-color: #ec4899;
+}
+
+.nav-btn[data-tab="cc50"]:hover,
+.nav-btn[data-tab="cc50"].active {
+    background: linear-gradient(135deg, #f97316, #ec4899);
+    color: white;
+    border-color: var(--dourado);
+    transform: translateY(-2px);
+}
+
+/* Modal Aula CC50 */
+#modal-aula-cc50 .modal-conteudo {
+    max-width: 600px;
+}
+
+#aula-status {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 0.8rem;
+    border-radius: 10px;
+    width: 100%;
+    cursor: pointer;
+}
+
+#aula-status option {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+#aula-anotacoes {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 0.8rem;
+    border-radius: 10px;
+    width: 100%;
+    resize: vertical;
+    min-height: 100px;
+}
+
+#aula-anotacoes:focus {
+    outline: none;
+    border-color: var(--dourado);
+}
+
+/* Ajustes gerais */
+.agenda-main {
+    margin-top: 280px; /* CORRIGIDO */
+    padding: 2rem;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    overflow-x: hidden;
+}
+
+.tab-pane {
+    width: 100%;
+    overflow-x: hidden;
+}
+
 .bonus-aviso {
     background: rgba(247, 239, 138, 0.1);
     border: 1px dashed var(--dourado);
@@ -1876,21 +1976,4 @@ body {
 
 .bonus-aviso i {
     font-size: 1.2rem;
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
-    .cc50-progresso-grande {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .cronograma-item {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .cronograma-horario {
-        min-width: auto;
-    }
 }
