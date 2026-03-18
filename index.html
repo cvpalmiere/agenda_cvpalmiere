@@ -3,47 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agenda Palmiere - CC50 Edition</title>
+    <title>Agenda Palmiere - CC50</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-   <!-- TELA DE LOGIN -->
-<div class="login-container" id="login-container">
-    <div class="login-card">
-        <div class="login-logo">
-            <i class="fas fa-calendar-alt"></i>
-            <h1>Agenda Palmiere</h1>
-        </div>
-        <p class="login-subtitle">Sistema Inteligente de Estudos</p>
-        
-        <!-- ADICIONEI A TAG FORM AQUI -->
-        <form id="login-form" onsubmit="return false;">
-            <div class="input-group">
-                <i class="fas fa-user"></i>
-                <input type="text" id="login-usuario" placeholder="Usuário">
+    <!-- TELA DE LOGIN -->
+    <div class="login-container" id="login-container">
+        <div class="login-card">
+            <div class="login-logo">
+                <i class="fas fa-calendar-alt"></i>
+                <h1>Agenda Palmiere</h1>
+            </div>
+            <p class="login-subtitle">Sistema Inteligente de Estudos</p>
+            
+            <form id="login-form" onsubmit="return false;">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="login-usuario" placeholder="Usuário" value="Carla">
+                </div>
+                
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="login-senha" placeholder="Senha" value="Cacau">
+                </div>
+            </form>
+            
+            <button class="btn-login" id="btn-login">
+                <i class="fas fa-sign-in-alt"></i> Entrar
+            </button>
+            
+            <div class="login-info" id="login-erro" style="display: none;">
+                <i class="fas fa-exclamation-circle"></i> Usuário ou senha incorretos!
             </div>
             
-            <div class="input-group">
-                <i class="fas fa-lock"></i>
-                <input type="password" id="login-senha" placeholder="Senha">
+            <div class="login-footer">
+                <p>Apenas para uso pessoal de Carla</p>
             </div>
-        </form>
-        <!-- FIM DO FORM -->
-        
-        <button class="btn-login" id="btn-login">
-            <i class="fas fa-sign-in-alt"></i> Entrar
-        </button>
-        
-        <div class="login-info" id="login-erro" style="display: none;">
-            <i class="fas fa-exclamation-circle"></i> Usuário ou senha incorretos!
-        </div>
-        
-        <div class="login-footer">
-            <p>Apenas para uso pessoal de Carla</p>
         </div>
     </div>
-</div>
 
     <!-- SISTEMA PRINCIPAL -->
     <div class="app-container" id="app-container" style="display: none;">
@@ -116,13 +114,15 @@
                         </div>
                     </div>
 
-                    <!-- CARD DO CC50 - DESTAQUE -->
+                    <!-- DESTAQUE CC50 -->
                     <div class="cc50-destaque" id="cc50-destaque-hoje">
                         <!-- Gerado via JS -->
                     </div>
 
+                    <!-- PRAZOS URGENTES -->
                     <div class="urgent-grid" id="urgentes-container"></div>
 
+                    <!-- TIMER -->
                     <div class="timer-card">
                         <div class="timer-header">
                             <i class="fas fa-hourglass-half"></i>
@@ -140,9 +140,11 @@
 
                     <!-- CRONOGRAMA DO DIA -->
                     <div class="cronograma-dia" id="cronograma-dia">
+                        <h3><i class="fas fa-clock"></i> Seu cronograma de hoje</h3>
                         <!-- Gerado via JS -->
                     </div>
 
+                    <!-- CHECKLIST -->
                     <div class="checklist-container">
                         <div class="checklist-header">
                             <h2><i class="fas fa-check-circle"></i> Checklist de Hoje</h2>
@@ -154,13 +156,14 @@
                         </button>
                     </div>
 
+                    <!-- GRADE DE ESTUDOS -->
                     <h2 class="section-title"><i class="fas fa-sun"></i> O que estudar hoje</h2>
                     <div class="study-grid">
                         <div class="study-card manha">
                             <div class="card-header">
                                 <i class="fas fa-cloud-sun"></i>
                                 <h3>Manhã (Pré-aula)</h3>
-                                <span class="period-time">09:30 - 12:00</span>
+                                <span class="period-time">09:30 - 10:30</span>
                             </div>
                             <div class="card-content" id="periodo-manha"></div>
                         </div>
@@ -184,6 +187,7 @@
                         </div>
                     </div>
 
+                    <!-- SUGESTÕES -->
                     <h2 class="section-title"><i class="fas fa-lightbulb"></i> Sugestões para hoje</h2>
                     <div class="suggestions-grid" id="sugestoes-container"></div>
                 </div>
@@ -221,7 +225,9 @@
                         </div>
                     </div>
 
-                    <div class="notas-editor-container" id="notas-container"></div>
+                    <div class="notas-editor-container" id="notas-container">
+                        <p class="text-muted">Nenhuma nota ainda. Clique em "Nova Nota" para começar.</p>
+                    </div>
                     
                     <button class="btn-primary" id="btn-nova-nota">
                         <i class="fas fa-plus"></i> Nova Nota
@@ -257,7 +263,9 @@
                         </div>
                     </div>
 
-                    <div class="prazos-lista" id="prazos-container"></div>
+                    <div class="prazos-lista" id="prazos-container">
+                        <!-- Gerado via JS -->
+                    </div>
                 </div>
             </div>
 
@@ -272,7 +280,9 @@
                         <button class="btn-mes" id="proximo-mes"><i class="fas fa-chevron-right"></i></button>
                     </div>
                     
-                    <div class="calendario-grid" id="calendario-grid"></div>
+                    <div class="calendario-grid" id="calendario-grid">
+                        <!-- Gerado via JS -->
+                    </div>
                     
                     <div class="calendario-legenda">
                         <span><span class="legenda-cor" style="background: #ef4444"></span> Prova</span>
@@ -284,7 +294,7 @@
                 </div>
             </div>
 
-            <!-- ABA PLANOS DE AULA -->
+            <!-- ABA PLANOS -->
             <div class="tab-pane" id="tab-planos">
                 <div class="planos-container">
                     <h2><i class="fas fa-book-open"></i> Planos de Aula</h2>
@@ -447,7 +457,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE EVENTOS DO DIA -->
+    <!-- MODAL DE EVENTOS -->
     <div class="modal" id="modal-evento">
         <div class="modal-conteudo">
             <h3 id="modal-evento-titulo"><i class="fas fa-calendar-day"></i> <span></span></h3>
@@ -458,7 +468,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE AULA CC50 -->
+    <!-- MODAL AULA CC50 -->
     <div class="modal" id="modal-aula-cc50">
         <div class="modal-conteudo">
             <h3 id="modal-aula-titulo"><i class="fas fa-laptop-code"></i> <span></span></h3>
@@ -485,7 +495,7 @@
         </div>
     </div>
 
-    <!-- TOAST NOTIFICATION -->
+    <!-- TOAST -->
     <div class="toast-container" id="toast-container"></div>
 
     <script src="script.js"></script>
