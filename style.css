@@ -1550,3 +1550,347 @@ body {
         width: 100%;
     }
 }
+
+/* ===== NOVOS ESTILOS PARA CC50 ===== */
+
+.cc50-badge {
+    background: linear-gradient(135deg, #ec4899, #f97316);
+    color: white;
+    padding: 0.4rem 1rem;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.cc50-badge i {
+    color: #F7EF8A;
+}
+
+.cc50-destaque {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border: 2px solid #ec4899;
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.cc50-destaque::before {
+    content: "🎓";
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    font-size: 4rem;
+    opacity: 0.1;
+}
+
+.cc50-destaque h3 {
+    color: #ec4899;
+    margin-bottom: 0.5rem;
+}
+
+.cc50-progresso-hoje {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin: 1rem 0;
+}
+
+.progresso-mini {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: conic-gradient(#ec4899 0deg, #333 0deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+}
+
+.cc50-card {
+    background: linear-gradient(135deg, #2a1a3a, #1a1a2e);
+    border: 1px solid #ec4899;
+}
+
+.cc50-card .card-header {
+    background: rgba(236, 72, 153, 0.2);
+}
+
+.cc50-card .card-header i {
+    color: #ec4899;
+}
+
+.cronograma-dia {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.cronograma-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.cronograma-item:last-child {
+    border-bottom: none;
+}
+
+.cronograma-horario {
+    font-weight: bold;
+    color: var(--dourado);
+    min-width: 100px;
+}
+
+.cronograma-atividade {
+    flex: 1;
+}
+
+.cronograma-atividade h4 {
+    margin-bottom: 0.2rem;
+}
+
+.cronograma-atividade p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.cronograma-duracao {
+    background: var(--bg-tertiary);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.cronograma-item.cc50 {
+    border-left: 4px solid #ec4899;
+    background: rgba(236, 72, 153, 0.05);
+}
+
+.cronograma-item.preaula {
+    border-left: 4px solid var(--azul-marinho);
+}
+
+.cronograma-item.trabalho {
+    border-left: 4px solid var(--success);
+}
+
+/* CC50 Container */
+.cc50-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem;
+}
+
+.cc50-header {
+    margin-bottom: 2rem;
+}
+
+.cc50-progresso-grande {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    background: var(--bg-tertiary);
+    padding: 1.5rem;
+    border-radius: 15px;
+    margin-bottom: 1rem;
+}
+
+.progresso-circular {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: conic-gradient(#ec4899 0deg, #333 0deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+}
+
+.cc50-stats p {
+    margin: 0.3rem 0;
+    color: var(--text-secondary);
+}
+
+.cc50-stats span {
+    color: var(--dourado);
+    font-weight: bold;
+}
+
+.cc50-bonus-container {
+    background: rgba(247, 239, 138, 0.1);
+    border: 1px solid var(--dourado);
+    border-radius: 15px;
+    padding: 1.5rem;
+}
+
+.cc50-bonus-container h4 {
+    color: var(--dourado);
+    margin-bottom: 0.5rem;
+}
+
+.bonus-bar {
+    height: 10px;
+    background: var(--bg-secondary);
+    border-radius: 5px;
+    margin-top: 1rem;
+    overflow: hidden;
+}
+
+.bonus-progresso {
+    height: 100%;
+    background: linear-gradient(90deg, var(--dourado), #ec4899);
+    transition: width 0.3s;
+}
+
+.cc50-modulos {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.cc50-modulo {
+    background: var(--bg-tertiary);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.modulo-header {
+    background: var(--bg-secondary);
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+}
+
+.modulo-header h3 {
+    color: var(--dourado);
+    font-size: 1.1rem;
+}
+
+.modulo-progresso {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.modulo-aulas {
+    padding: 1rem;
+    display: none;
+}
+
+.modulo-aulas.expandido {
+    display: block;
+}
+
+.aula-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.aula-item:hover {
+    background: var(--bg-card);
+}
+
+.aula-item:last-child {
+    border-bottom: none;
+}
+
+.aula-status {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.aula-status.nao_iniciada {
+    border-color: var(--text-muted);
+}
+
+.aula-status.assistida {
+    border-color: var(--azul-marinho);
+    background: rgba(0, 0, 128, 0.2);
+}
+
+.aula-status.exercicios {
+    border-color: var(--warning);
+    background: rgba(245, 158, 11, 0.2);
+}
+
+.aula-status.completa {
+    border-color: var(--success);
+    background: rgba(16, 185, 129, 0.2);
+}
+
+.aula-status i {
+    font-size: 0.7rem;
+}
+
+.aula-info {
+    flex: 1;
+}
+
+.aula-info h4 {
+    font-size: 0.95rem;
+    margin-bottom: 0.2rem;
+}
+
+.aula-info p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.bonus-aviso {
+    background: rgba(247, 239, 138, 0.1);
+    border: 1px dashed var(--dourado);
+    border-radius: 10px;
+    padding: 1rem;
+    color: var(--dourado);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bonus-aviso i {
+    font-size: 1.2rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .cc50-progresso-grande {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .cronograma-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .cronograma-horario {
+        min-width: auto;
+    }
+}
