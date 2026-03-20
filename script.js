@@ -2056,26 +2056,30 @@ document.addEventListener('DOMContentLoaded', function() {
     window.fazerLogin = loginSeguro;
 })();
 
+
 // ============================================
-// EXPOR FUNÇÕES GLOBAIS
+// ========== EXPOSIÇÃO GLOBAL CORRIGIDA ==========
 // ============================================
 
-window.fazerLogin = fazerLogin;
-window.fazerLogout = fazerLogout;
-window.abrirModalConclusao = abrirModalConclusao;
-window.fecharModal = fecharModal;
-window.confirmarConclusao = confirmarConclusao;
-window.toggleChecklistItem = toggleChecklistItem;
-window.resetarChecklistDiario = resetarChecklistDiario;
-window.iniciarTimer = iniciarTimer;
-window.pausarTimer = pausarTimer;
-window.zerarTimer = zerarTimer;
-window.mesAnterior = mesAnterior;
-window.proximoMes = proximoMes;
-window.mostrarPlanoAula = mostrarPlanoAula;
-window.verEventosDoDia = verEventosDoDia;
-window.fecharModalEvento = fecharModalEvento;
-window.salvarAulaCC50 = salvarAulaCC50;
-window.fecharModalAulaCC50 = fecharModalAulaCC50;
+// Expõe os objetos principais globalmente
+window.Prazos = Prazos;
+window.CC50 = CC50;
+window.Calendario = Calendario;
+window.Abas = Abas;
+
+// Força o vínculo correto das funções do Prazos
+window.Prazos.fecharModal = Prazos.fecharModal.bind(Prazos);
+window.Prazos.confirmarConclusao = Prazos.confirmarConclusao.bind(Prazos);
+window.Prazos.abrirModalConcluir = Prazos.abrirModalConcluir.bind(Prazos);
+window.Prazos.filtrar = Prazos.filtrar.bind(Prazos);
+
+// Força o vínculo das funções do CC50
+window.CC50.salvarAula = CC50.salvarAula.bind(CC50);
+window.CC50.fecharModalAula = CC50.fecharModalAula.bind(CC50);
+
+// Força o vínculo das funções do Calendário
+window.Calendario.mesAnterior = Calendario.mesAnterior.bind(Calendario);
+window.Calendario.mesSeguinte = Calendario.mesSeguinte.bind(Calendario);
 
 console.log('🚀 Script carregado com sucesso!');
+console.log('✅ Prazos.confirmarConclusao disponível:', typeof window.Prazos?.confirmarConclusao);
